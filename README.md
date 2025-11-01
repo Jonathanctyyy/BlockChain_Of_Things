@@ -7,3 +7,4 @@ Steps:
 4. npm run compile
 5. npm run test
 6. npm run deploy
+7. 
