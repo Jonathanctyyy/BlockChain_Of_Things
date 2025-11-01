@@ -1,0 +1,24 @@
+{
+  "name": "my-hardhat-project",
+  "version": "1.0.0",
+  "description": "A Hardhat project for deploying and testing a Greeter smart contract.",
+  "main": "scripts/deploy.ts",
+  "scripts": {
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.ts",
+    "accounts": "hardhat accounts"
+  },
+  "dependencies": {
+    "hardhat": "^2.0.0",
+    "ethers": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.0",
+    "@types/node": "^14.0.0",
+    "@nomiclabs/hardhat-ethers": "^2.0.0",
+    "@nomiclabs/hardhat-waffle": "^2.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
