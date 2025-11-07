@@ -1,10 +1,10 @@
-require('@nomiclabs/hardhat-waffle');
+import { task } from "hardhat/config";
 
-module.exports = {
-  solidity: '0.8.18',
+export default {
+  solidity: "0.8.18",
   networks: {
     localhost: {
-      url: 'http://127.0.0.1:8545',
+      url: "http://127.0.0.1:8545",
     },
   },
 };
