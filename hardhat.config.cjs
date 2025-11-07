@@ -1,6 +1,6 @@
-import { task } from "hardhat/config";
+require("@nomiclabs/hardhat-waffle");
 
-export default {
+module.exports = {
   solidity: "0.8.18",
   networks: {
     localhost: {
