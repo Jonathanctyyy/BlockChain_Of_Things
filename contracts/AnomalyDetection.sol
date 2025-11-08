@@ -7,10 +7,13 @@ contract AnomalyDetection {
     int256 public maxThreshold;
 
     // Event to log anomalies
-    event AnomalyDetected(address indexed sender, int256 value);
+    event AnomalyDetected(address indexed sender, string machineID, int256 value);
 
     // Event to log normal data
-    event DataReceived(address indexed sender, int256 value);
+    event DataReceived(address indexed sender, string machineID, int256 value);
+
+    // List to store machine IDs with anomalies
+    string[] public anomalyMachineIDs;
 
     // Constructor to initialize thresholds
     constructor(int256 _minThreshold, int256 _maxThreshold) {
@@ -20,13 +23,12 @@ contract AnomalyDetection {
     }
 
     // Function to check IoT data
-    function checkData(int256 data) public {
+    function checkData(string memory machineID, int256 data) public {
         if (data < minThreshold || data > maxThreshold) {
-            // Emit anomaly event
-            emit AnomalyDetected(msg.sender, data);
+            anomalyMachineIDs.push(machineID);
+            emit AnomalyDetected(msg.sender, machineID, data);
         } else {
-            // Emit normal data event
-            emit DataReceived(msg.sender, data);
+            emit DataReceived(msg.sender, machineID, data);
         }
     }
 
@@ -35,5 +37,10 @@ contract AnomalyDetection {
         require(_minThreshold < _maxThreshold, "Invalid thresholds");
         minThreshold = _minThreshold;
         maxThreshold = _maxThreshold;
+    }
+
+    // Function to get the list of anomaly machine IDs
+    function getAnomalyMachineIDs() public view returns (string[] memory) {
+        return anomalyMachineIDs;
     }
 }

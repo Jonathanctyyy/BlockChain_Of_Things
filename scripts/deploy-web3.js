@@ -8,7 +8,7 @@ const provider = new Web3.providers.HttpProvider("http://127.0.0.1:8545");
 const web3 = new Web3(provider);
 
 // Replace with the private key of the account you want to deploy from
-const PRIVATE_KEY = "0xYourPrivateKeyHere";
+const PRIVATE_KEY = "0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e";
 
 // Resolve the contract path
 const __filename = fileURLToPath(import.meta.url);
@@ -28,9 +28,10 @@ async function deploy() {
 
   const contract = new web3.eth.Contract(abi);
 
+  // Pass constructor arguments here
   const deployTx = contract.deploy({
     data: bytecode,
-    arguments: [/* Pass constructor arguments here if any */],
+    arguments: [10, 100], // Replace with your desired minThreshold and maxThreshold
   });
 
   const gas = await deployTx.estimateGas();
