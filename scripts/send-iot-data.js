@@ -3,7 +3,7 @@ import csvParser from "csv-parser";
 import { ethers } from "ethers";
 
 // Replace with your deployed contract address and ABI
-const CONTRACT_ADDRESS = "0xB581C9264f59BF0289fA76D61B2D0746dCE3C30D";
+const CONTRACT_ADDRESS = "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f";
 const CONTRACT_ABI = [
   {
     "inputs": [{ "internalType": "string", "name": "machineID", "type": "string" }, { "internalType": "int256", "name": "data", "type": "int256" }],
