@@ -13,7 +13,7 @@ const PRIVATE_KEY = "0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efc
 // Resolve the contract path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const contractPath = path.resolve(__dirname, "../artifacts/contracts/AnonmalyDetection.sol/AnomalyDetection.json");
+const contractPath = path.resolve(__dirname, "../artifacts/contracts/AnomalyDetection.sol/AnomalyDetection.json");
 
 // Read the compiled contract's ABI and bytecode
 const contractJson = JSON.parse(fs.readFileSync(contractPath, "utf8"));
