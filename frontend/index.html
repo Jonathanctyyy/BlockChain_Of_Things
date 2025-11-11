@@ -4,22 +4,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anomaly Detection</title>
-    <link rel="stylesheet" href="styles/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <title>Anomaly Machine Data</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Anomaly Detection System</h1>
-        <div>
-            <label for="machineID">Machine ID:</label>
-            <input type="text" id="machineID" placeholder="Enter Machine ID">
-        </div>
-        <button id="checkDataBtn">Check Machine</button>
-        <div id="result"></div>
-    </div>
-    <script src="scripts/app.js"></script>
+    <h1>Anomaly Machine Data</h1>
+    <button id="connectWallet">Connect Wallet</button>
+    <button id="fetchData" disabled>Fetch Anomalies</button>
+    <h2>Contract Anomalies</h2>
+    <ul id="contractAnomalies"></ul>
+
+    <script>
+        const CONTRACT_ADDRESS = "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f"; // Replace with your deployed contract address
+        const CONTRACT_ABI = [
+            {
+                "inputs": [],
+                "name": "getAnomalyMachineIDs",
+                "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }],
+                "stateMutability": "view",
+                "type": "function",
+            },
+        ];
+
+        let provider, signer, contract;
+
+        // Connect to MetaMask
+        document.getElementById("connectWallet").addEventListener("click", async () => {
+            if (window.ethereum) {
+                try {
+                    // Request account access
+                    await window.ethereum.request({ method: "eth_requestAccounts" });
+
+                    // Initialize ethers.js with MetaMask provider
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    signer = provider.getSigner();
+                    contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                    alert("Wallet connected!");
+                    document.getElementById("fetchData").disabled = false;
+                } catch (error) {
+                    console.error("Error connecting wallet:", error);
+                    alert("Failed to connect wallet.");
+                }
+            } else {
+                alert("MetaMask is not installed. Please install MetaMask and try again.");
+            }
+        });
+
+        // Fetch anomaly data from the contract
+        document.getElementById("fetchData").addEventListener("click", async () => {
+            try {
+                const anomalies = await contract.getAnomalyMachineIDs();
+
+                // Display contract anomalies
+                const contractAnomaliesList = document.getElementById("contractAnomalies");
+                contractAnomaliesList.innerHTML = "";
+                anomalies.forEach((machineID) => {
+                    const li = document.createElement("li");
+                    li.textContent = machineID;
+                    contractAnomaliesList.appendChild(li);
+                });
+            } catch (error) {
+                console.error("Error fetching anomaly data:", error);
+                alert("Failed to fetch anomaly data. Check the console for details.");
+            }
+        });
+    </script>
 </body>
 
 </html>

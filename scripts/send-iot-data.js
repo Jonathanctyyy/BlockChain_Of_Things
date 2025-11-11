@@ -1,6 +1,7 @@
 import fs from "fs";
 import csvParser from "csv-parser";
 import { ethers } from "ethers";
+import http from "http";
 
 // Replace with your deployed contract address and ABI
 const CONTRACT_ADDRESS = "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f";
@@ -23,7 +24,7 @@ const CONTRACT_ABI = [
 
 async function main() {
   const provider = new ethers.JsonRpcProvider("http://localhost:8545");
-  const privateKey = "0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e"; 
+  const privateKey = "0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e";
   const signer = new ethers.Wallet(privateKey, provider);
   const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
@@ -41,7 +42,7 @@ async function main() {
         // Only send data if the temperature is outside the range of 10 and 100
         if (!isNaN(temperature) && (temperature < 10 || temperature > 100)) {
           console.log(`Sending data: Machine_ID=${machineID}, Temperature=${temperature}`);
-          anomalyMachineIDs.push(machineID); 
+          anomalyMachineIDs.push(machineID);
           const tx = await contract.checkData(machineID, temperature);
           await tx.wait();
           console.log(`Transaction successful for Machine_ID=${machineID}`);
@@ -58,14 +59,43 @@ async function main() {
       // Print the list of machine IDs with anomalies
       console.log("Local list of machines with temperature anomalies:", anomalyMachineIDs);
 
+      // Save the local list to a JSON file
+      const anomalyData = { localAnomalies: anomalyMachineIDs };
+      fs.writeFileSync("anomalies.json", JSON.stringify(anomalyData, null, 2));
+      console.log("Local anomalies saved to anomalies.json");
 
-      // Retrieve the list of anomaly machine IDs
+      // Retrieve the list of anomaly machine IDs from the contract
       try {
         const anomalies = await contract.getAnomalyMachineIDs();
-        console.log("Machines with temperature anomalies:", anomalies);
+        anomalyData.contractAnomalies = anomalies;
+        fs.writeFileSync("anomalies.json", JSON.stringify(anomalyData, null, 2));
+        console.log("Contract anomalies saved to anomalies.json");
       } catch (error) {
         console.error("Error retrieving anomaly machine IDs:", error.message);
       }
+
+      // Start an HTTP server to serve the anomaly data
+      const server = http.createServer((req, res) => {
+        if (req.url === "/anomalies" && req.method === "GET") {
+          fs.readFile("anomalies.json", "utf8", (err, data) => {
+            if (err) {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ error: "Failed to read anomalies.json" }));
+            } else {
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(data);
+            }
+          });
+        } else {
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "Not Found" }));
+        }
+      });
+
+      const PORT = 3000;
+      server.listen(PORT, () => {
+        console.log(`Server running at http://localhost:${PORT}/anomalies`);
+      });
     });
 }
 
