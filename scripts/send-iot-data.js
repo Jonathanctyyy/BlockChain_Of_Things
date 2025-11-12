@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import http from "http";
 
 // Replace with your deployed contract address and ABI
-const CONTRACT_ADDRESS = "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f";
+const CONTRACT_ADDRESS = "0xAbB12158488d9C9Bd52C14B9AE4C835eCE4A6e13";
 const CONTRACT_ABI = [
   {
     "inputs": [{ "internalType": "string", "name": "machineID", "type": "string" }, { "internalType": "int256", "name": "data", "type": "int256" }],
@@ -27,6 +27,21 @@ async function main() {
   const privateKey = "0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e";
   const signer = new ethers.Wallet(privateKey, provider);
   const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+    try {
+    const network = await provider.getNetwork();
+    console.log(`Connected to network: chainId=${network.chainId}, name=${network.name}`);
+    const code = await provider.getCode(CONTRACT_ADDRESS);
+    if (!code || code === "0x") {
+      console.error(`No contract code at ${CONTRACT_ADDRESS} on this network. Redeploy or update CONTRACT_ADDRESS.`);
+      process.exit(1);
+    } else {
+      console.log(`Contract code present at ${CONTRACT_ADDRESS} (size ${code.length / 2 - 1} bytes)`);
+    }
+  } catch (err) {
+    console.error("Provider/contract check failed:", err.message || err);
+    process.exit(1);
+  }
 
   const filePath = "iot-data/factory_sensor_simulator_2040.csv";
 
@@ -74,25 +89,43 @@ async function main() {
         console.error("Error retrieving anomaly machine IDs:", error.message);
       }
 
-      // Start an HTTP server to serve the anomaly data
+            // Start an HTTP server to serve the anomaly data with CORS enabled
+      const PORT = process.env.PORT || 3000;
       const server = http.createServer((req, res) => {
+        // handle CORS preflight
+        if (req.method === "OPTIONS") {
+          res.writeHead(204, {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          });
+          return res.end();
+        }
+
         if (req.url === "/anomalies" && req.method === "GET") {
           fs.readFile("anomalies.json", "utf8", (err, data) => {
             if (err) {
-              res.writeHead(500, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ error: "Failed to read anomalies.json" }));
+            res.writeHead(500, {
+            "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            });
+            res.end(JSON.stringify({ error: "Failed to read anomalies.json" }));
             } else {
-              res.writeHead(200, { "Content-Type": "application/json" });
+              res.writeHead(200, {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              });
               res.end(data);
             }
           });
-        } else {
-          res.writeHead(404, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: "Not Found" }));
-        }
+      } else {
+        res.writeHead(404, {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",          });
+        res.end(JSON.stringify({ error: "Not Found" }));
+      }
       });
 
-      const PORT = 3000;
       server.listen(PORT, () => {
         console.log(`Server running at http://localhost:${PORT}/anomalies`);
       });
