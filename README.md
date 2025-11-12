@@ -55,3 +55,22 @@ After setting the variable, you can run the deployment with the Sepolia network:
 ```shell
 npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
 ```
+
+# install deps (once)
+npm install
+
+# compile contracts
+npx hardhat compile
+
+# start local blockchain (in separate terminal) -- optional if deploy to localhost
+npx hardhat node
+
+# deploy to the running hardhat node
+npx hardhat run scripts/deploy.js --network localhost
+
+# start the IoT server
+node scripts/send-iot-data.js
+
+# serve frontend (in another terminal)
+npx http-server frontend -p 8080
+# then open http://localhost:8080

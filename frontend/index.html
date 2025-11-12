@@ -31,11 +31,13 @@
 </head>
 
 <body>
-    <h1>Anomaly Machine Data</h1>
     <button id="connectWallet">Connect Wallet</button>
     <button id="fetchData" disabled>Fetch Anomalies</button>
+    <button id="liveFetch">Start Live</button>
     <h2>Contract Anomalies</h2>
     <ul id="contractAnomalies"></ul>
+    <h2>Server Anomalies (from send-iot-data)</h2>
+    <ul id="serverAnomalies"></ul>
 
     <script>
         const CONTRACT_ADDRESS = "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f"; // Replace with your deployed contract address
@@ -49,20 +51,18 @@
             },
         ];
 
+        const SERVER_URL = "http://localhost:3000/anomalies"; // endpoint in [scripts/send-iot-data.js](scripts/send-iot-data.js)
         let provider, signer, contract;
+        let liveInterval = null;
 
         // Connect to MetaMask
         document.getElementById("connectWallet").addEventListener("click", async () => {
             if (window.ethereum) {
                 try {
-                    // Request account access
                     await window.ethereum.request({ method: "eth_requestAccounts" });
-
-                    // Initialize ethers.js with MetaMask provider
                     provider = new ethers.providers.Web3Provider(window.ethereum);
                     signer = provider.getSigner();
                     contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-
                     alert("Wallet connected!");
                     document.getElementById("fetchData").disabled = false;
                 } catch (error) {
@@ -74,12 +74,10 @@
             }
         });
 
-        // Fetch anomaly data from the contract
+        // Fetch anomaly data from the contract (uses [`AnomalyDetection.getAnomalyMachineIDs`](contracts/AnomalyDetection.sol))
         document.getElementById("fetchData").addEventListener("click", async () => {
             try {
                 const anomalies = await contract.getAnomalyMachineIDs();
-
-                // Display contract anomalies
                 const contractAnomaliesList = document.getElementById("contractAnomalies");
                 contractAnomaliesList.innerHTML = "";
                 anomalies.forEach((machineID) => {
@@ -92,6 +90,43 @@
                 alert("Failed to fetch anomaly data. Check the console for details.");
             }
         });
+
+        // Fetch anomalies.json from the send-iot-data server and update UI
+        async function fetchServerAnomalies() {
+            try {
+                const res = await fetch(SERVER_URL);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                // data shape from send-iot-data.js: { localAnomalies: [...], contractAnomalies: [...] } or anomalies.json
+                const list = document.getElementById("serverAnomalies");
+                list.innerHTML = "";
+                const items = data.contractAnomalies ?? data.localAnomalies ?? data;
+                (Array.isArray(items) ? items : []).forEach(id => {
+                    const li = document.createElement("li");
+                    li.textContent = id;
+                    list.appendChild(li);
+                });
+            } catch (err) {
+                console.error("Failed to fetch server anomalies:", err);
+            }
+        }
+
+        // Start/stop live polling (button toggles)
+        document.getElementById("liveFetch").addEventListener("click", (ev) => {
+            const btn = ev.currentTarget;
+            if (liveInterval) {
+                clearInterval(liveInterval);
+                liveInterval = null;
+                btn.textContent = "Start Live";
+            } else {
+                fetchServerAnomalies(); // immediate
+                liveInterval = setInterval(fetchServerAnomalies, 5000); // every 5s
+                btn.textContent = "Stop Live";
+            }
+        });
+
+        // Optional: auto-start live when page loads (uncomment if desired)
+        // fetchServerAnomalies(); liveInterval = setInterval(fetchServerAnomalies, 5000);
     </script>
 </body>
 
