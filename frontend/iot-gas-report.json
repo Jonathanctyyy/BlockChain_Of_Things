@@ -1,0 +1,137 @@
+{
+  "summary": {
+    "totalSubmittedTx": 12,
+    "totalGasUsed": "691188",
+    "totalEthSpent": "0.000819272302061194",
+    "anomaly": {
+      "count": 12,
+      "gasUsed": "691188",
+      "ethSpent": "0.000819272302061194",
+      "avgGasPerTx": "57599"
+    },
+    "overallAvgGasPerTx": "57599"
+  },
+  "perTx": [
+    {
+      "machineID": "MC_009706",
+      "temperature": 101,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1347315370",
+      "totalWei": "77604017996630",
+      "totalEth": "0.00007760401799663",
+      "txHash": "0xa083894d8377cc4c914848d2ba99c2a2f20c4ba1d72114b82f8abe6dd0d46553"
+    },
+    {
+      "machineID": "MC_052856",
+      "temperature": 108,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1304067658",
+      "totalWei": "75112993033142",
+      "totalEth": "0.000075112993033142",
+      "txHash": "0x1788eb71601d68e2091fa0b527f6407375f2c0a7a3625fc95ea819adea77a93d"
+    },
+    {
+      "machineID": "MC_086661",
+      "temperature": 103,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1266205151",
+      "totalWei": "72932150492449",
+      "totalEth": "0.000072932150492449",
+      "txHash": "0xce36d1b10040ecbf68552e03bc3b8eb4b1ba597c81d2cf845065951953313e3f"
+    },
+    {
+      "machineID": "MC_110820",
+      "temperature": 107,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1233057284",
+      "totalWei": "71022866501116",
+      "totalEth": "0.000071022866501116",
+      "txHash": "0x13bcc5f5a60ee5cbdd2744ea842268e12d3af15dc558d4c7ef14ba3623f021bc"
+    },
+    {
+      "machineID": "MC_136992",
+      "temperature": 103,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1204036990",
+      "totalWei": "69351326587010",
+      "totalEth": "0.00006935132658701",
+      "txHash": "0xa9ed91473a729bb19aad6596320d126f2065940488b26cf08ff0c4bf51c68171"
+    },
+    {
+      "machineID": "MC_236183",
+      "temperature": 103,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1178630303",
+      "totalWei": "67887926822497",
+      "totalEth": "0.000067887926822497",
+      "txHash": "0x961f30e6c3e895fce7b57bb7ab731fa4dfdbc9c6f41275b3bfe414897c7277d3"
+    },
+    {
+      "machineID": "MC_281071",
+      "temperature": 105,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1156387257",
+      "totalWei": "66606749615943",
+      "totalEth": "0.000066606749615943",
+      "txHash": "0xa224fef95cadd25351da9a23e0040e0e19ff88a13d274ea5dce40c917f304b7f"
+    },
+    {
+      "machineID": "MC_300691",
+      "temperature": 103,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1136913915",
+      "totalWei": "65485104590085",
+      "totalEth": "0.000065485104590085",
+      "txHash": "0xa1aec3c1df867f8fd6918afc845f2c82a81a98d826c41025adaf3069abdacd6b"
+    },
+    {
+      "machineID": "MC_310976",
+      "temperature": 103,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1119865394",
+      "totalWei": "64503126829006",
+      "totalEth": "0.000064503126829006",
+      "txHash": "0xec85550677d3ae154fb80d5f53c257e553fc2d919255f5cd9197ae2e94edba15"
+    },
+    {
+      "machineID": "MC_410671",
+      "temperature": 108,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1104939755",
+      "totalWei": "63643424948245",
+      "totalEth": "0.000063643424948245",
+      "txHash": "0xddefeee2cddeed2fd7ad1333e768bee4afac8dae3f02c439eed66cd33899dd58"
+    },
+    {
+      "machineID": "MC_438428",
+      "temperature": 106,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1091872656",
+      "totalWei": "62890773112944",
+      "totalEth": "0.000062890773112944",
+      "txHash": "0x1957e06df14259de12071e309e0aa36218ae63a60da12fee246550761837d2b9"
+    },
+    {
+      "machineID": "MC_477289",
+      "temperature": 105,
+      "estimatedGas": "57599",
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1080432673",
+      "totalWei": "62231841532127",
+      "totalEth": "0.000062231841532127",
+      "txHash": "0x766bca27a0353a9ed256221fe33048ce6ed7ba4a11840216a84239915997af6b"
+    }
+  ],
+  "generatedAt": "2025-11-19T23:02:10.157Z"
+}

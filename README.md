@@ -82,3 +82,6 @@ http://localhost:8545 is the RPC URL
 http://localhost:8045 is the front end for index.html
 http://localhost:8045/anomalies.json is the list of anomalies
 # then open http://localhost:8080
+
+address
+0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f

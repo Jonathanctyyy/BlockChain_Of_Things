@@ -1,0 +1,38 @@
+{
+  "network": {
+    "chainId": 31337,
+    "name": "unknown"
+  },
+  "contract": "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f",
+  "runs": 1,
+  "dryRun": false,
+  "results": [
+    {
+      "machineID": "MC_020001",
+      "value": 55,
+      "heuristicEstimated": "15540",
+      "willBeAnomaly": false,
+      "estimated": "29763",
+      "sent": true,
+      "gasUsed": "29763",
+      "effectiveGasPriceWei": "2035453038",
+      "totalWei": "60581188769994",
+      "totalEth": "0.000060581188769994",
+      "txHash": "0xf4f14876902912c271a1c93b6db8d7d3efaca6915a98bff49665fc24ad0ffe27"
+    },
+    {
+      "machineID": "MC_000567",
+      "value": 110,
+      "heuristicEstimated": "39700",
+      "willBeAnomaly": true,
+      "estimated": "57599",
+      "sent": true,
+      "gasUsed": "57599",
+      "effectiveGasPriceWei": "1906518418",
+      "totalWei": "109813554358382",
+      "totalEth": "0.000109813554358382",
+      "txHash": "0xd3675a9d3280ebe75aa816072cd1c3b3b5199c8925daf6f16aec455e402793a5"
+    }
+  ],
+  "generatedAt": "2025-11-19T22:50:26.129Z"
+}
