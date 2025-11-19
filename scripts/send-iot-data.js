@@ -1,36 +1,41 @@
 import fs from "fs";
 import csvParser from "csv-parser";
 import { ethers } from "ethers";
+import { spawn } from "child_process";
 import http from "http";
 
 // Replace with your deployed contract address and ABI
-const CONTRACT_ADDRESS = "0xAbB12158488d9C9Bd52C14B9AE4C835eCE4A6e13";
+const CONTRACT_ADDRESS = "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f";
 const CONTRACT_ABI = [
   {
-    "inputs": [{ "internalType": "string", "name": "machineID", "type": "string" }, { "internalType": "int256", "name": "data", "type": "int256" }],
-    "name": "checkData",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function",
+    inputs: [{ internalType: "string", name: "machineID", type: "string" }, { internalType: "int256", name: "data", type: "int256" }],
+    name: "checkData",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "inputs": [],
-    "name": "getAnomalyMachineIDs",
-    "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }],
-    "stateMutability": "view",
-    "type": "function",
+    inputs: [],
+    name: "getAnomalyMachineIDs",
+    outputs: [{ internalType: "string[]", name: "", type: "string[]" }],
+    stateMutability: "view",
+    type: "function",
   },
 ];
 
 async function main() {
-  const provider = new ethers.JsonRpcProvider("http://localhost:8545");
-  const privateKey = "0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e";
+  const rpcUrl = process.env.RPC_URL || "http://localhost:8545";
+  const provider = new ethers.JsonRpcProvider(rpcUrl);
+
+  // Use environment private key if provided, otherwise fallback to the example (for local dev only)
+  const privateKey = process.env.PRIVATE_KEY || "0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e";
   const signer = new ethers.Wallet(privateKey, provider);
   const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-    try {
+  try {
     const network = await provider.getNetwork();
     console.log(`Connected to network: chainId=${network.chainId}, name=${network.name}`);
+
     const code = await provider.getCode(CONTRACT_ADDRESS);
     if (!code || code === "0x") {
       console.error(`No contract code at ${CONTRACT_ADDRESS} on this network. Redeploy or update CONTRACT_ADDRESS.`);
@@ -38,13 +43,18 @@ async function main() {
     } else {
       console.log(`Contract code present at ${CONTRACT_ADDRESS} (size ${code.length / 2 - 1} bytes)`);
     }
+
+    // Verify wallet connectivity
+    const address = await signer.getAddress();
+    const balance = await provider.getBalance(address);
+    console.log(`Using wallet address: ${address}`);
+    console.log(`Wallet balance: ${ethers.formatEther(balance)} ETH`);
   } catch (err) {
-    console.error("Provider/contract check failed:", err.message || err);
+    console.error("Provider/contract/wallet check failed:", err.message || err);
     process.exit(1);
   }
 
   const filePath = "iot-data/factory_sensor_simulator_2040.csv";
-
   const anomalyMachineIDs = [];
 
   fs.createReadStream(filePath)
@@ -74,61 +84,44 @@ async function main() {
       // Print the list of machine IDs with anomalies
       console.log("Local list of machines with temperature anomalies:", anomalyMachineIDs);
 
-      // Save the local list to a JSON file
+            // Save the local list to a JSON file (write into frontend so http-server serves it)
       const anomalyData = { localAnomalies: anomalyMachineIDs };
-      fs.writeFileSync("anomalies.json", JSON.stringify(anomalyData, null, 2));
-      console.log("Local anomalies saved to anomalies.json");
+      fs.writeFileSync("frontend/anomalies.json", JSON.stringify(anomalyData, null, 2));
+      console.log("Local anomalies saved to frontend/anomalies.json");
 
       // Retrieve the list of anomaly machine IDs from the contract
       try {
         const anomalies = await contract.getAnomalyMachineIDs();
         anomalyData.contractAnomalies = anomalies;
-        fs.writeFileSync("anomalies.json", JSON.stringify(anomalyData, null, 2));
-        console.log("Contract anomalies saved to anomalies.json");
+        fs.writeFileSync("frontend/anomalies.json", JSON.stringify(anomalyData, null, 2));
+        console.log("Contract anomalies saved to frontend/anomalies.json");
       } catch (error) {
         console.error("Error retrieving anomaly machine IDs:", error.message);
       }
 
-            // Start an HTTP server to serve the anomaly data with CORS enabled
-      const PORT = process.env.PORT || 3000;
-      const server = http.createServer((req, res) => {
-        // handle CORS preflight
-        if (req.method === "OPTIONS") {
-          res.writeHead(204, {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET,OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
+      // Serve frontend using npx http-server on port 8080
+      try {
+          const servePort = process.env.SERVE_PORT || "8045"; // default to 8045
+          console.log(`Starting frontend server with: npx http-server frontend -p ${servePort}`);
+          const serve = spawn("npx", ["http-server", "frontend", "-p", servePort], {
+            stdio: "inherit",
+            shell: true,
           });
-          return res.end();
-        }
 
-        if (req.url === "/anomalies" && req.method === "GET") {
-          fs.readFile("anomalies.json", "utf8", (err, data) => {
-            if (err) {
-            res.writeHead(500, {
-            "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
-            });
-            res.end(JSON.stringify({ error: "Failed to read anomalies.json" }));
-            } else {
-              res.writeHead(200, {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-              });
-              res.end(data);
-            }
-          });
-      } else {
-        res.writeHead(404, {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",          });
-        res.end(JSON.stringify({ error: "Not Found" }));
+        serve.on("error", (err) => {
+          console.error("Failed to start http-server:", err.message || err);
+        });
+
+        serve.on("close", (code, signal) => {
+          if (code !== null) {
+            console.log(`http-server exited with code ${code}`);
+          } else {
+            console.log(`http-server terminated due to signal ${signal}`);
+          }
+        });
+      } catch (err) {
+        console.error("Failed to spawn http-server process:", err.message || err);
       }
-      });
-
-      server.listen(PORT, () => {
-        console.log(`Server running at http://localhost:${PORT}/anomalies`);
-      });
     });
 }
 
