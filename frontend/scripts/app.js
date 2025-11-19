@@ -1,7 +1,7 @@
 const web3 = new Web3(window.ethereum); // Use MetaMask's provider
 
 // Replace with your deployed contract address and ABI
-const contractAddress = "0xB581C9264f59BF0289fA76D61B2D0746dCE3C30D"; // Replace with your contract address
+const contractAddress = "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f"; // Replace with your contract address
 const contractABI = [
   {
     "inputs": [],

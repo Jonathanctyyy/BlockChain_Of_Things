@@ -62,15 +62,23 @@ npm install
 # compile contracts
 npx hardhat compile
 
-# start local blockchain (in separate terminal) -- optional if deploy to localhost
+# How to actualy run it
+
+## start local blockchain (in separate terminal) -- optional if deploy to localhost
 npx hardhat node
 
-# deploy to the running hardhat node
+## deploy to the running hardhat node
 npx hardhat run scripts/deploy.js --network localhost
+
+## copy the deployed address to 
+copy contract address to send-iot-data.js
+copy contract address to index.html
 
 # start the IoT server
 node scripts/send-iot-data.js
 
 # serve frontend (in another terminal)
-npx http-server frontend -p 8080
+http://localhost:8545 is the RPC URL
+http://localhost:8045 is the front end for index.html
+http://localhost:8045/anomalies.json is the list of anomalies
 # then open http://localhost:8080

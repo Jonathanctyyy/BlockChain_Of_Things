@@ -51,7 +51,8 @@
             },
         ];
 
-        const SERVER_URL = "http://localhost:3000/anomalies"; // endpoint in [scripts/send-iot-data.js](scripts/send-iot-data.js)
+        // in frontend/index.html script
+        const SERVER_URL = "http://localhost:8045/anomalies.json";
         let provider, signer, contract;
         let liveInterval = null;
 
