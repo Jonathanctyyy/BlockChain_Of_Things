@@ -32,12 +32,27 @@
 
 <body>
     <button id="connectWallet">Connect Wallet</button>
-    <button id="fetchData" disabled>Fetch Anomalies</button>
+    <button id="fetchData" disabled>Fetch Contract Anomalies</button>
+    <button id="fetchServerData">Fetch Server Anomalies</button>
     <button id="liveFetch">Start Live</button>
+
     <h2>Contract Anomalies</h2>
     <ul id="contractAnomalies"></ul>
-    <h2>Server Anomalies (from send-iot-data)</h2>
+
+    <h2>Server Anomalies (from anomalies.json)</h2>
     <ul id="serverAnomalies"></ul>
+
+    <h2>Transaction Details</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Transaction Hash</th>
+                <th>Gas Used</th>
+                <th>Block Number</th>
+            </tr>
+        </thead>
+        <tbody id="transactionDetails"></tbody>
+    </table>
 
     <script>
         const CONTRACT_ADDRESS = "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f"; // Replace with your deployed contract address
@@ -51,7 +66,6 @@
             },
         ];
 
-        // in frontend/index.html script
         const SERVER_URL = "http://localhost:8045/anomalies.json";
         let provider, signer, contract;
         let liveInterval = null;
@@ -75,7 +89,7 @@
             }
         });
 
-        // Fetch anomaly data from the contract (uses [`AnomalyDetection.getAnomalyMachineIDs`](contracts/AnomalyDetection.sol))
+        // Fetch anomaly data from the contract
         document.getElementById("fetchData").addEventListener("click", async () => {
             try {
                 const anomalies = await contract.getAnomalyMachineIDs();
@@ -92,13 +106,12 @@
             }
         });
 
-        // Fetch anomalies.json from the send-iot-data server and update UI
-        async function fetchServerAnomalies() {
+        // Fetch anomalies.json from the server
+        document.getElementById("fetchServerData").addEventListener("click", async () => {
             try {
                 const res = await fetch(SERVER_URL);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
-                // data shape from send-iot-data.js: { localAnomalies: [...], contractAnomalies: [...] } or anomalies.json
                 const list = document.getElementById("serverAnomalies");
                 list.innerHTML = "";
                 const items = data.contractAnomalies ?? data.localAnomalies ?? data;
@@ -109,10 +122,11 @@
                 });
             } catch (err) {
                 console.error("Failed to fetch server anomalies:", err);
+                alert("Failed to fetch server anomalies. Check the console for details.");
             }
-        }
+        });
 
-        // Start/stop live polling (button toggles)
+        // Start/stop live polling for server anomalies
         document.getElementById("liveFetch").addEventListener("click", (ev) => {
             const btn = ev.currentTarget;
             if (liveInterval) {
@@ -126,8 +140,41 @@
             }
         });
 
-        // Optional: auto-start live when page loads (uncomment if desired)
-        // fetchServerAnomalies(); liveInterval = setInterval(fetchServerAnomalies, 5000);
+        // Fetch server anomalies (used for live polling)
+        async function fetchServerAnomalies() {
+            try {
+                const res = await fetch(SERVER_URL);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                const list = document.getElementById("serverAnomalies");
+                list.innerHTML = "";
+                const items = data.contractAnomalies ?? data.localAnomalies ?? data;
+                (Array.isArray(items) ? items : []).forEach(id => {
+                    const li = document.createElement("li");
+                    li.textContent = id;
+                    list.appendChild(li);
+                });
+            } catch (err) {
+                console.error("Failed to fetch server anomalies:", err);
+            }
+        }
+
+        // Example: Show transaction details (modify as needed for your use case)
+        async function showTransactionDetails(txHash) {
+            try {
+                const txReceipt = await provider.getTransactionReceipt(txHash);
+                const table = document.getElementById("transactionDetails");
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${txReceipt.transactionHash}</td>
+                    <td>${txReceipt.gasUsed.toString()}</td>
+                    <td>${txReceipt.blockNumber}</td>
+                `;
+                table.appendChild(row);
+            } catch (err) {
+                console.error("Failed to fetch transaction details:", err);
+            }
+        }
     </script>
 </body>
 
