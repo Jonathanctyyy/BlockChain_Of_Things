@@ -67,6 +67,9 @@ npx hardhat compile
 ## start local blockchain (in separate terminal) -- optional if deploy to localhost
 npx hardhat node
 
+## copy the deployed private key 
+copy the private key to the deploy-web3.js
+
 ## deploy to the running hardhat node
 npx hardhat run scripts/deploy.js --network localhost
 

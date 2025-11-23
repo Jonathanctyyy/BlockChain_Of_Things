@@ -84,6 +84,7 @@ async function main() {
 
           const tx = await contract.checkData(machineID, temperature);
           const receipt = await tx.wait();
+          console.log(`Transaction successful: ${receipt.transactionHash}`);
 
           const gasUsed = receipt.gasUsed ?? 0n;
           const effectiveGasPrice = receipt.effectiveGasPrice ?? receipt.gasPrice ?? 0n;
@@ -167,8 +168,8 @@ async function main() {
       // Serve frontend
       try {
         const servePort = process.env.SERVE_PORT || "8045";
-        console.log(`Starting frontend server: npx http-server frontend -p ${servePort}`);
-        const serve = spawn("npx", ["http-server", "frontend", "-p", servePort], {
+        console.log(`Starting frontend server: npx http-server frontend -p ${servePort} --cors`);
+        const serve = spawn("npx", ["http-server", "frontend", "-p", servePort, "--cors"], {
           stdio: "inherit",
           shell: true,
         });

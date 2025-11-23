@@ -15,10 +15,10 @@
       "estimated": "29763",
       "sent": true,
       "gasUsed": "29763",
-      "effectiveGasPriceWei": "2035453038",
-      "totalWei": "60581188769994",
-      "totalEth": "0.000060581188769994",
-      "txHash": "0xf4f14876902912c271a1c93b6db8d7d3efaca6915a98bff49665fc24ad0ffe27"
+      "effectiveGasPriceWei": "1072491172",
+      "totalWei": "31920554752236",
+      "totalEth": "0.000031920554752236",
+      "txHash": "0x0c3bd6a14981324686f00071712dbd9dd39b05b0fa0f9dd36723ed1d24d49f95"
     },
     {
       "machineID": "MC_000567",
@@ -28,11 +28,11 @@
       "estimated": "57599",
       "sent": true,
       "gasUsed": "57599",
-      "effectiveGasPriceWei": "1906518418",
-      "totalWei": "109813554358382",
-      "totalEth": "0.000109813554358382",
-      "txHash": "0xd3675a9d3280ebe75aa816072cd1c3b3b5199c8925daf6f16aec455e402793a5"
+      "effectiveGasPriceWei": "1063464572",
+      "totalWei": "61254495882628",
+      "totalEth": "0.000061254495882628",
+      "txHash": "0x491a344388401ec3016d4348181d48534149d4acbf74ccda1750018984a9d881"
     }
   ],
-  "generatedAt": "2025-11-19T22:50:26.129Z"
+  "generatedAt": "2025-11-23T12:13:19.460Z"
 }
