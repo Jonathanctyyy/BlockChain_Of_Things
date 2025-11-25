@@ -6,6 +6,9 @@ contract AnomalyDetection {
     int256 public minThreshold;
     int256 public maxThreshold;
 
+    // Array to store anomalous machine IDs (added for retrieval)
+    string[] private anomalyMachineIDs;
+
     // Event to log anomalies
     event AnomalyDetected(address indexed sender, string machineID, int256 value);
 
@@ -22,6 +25,7 @@ contract AnomalyDetection {
     // Function to check IoT data
     function checkData(string memory machineID, int256 data) public {
         if (data < minThreshold || data > maxThreshold) {
+            anomalyMachineIDs.push(machineID); // Add to storage for later retrieval
             emit AnomalyDetected(msg.sender, machineID, data);
         } else {
             emit DataReceived(msg.sender, machineID, data);
@@ -38,13 +42,18 @@ contract AnomalyDetection {
     // Batch processing function to handle multiple data points in a single transaction
     function checkDataBatch(string[] memory machineIDs, int256[] memory data) public {
         require(machineIDs.length == data.length, "Mismatched input lengths");
-
         for (uint256 i = 0; i < machineIDs.length; i++) {
             if (data[i] < minThreshold || data[i] > maxThreshold) {
+                anomalyMachineIDs.push(machineIDs[i]); // Add to storage for later retrieval
                 emit AnomalyDetected(msg.sender, machineIDs[i], data[i]);
             } else {
                 emit DataReceived(msg.sender, machineIDs[i], data[i]);
             }
         }
+    }
+
+    // View function to retrieve anomalous machine IDs (added to match ABI and enable querying)
+    function getAnomalyMachineIDs() public view returns (string[] memory) {
+        return anomalyMachineIDs;
     }
 }
