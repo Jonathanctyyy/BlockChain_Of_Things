@@ -29,9 +29,28 @@ async function deploy() {
   const contract = new web3.eth.Contract(abi);
 
   // Pass constructor arguments here
+  // Updated constructor arguments for adjusted thresholds
   const deployTx = contract.deploy({
     data: bytecode,
-    arguments: [10, 100], // Replace with your desired minThreshold and maxThreshold
+    arguments: [
+      150, // minVoltage
+      200, // maxVoltage
+      360, // minRotation
+      520, // maxRotation
+      75,  // minPressure
+      110, // maxPressure
+      45,  // maxVibration
+    ],
+  });
+
+  console.log("Deploying contract with adjusted thresholds:", {
+    minVoltage: 150,
+    maxVoltage: 200,
+    minRotation: 360,
+    maxRotation: 520,
+    minPressure: 75,
+    maxPressure: 110,
+    maxVibration: 45,
   });
 
   const gas = await deployTx.estimateGas();
