@@ -18,6 +18,55 @@ const CONTRACT_ABI = [
     stateMutability: "view",
     type: "function",
   },
+  {
+    inputs: [],
+    name: "minVoltage",
+    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "maxVoltage",
+    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "minRotation",
+    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "maxRotation",
+    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "minPressure",
+    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "maxPressure",
+    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "maxVibration",
+    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    stateMutability: "view",
+    type: "function",
+  },
 ];
 async function main() {
   const rpcUrl = process.env.RPC_URL || "http://localhost:8545";
@@ -41,7 +90,7 @@ async function main() {
     console.error("Provider/contract/wallet check failed:", err.message || err);
     process.exit(1);
   }
-  const filePath = "iot-data/factory_sensor_simulator_2040.csv";
+  const filePath = "iot-data/PdM_telemetry.csv";
   const anomalyMachineIDs = [];
   // === Gas aggregation variables (added) ===
   let totalTx = 0;
@@ -123,81 +172,61 @@ async function main() {
       const maxRetries = 3;
       while (retryCount <= maxRetries) {
         try {
-          const machineID = row["Machine_ID"];
-          const temperature = parseFloat(row["Temperature_C"]);
-          const vibration = parseFloat(row["Vibration_mms"]);
-          const sound = parseFloat(row["Sound_dB"]);
-          const coolant = parseFloat(row["Coolant_Level_pct"]);
-          // Check for anomalies in any parameter
-          const isTemperatureAnomaly = !isNaN(temperature) && (temperature < 20 || temperature > 90);
-          const isVibrationAnomaly = !isNaN(vibration) && (vibration < 0 || vibration > 20);
-          const isSoundAnomaly = !isNaN(sound) && sound > 100;
-          const isCoolantAnomaly = !isNaN(coolant) && (coolant < 1 || coolant > 99);
-          if (isTemperatureAnomaly || isVibrationAnomaly || isSoundAnomaly || isCoolantAnomaly) {
-            console.log(`Sending data: Machine_ID=${machineID}, Temperature=${temperature}, Vibration=${vibration}, Sound=${sound}, Coolant=${coolant}`);
+          // Validate data before processing
+          const machineID = row["machineID"];
+          const voltage = parseFloat(row["voltage"]);
+          const rotation = parseFloat(row["rotation"]);
+          const pressure = parseFloat(row["pressure"]);
+          const vibration = parseFloat(row["vibration"]);
+
+          // Skip rows with invalid data
+          if (isNaN(voltage) || isNaN(rotation) || isNaN(pressure) || isNaN(vibration)) {
+            console.error(`Invalid data for Machine_ID=${machineID}, skipping row.`);
+            this.resume();
+            return;
+          }
+
+          // Fetch thresholds dynamically from the contract
+          const minVoltage = await contract.minVoltage();
+          const maxVoltage = await contract.maxVoltage();
+          const minRotation = await contract.minRotation();
+          const maxRotation = await contract.maxRotation();
+          const minPressure = await contract.minPressure();
+          const maxPressure = await contract.maxPressure();
+          const maxVibration = await contract.maxVibration();
+          console.log("Fetched thresholds:", {
+              minVoltage, maxVoltage,
+              minRotation, maxRotation,
+              minPressure, maxPressure,
+              maxVibration
+          });
+
+          // Check for anomalies using contract thresholds
+          const isVoltageAnomaly = voltage < minVoltage || voltage > maxVoltage;
+          const isRotationAnomaly = rotation < minRotation || rotation > maxRotation;
+          const isPressureAnomaly = pressure < minPressure || pressure > maxPressure;
+          const isVibrationAnomaly = vibration > maxVibration;
+
+          if (isVoltageAnomaly || isRotationAnomaly || isPressureAnomaly || isVibrationAnomaly) {
+            console.log(`Sending data: Machine_ID=${machineID}, Voltage=${voltage}, Rotation=${rotation}, Pressure=${pressure}, Vibration=${vibration}`);
             anomalyMachineIDs.push(machineID);
-            const tempInt = Math.round(temperature * 100);
-            // Gas estimate (robust fallback, use tempInt)
-            let estimatedGas = 0n;
-            try {
-              estimatedGas = await contract.estimateGas.checkData(machineID, tempInt);
-            } catch {
-              try {
-                const dataCalldata = contract.interface.encodeFunctionData("checkData", [machineID, tempInt]);
-                estimatedGas = await provider.estimateGas({ to: CONTRACT_ADDRESS, data: dataCalldata });
-              } catch {}
-            }
-            // Send tx with explicit nonce
+            const anomalyData = Math.round((voltage + rotation + pressure + vibration) * 100);
+
+            // Send transaction
             console.log(`Using nonce: ${currentNonce} for Machine_ID=${machineID}`);
-            const tx = await contract.checkData(machineID, tempInt, { nonce: currentNonce });
+            const tx = await contract.checkData(machineID, anomalyData, { nonce: currentNonce });
             const receipt = await tx.wait();
             console.log(`Transaction successful: ${receipt.transactionHash}`);
-            // Increment nonce only on success
             currentNonce++;
-            // Add delay for local node sync
-            await new Promise(resolve => setTimeout(resolve, 500));  // 500ms delay
-            const gasUsed = receipt.gasUsed ?? 0n;
-            const effectiveGasPrice = receipt.effectiveGasPrice ?? receipt.gasPrice ?? 0n;
-            const weiCost = gasUsed * effectiveGasPrice;
-            // Aggregate anomaly (only anomalies are sent)
-            totalTx++;
-            totalGas += gasUsed;
-            totalWei += weiCost;
-            anomalyCount++;
-            anomalyGas += gasUsed;
-            anomalyWei += weiCost;
-            perTx.push({
-              machineID,
-              temperature,
-              vibration,
-              sound,
-              coolant,
-              estimatedGas: estimatedGas.toString(),
-              gasUsed: gasUsed.toString(),
-              effectiveGasPriceWei: effectiveGasPrice.toString(),
-              totalWei: weiCost.toString(),
-              totalEth: ethers.formatEther(weiCost),
-              txHash: receipt.transactionHash,
-            });
-            console.log(
-              `[GAS] machine=${machineID} temp=${temperature} vib=${vibration} sound=${sound} coolant=${coolant} est=${estimatedGas} used=${gasUsed} costEth=${ethers.formatEther(
-                weiCost
-              )}`
-            );
-            console.log(`Transaction successful for Machine_ID=${machineID}`);
-            break;  // Success, exit retry loop
           } else {
             console.log(`All parameters within range for Machine_ID=${machineID}, skipping...`);
-            break;  // No anomaly, no retry needed
           }
         } catch (error) {
           console.error(`Error processing row (attempt ${retryCount + 1}): ${error.message}`);
           if (error.message.includes("nonce") && retryCount < maxRetries) {
-            // Refetch nonce on nonce-specific errors
             currentNonce = await provider.getTransactionCount(signer.address, 'pending');
             retryCount++;
           } else {
-            // Non-recoverable error, don't increment nonce
             break;
           }
         }
