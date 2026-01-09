@@ -11,14 +11,20 @@ contract AnomalyDetection {
     int256 public maxPressure;
     int256 public maxVibration;
 
-    // Array to store anomalous machine IDs (added for retrieval)
-    string[] private anomalyMachineIDs;
+    // Struct to store anomalies with timestamps
+    struct Anomaly {
+        string machineID;
+        uint256 timestamp;
+    }
 
-    // Event to log anomalies
-    event AnomalyDetected(address indexed sender, string machineID, int256 value);
+    // Array to store anomalies
+    Anomaly[] private anomalies;
+
+    // Event to log anomalies (added timestamp)
+    event AnomalyDetected(address indexed sender, string machineID, uint256 timestamp, int256 value);
 
     // Event to log normal data
-    event DataReceived(address indexed sender, string machineID, int256 value);
+    event DataReceived(address indexed sender, string machineID, uint256 timestamp, int256 value);
 
     // Constructor to initialize thresholds
     constructor(
@@ -42,9 +48,10 @@ contract AnomalyDetection {
         maxVibration = _maxVibration;
     }
 
-    // Function to check IoT data
+    // Function to check IoT data (added timestamp)
     function checkData(
         string memory machineID,
+        uint256 timestamp,
         int256 voltage,
         int256 rotation,
         int256 pressure,
@@ -58,12 +65,14 @@ contract AnomalyDetection {
             pressure < minPressure ||
             pressure > maxPressure ||
             vibration > maxVibration;
-
+        
+        int256 sumValue = voltage + rotation + pressure + vibration;
+        
         if (isAnomaly) {
-            anomalyMachineIDs.push(machineID); // Add to storage for later retrieval
-            emit AnomalyDetected(msg.sender, machineID, voltage + rotation + pressure + vibration);
+            anomalies.push(Anomaly(machineID, timestamp));
+            emit AnomalyDetected(msg.sender, machineID, timestamp, sumValue);
         } else {
-            emit DataReceived(msg.sender, machineID, voltage + rotation + pressure + vibration);
+            emit DataReceived(msg.sender, machineID, timestamp, sumValue);
         }
     }
 
@@ -89,16 +98,21 @@ contract AnomalyDetection {
         maxVibration = _maxVibration;
     }
 
-    // Batch processing function to handle multiple data points in a single transaction
+    // Batch processing function to handle multiple data points in a single transaction (added timestamps)
     function checkDataBatch(
         string[] memory machineIDs,
+        uint256[] memory timestamps,
         int256[] memory voltages,
         int256[] memory rotations,
         int256[] memory pressures,
         int256[] memory vibrations
     ) public {
         require(machineIDs.length == voltages.length, "Mismatched input lengths");
-        require(rotations.length == pressures.length && pressures.length == vibrations.length, "Mismatched input lengths");
+        require(voltages.length == rotations.length, "Mismatched input lengths");
+        require(rotations.length == pressures.length, "Mismatched input lengths");
+        require(pressures.length == vibrations.length, "Mismatched input lengths");
+        require(vibrations.length == timestamps.length, "Mismatched input lengths");
+
         for (uint256 i = 0; i < machineIDs.length; i++) {
             bool isAnomaly =
                 voltages[i] < minVoltage ||
@@ -108,18 +122,47 @@ contract AnomalyDetection {
                 pressures[i] < minPressure ||
                 pressures[i] > maxPressure ||
                 vibrations[i] > maxVibration;
-
+            
+            int256 sumValue = voltages[i] + rotations[i] + pressures[i] + vibrations[i];
+            
             if (isAnomaly) {
-                anomalyMachineIDs.push(machineIDs[i]); // Add to storage for later retrieval
-                emit AnomalyDetected(msg.sender, machineIDs[i], voltages[i] + rotations[i] + pressures[i] + vibrations[i]);
+                anomalies.push(Anomaly(machineIDs[i], timestamps[i]));
+                emit AnomalyDetected(msg.sender, machineIDs[i], timestamps[i], sumValue);
             } else {
-                emit DataReceived(msg.sender, machineIDs[i], voltages[i] + rotations[i] + pressures[i] + vibrations[i]);
+                emit DataReceived(msg.sender, machineIDs[i], timestamps[i], sumValue);
             }
         }
     }
 
-    // View function to retrieve anomalous machine IDs (added to match ABI and enable querying)
+    // Function to check if there were any anomalies for a machine during a time period
+    function hasAnomalyInPeriod(
+        string memory machineID,
+        uint256 startTime,
+        uint256 endTime
+    ) public view returns (bool) {
+        for (uint256 i = 0; i < anomalies.length; i++) {
+            if (
+                keccak256(bytes(anomalies[i].machineID)) == keccak256(bytes(machineID)) &&
+                anomalies[i].timestamp >= startTime &&
+                anomalies[i].timestamp <= endTime
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // View function to retrieve anomalous machine IDs (preserved from template, collects from anomalies)
     function getAnomalyMachineIDs() public view returns (string[] memory) {
-        return anomalyMachineIDs;
+        string[] memory ids = new string[](anomalies.length);
+        for (uint256 i = 0; i < anomalies.length; i++) {
+            ids[i] = anomalies[i].machineID;
+        }
+        return ids;
+    }
+
+    // Additional view function to retrieve full anomalies
+    function getAnomalies() public view returns (Anomaly[] memory) {
+        return anomalies;
     }
 }
