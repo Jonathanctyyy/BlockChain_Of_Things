@@ -20,3 +20,5 @@
 /coverage
 
 anomalies.json
+
+/database_analyzed.json
