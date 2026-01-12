@@ -5,6 +5,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blockchain Anomaly Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a4a8c;
+        }
+
+        h2 {
+            color: #666;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        button {
+            background-color: #4a4a8c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+
+        button:hover {
+            background-color: #3a3a6c;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: calc(100% - 22px);
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        #walletAddress {
+            font-weight: bold;
+        }
+
+        #result {
+            font-weight: bold;
+            color: #d9534f;
+            /* Red for anomalies */
+        }
+
+        #blockchain {
+            background-color: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        #transactionHash {
+            font-style: italic;
+        }
+
+        .anomaly-yes {
+            color: #d9534f;
+            /* Red for yes */
+            font-weight: bold;
+        }
+
+        .anomaly-no {
+            color: #5cb85c;
+            /* Green for no */
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -23,11 +111,12 @@
     <h2>Blockchain Data</h2>
     <div id="blockchain">Loading blockchain data...</div>
 
-    <!-- Transaction Hash -->
+    <!-- Transaction Details -->
     <h2>Transaction Details</h2>
     <p id="transactionHash">Transaction Hash: Not Available</p>
 
     <script type="module" src="./scripts/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
 </body>
 
 </html>

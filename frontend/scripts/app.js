@@ -7,19 +7,106 @@ let contract;
 const contractAddress = "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f"; // Replace with your contract address
 const contractABI = [
   {
-    "inputs": [],
-    "name": "getAnomalyMachineIDs",
-    "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }],
-    "stateMutability": "view",
-    "type": "function",
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_machineID",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_merkleRoot",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bool",
+        "name": "_hasAnomaly",
+        "type": "bool"
+      }
+    ],
+    "name": "storeProof",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getMerkleRoot",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "machineLedger",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "merkleRoot",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bool",
+        "name": "hasAnomaly",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
-    "type": "function",
+    "type": "function"
   },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "machineID",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "DataAnchored",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "machineID",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "message",
+        "type": "string"
+      }
+    ],
+    "name": "AnomalyDetected",
+    "type": "event"
+  }
 ];
 
 // Connect to MetaMask
@@ -44,50 +131,90 @@ async function connectToMetaMask() {
   }
 }
 
-// Fetch Blockchain Data
-async function fetchBlockchainData() {
-  if (contract) {
-    try {
-      // Fetch Merkle Root
-      const merkleRoot = await contract.methods.getMerkleRoot().call();
-      console.log('Merkle Root:', merkleRoot);
+// Fetch anchors for a specific machineID from the machineLedger mapping
+async function getAnchorsForMachine(machineID) {
+  if (!contract) {
+    throw new Error('Contract not initialized. Connect MetaMask first.');
+  }
 
-      // Display Merkle Root
-      const blockchainContainer = document.getElementById('blockchain');
-      blockchainContainer.textContent = `Merkle Root: ${merkleRoot}`;
+  const anchors = [];
+  let index = 0;
+  while (true) {
+    try {
+      const anchor = await contract.methods.machineLedger(machineID, index).call();
+      // Check if the anchor is default/empty (timestamp 0 indicates end)
+      if (parseInt(anchor.timestamp) === 0 && anchor.merkleRoot === '0x0000000000000000000000000000000000000000000000000000000000000000' && !anchor.hasAnomaly) {
+        break;
+      }
+      anchors.push(anchor);
+      index++;
     } catch (error) {
-      console.error('Error fetching blockchain data:', error);
+      // Out of bounds or other error: stop looping
+      break;
     }
   }
+  return anchors;
 }
 
-// Display Transaction Hash
-function displayTransactionHash(txHash) {
-  const transactionHashElement = document.getElementById('transactionHash');
-  transactionHashElement.textContent = `Transaction Hash: ${txHash}`;
-}
+// Fetch and display blockchain data for the entered machineID
+async function fetchAndDisplayMachineData() {
+  const machineID = document.getElementById('machineID').value.trim();
+  if (!machineID) {
+    alert('Please enter a Machine ID.');
+    return;
+  }
 
-// Example: Simulate a transaction and display the hash
-async function simulateTransaction() {
+  if (!contract) {
+    alert('Please connect MetaMask first.');
+    return;
+  }
+
   try {
-    // Simulate a transaction (replace with actual transaction logic)
-    const txHash = "0x76c960a2be12f3087fd9f1cd77c9b3624a64eb69c3b2b5e7496e73b2c1685e21";
-    console.log('Transaction successful! Hash:', txHash);
+    const anchors = await getAnchorsForMachine(machineID);
+    const blockchainContainer = document.getElementById('blockchain');
+    const resultElement = document.getElementById('result');
+    const transactionHashElement = document.getElementById('transactionHash');
 
-    // Display the transaction hash on the frontend
-    displayTransactionHash(txHash);
+    if (anchors.length === 0) {
+      blockchainContainer.textContent = `No data found for Machine ID: ${machineID}`;
+      resultElement.textContent = 'No anomalies or anchors stored.';
+      transactionHashElement.textContent = 'Transaction Hash: Not Available';
+      return;
+    }
+
+    // Display all anchors in a readable format
+    let displayText = `Data for Machine ID: ${machineID}\n`;
+    let hasAnyAnomaly = false;
+    anchors.forEach((anchor, idx) => {
+      const date = new Date(parseInt(anchor.timestamp) * 1000).toLocaleString();
+      displayText += `Anchor ${idx + 1}:\n`;
+      displayText += `  Timestamp: ${date} (${anchor.timestamp})\n`;
+      displayText += `  Merkle Root: ${anchor.merkleRoot}\n`;
+      displayText += `  Has Anomaly: ${anchor.hasAnomaly ? 'Yes ⚠️' : 'No ✅'}\n\n`;
+      if (anchor.hasAnomaly) hasAnyAnomaly = true;
+    });
+
+    blockchainContainer.textContent = displayText;
+    resultElement.textContent = hasAnyAnomaly ? 'Anomaly detected in one or more batches! Check details.' : 'All batches normal.';
+    
+    // For transaction hash, since process.js handles storage, we can't fetch tx hash here.
+    // Repurpose to show latest timestamp or leave as is.
+    transactionHashElement.textContent = `Latest Anchor Timestamp: ${anchors[anchors.length - 1].timestamp}`;
+
+    console.log(`Fetched data for Machine ID ${machineID}:`, anchors);
   } catch (error) {
-    console.error('Error simulating transaction:', error);
+    console.error('Error fetching machine data:', error);
+    document.getElementById('blockchain').textContent = 'Error fetching data: ' + error.message;
   }
 }
 
 // Initialize the app
 async function init() {
   document.getElementById('connectMetaMask').addEventListener('click', connectToMetaMask);
-  document.getElementById('checkDataBtn').addEventListener('click', simulateTransaction);
+  document.getElementById('checkDataBtn').addEventListener('click', fetchAndDisplayMachineData);
 
-  // Fetch blockchain data on load
-  fetchBlockchainData();
+  // Optional: Fetch default data on load if desired, but requires a default machineID
 }
 
 init();
+console.log("app.js is connected!");
