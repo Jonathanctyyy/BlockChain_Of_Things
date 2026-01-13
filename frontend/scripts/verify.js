@@ -23,32 +23,32 @@ async function fetchTransactionDetails(txHash) {
 }
 
 // Add event listener to the verify button
-document.getElementById('verifyBtn').addEventListener('click', async () => {
-  const txHash = document.getElementById('txHashInput').value;
-  const transactionDetailsDiv = document.getElementById('transactionDetails');
+// document.getElementById('verifyBtn').addEventListener('click', async () => {
+//   const txHash = document.getElementById('txHashInput').value;
+//   const transactionDetailsDiv = document.getElementById('transactionDetails');
 
-  transactionDetailsDiv.innerHTML = 'Verifying...';
+//   transactionDetailsDiv.innerHTML = 'Verifying...';
 
-  try {
-    const transaction = await fetchTransactionDetails(txHash);
+//   try {
+//     const transaction = await fetchTransactionDetails(txHash);
 
-    if (transaction) {
-      transactionDetailsDiv.innerHTML = `
-        <p><strong>From:</strong> ${transaction.from}</p>
-        <p><strong>To:</strong> ${transaction.to}</p>
-        <p><strong>Value:</strong> ${web3.utils.fromWei(transaction.value, 'ether')} ETH</p>
-        <p><strong>Gas Used:</strong> ${transaction.gas}</p>
-      `;
-    } else {
-      transactionDetailsDiv.innerHTML = '<p>Transaction not found. It may still be pending.</p>';
-    }
-  } catch (error) {
-    transactionDetailsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
-  }
-});
+//     if (transaction) {
+//       transactionDetailsDiv.innerHTML = `
+//         <p><strong>From:</strong> ${transaction.from}</p>
+//         <p><strong>To:</strong> ${transaction.to}</p>
+//         <p><strong>Value:</strong> ${web3.utils.fromWei(transaction.value, 'ether')} ETH</p>
+//         <p><strong>Gas Used:</strong> ${transaction.gas}</p>
+//       `;
+//     } else {
+//       transactionDetailsDiv.innerHTML = '<p>Transaction not found. It may still be pending.</p>';
+//     }
+//   } catch (error) {
+//     transactionDetailsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+//   }
+// });
 
 // Example usage
-const txHash = '0x76c960a2be12f3087fd9f1cd77c9b3624a64eb69c3b2b5e7496e73b2c1685e21'; // Replace with your transaction hash
+const txHash = '0x4bc5d3e2c727f09786997c3b710977feb8083bdbabf421c82f12e30173e20d45'; // Replace with your transaction hash
 fetchTransactionDetails(txHash).then((transaction) => {
   if (transaction) {
     // Display transaction details in the console or on the frontend

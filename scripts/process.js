@@ -83,16 +83,17 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
     try {
         const web3 = new Web3('http://127.0.0.1:8545');  // Instantiate Web3 here
         const contractABI = JSON.parse(fs.readFileSync('./artifacts/contracts/PredictiveMaintenance.sol/PredictiveMaintenance.json', 'utf8')).abi;  // Load ABI using fs instead of import
-        const contractAddress = '0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f';
-        const contract = new web3.eth.Contract(contractABI, contractAddress);
+        const contractAddress = '0xB581C9264f59BF0289fA76D61B2D0746dCE3C30D';
+        const contract = new web3.eth.Contract(contractABI, contractAddress); // smart contract address instance
         const accounts = await web3.eth.getAccounts();
-        const fromAccount = accounts[0];  // Use the first Hardhat account
+        const fromAccount = accounts[accounts.length - 1];  // Use the last Hardhat account address
         const tx = await contract.methods.storeProof(
         blockchainAnchor.machineID.toString(), // Convert machineID to string as required by Solidity
         blockchainAnchor.merkleRoot,
         blockchainAnchor.hasAnomaly
         ).send({ from: fromAccount });
         console.log('Transaction successful! Hash stored on blockchain. Tx hash:', tx.transactionHash);
+        console.log(accounts);
     } catch (error) {
         console.error('Error storing on blockchain:', error);
     }
