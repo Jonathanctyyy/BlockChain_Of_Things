@@ -109,14 +109,25 @@
 
     <!-- Blockchain Data -->
     <h2>Blockchain Data</h2>
-    <div id="blockchain">Loading blockchain data...</div>
+    <div id="blockchain">
+        <p><strong>Machine ID:</strong> <span id="machineID">Loading...</span></p>
+        <p><strong>Merkle Root:</strong> <span id="merkleRoot">Loading...</span></p>
+        <p><strong>Anomaly Detected:</strong> <span id="anomalyStatus">Loading...</span></p>
+        <p><strong>Timestamp:</strong> <span id="blockchainTimestamp">Loading...</span></p>
+    </div>
 
     <!-- Transaction Details -->
     <h2>Transaction Details</h2>
-    <p id="transactionHash">Transaction Hash: Not Available</p>
+    <div id="transactionDetails">
+        <p><strong>Transaction Hash:</strong> <span id="txHash">Loading...</span></p>
+        <p><strong>Gas Used:</strong> <span id="gasUsed">Loading...</span></p>
+        <p><strong>From:</strong> <span id="fromAccount">Loading...</span></p>
+        <p><strong>To:</strong> <span id="toAccount">Loading...</span></p>
+        <p><strong>Timestamp:</strong> <span id="txTimestamp">Loading...</span></p>
+    </div>
 
-    <script type="module" src="./scripts/app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
+    <script src="./scripts/app.js" type="module" defer></script>
 </body>
 
 </html>
