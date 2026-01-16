@@ -4,8 +4,8 @@ import csv from 'csv-parser';
 import fs from 'fs';
 import Web3 from 'web3';  // Add this import
 
-const rows = [];
-const leaves = [];
+// Initialize a dictionary to store records by machine ID
+const machineRecords = {};
 let anomalyDetectedInBatch = false;
 
 // --- UPDATED ANOMALY DETECTION LOGIC ---
@@ -51,50 +51,80 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
     // We include the status so the 'CRITICAL' tag is cryptographically secured
     const rowString = `${data.datetime},${data.machineID},${data.volt},${data.vibration},${data.status}`;
     
-    rows.push(data);
-    leaves.push(SHA256(rowString));
+    // Replace rows.push(data) with the following:
+    if (!machineRecords[data.machineID]) {
+        machineRecords[data.machineID] = [];
+    }
+    machineRecords[data.machineID].push(data);
   })
   .on('end', async () => {  // Make this async to await blockchain calls
-    // 2. GENERATE MERKLE TREE
-    const tree = new MerkleTree(leaves, SHA256);
-    const root = tree.getRoot().toString('hex');
+    // After processing all data, generate Merkle Trees and store hashes per machine
+    for (const [machineID, records] of Object.entries(machineRecords)) {
+        const leaves = records.map(record => {
+            const rowString = `${record.datetime},${record.machineID},${record.volt},${record.vibration},${record.status}`;
+            return SHA256(rowString);
+        });
 
-    // 3. SAVE OFF-CHAIN DATA
-    fs.writeFileSync('database_analyzed.json', JSON.stringify(rows, null, 2));
-    
-    // 4. PREPARE BLOCKCHAIN PAYLOAD
-    const blockchainAnchor = {
-        timestamp: Math.floor(new Date().getTime() / 1000),  // Use Unix timestamp for solidity uint
-        merkleRoot: `0x${root}`,
-        machineID: parseInt(rows[0].machineID),  // Ensure it's a number
-        hasAnomaly: anomalyDetectedInBatch  // Boolean
-    };
+        const tree = new MerkleTree(leaves, SHA256);
+        const root = tree.getRoot().toString('hex');
 
-    console.log("\n--- BATCH PROCESSING COMPLETE ---");
-    console.log("Blockchain Payload:", blockchainAnchor);
-    
-    if(anomalyDetectedInBatch) {
-        console.log("Status: ⚠️ MAINTENANCE TRIGGERED (Anomaly logged on Blockchain)");
-    } else {
-        console.log("Status: ✅ ALL SYSTEMS NORMAL");
-    }
+        // Prepare blockchain payload for each machine
+        const blockchainAnchor = {
+            timestamp: Math.floor(new Date().getTime() / 1000),
+            merkleRoot: `0x${root}`,
+            machineID: parseInt(machineID),
+            hasAnomaly: records.some(record => record.status === 'CRITICAL')
+        };
 
-    // 5. STORE ON BLOCKCHAIN (NEW CODE)
-    try {
-        const web3 = new Web3('http://127.0.0.1:8545');  // Instantiate Web3 here
-        const contractABI = JSON.parse(fs.readFileSync('./artifacts/contracts/PredictiveMaintenance.sol/PredictiveMaintenance.json', 'utf8')).abi;  // Load ABI using fs instead of import
-        const contractAddress = '0xB581C9264f59BF0289fA76D61B2D0746dCE3C30D';
-        const contract = new web3.eth.Contract(contractABI, contractAddress); // smart contract address instance
-        const accounts = await web3.eth.getAccounts();
-        const fromAccount = accounts[accounts.length - 1];  // Use the last Hardhat account address
-        const tx = await contract.methods.storeProof(
-        blockchainAnchor.machineID.toString(), // Convert machineID to string as required by Solidity
-        blockchainAnchor.merkleRoot,
-        blockchainAnchor.hasAnomaly
-        ).send({ from: fromAccount });
-        console.log('Transaction successful! Hash stored on blockchain. Tx hash:', tx.transactionHash);
-        console.log(accounts);
-    } catch (error) {
-        console.error('Error storing on blockchain:', error);
+        console.log(`\n--- MACHINE ${machineID} PROCESSING COMPLETE ---`);
+        console.log("Blockchain Payload:", blockchainAnchor);
+
+        try {
+            const web3 = new Web3('http://127.0.0.1:8545');
+            const contractABI = JSON.parse(fs.readFileSync('./artifacts/contracts/PredictiveMaintenance.sol/PredictiveMaintenance.json', 'utf8')).abi;
+            const contractAddress = '0xB581C9264f59BF0289fA76D61B2D0746dCE3C30D';
+            const contract = new web3.eth.Contract(contractABI, contractAddress);
+            const accounts = await web3.eth.getAccounts();
+            const fromAccount = accounts[accounts.length - 1];
+            const tx = await contract.methods.storeProof(
+                blockchainAnchor.machineID.toString(),
+                blockchainAnchor.merkleRoot,
+                blockchainAnchor.hasAnomaly
+            ).send({ from: fromAccount });
+
+            console.log(`Transaction successful for Machine ${machineID}! Tx hash:`, tx.transactionHash);
+
+            // Save transaction details to a file
+            const transactionDetails = {
+                machineID,
+                transactionHash: tx.transactionHash,
+                gasUsed: tx.gasUsed,
+                from: fromAccount,
+                to: contractAddress,
+                timestamp: blockchainAnchor.timestamp
+            };
+
+            // Read existing transaction log or initialize an empty array
+            let transactionLog = [];
+            try {
+                const existingData = fs.readFileSync('transaction_log.json', 'utf8');
+                transactionLog = JSON.parse(existingData);
+            } catch (error) {
+                if (error.code !== 'ENOENT') {
+                    console.error('Error reading transaction log:', error);
+                }
+            }
+
+            // Add the new transaction details
+            transactionLog.push(transactionDetails);
+
+            // Custom replacer to handle BigInt serialization
+            const replacer = (key, value) => (typeof value === 'bigint' ? value.toString() : value);
+
+            // Write the updated transaction log back to the file
+            fs.writeFileSync('transaction_log.json', JSON.stringify(transactionLog, replacer, 2));
+        } catch (error) {
+            console.error(`Error storing data for Machine ${machineID} on blockchain:`, error);
+        }
     }
   });
