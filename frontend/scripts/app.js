@@ -249,7 +249,7 @@ async function init() {
         return;
     }
 
-    await fetchAndDisplayMachineData();
+    // await fetchAndDisplayMachineData();
     await fetchTransactionDetails(machineID);
   });
 
