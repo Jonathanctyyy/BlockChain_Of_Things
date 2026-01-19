@@ -5,125 +5,265 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blockchain Anomaly Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
     <style>
+        :root {
+            --primary-color: #2563eb;
+            /* Royal Blue */
+            --primary-hover: #1d4ed8;
+            --bg-color: #f1f5f9;
+            /* Slate 100 */
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            /* Slate 800 */
+            --text-secondary: #64748b;
+            /* Slate 500 */
+            --border-color: #e2e8f0;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
             max-width: 800px;
             margin: 0 auto;
         }
 
-        h1 {
+        /* Header */
+        header {
             text-align: center;
-            color: #4a4a8c;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--text-main);
+            font-weight: 700;
+            font-size: 2rem;
+            margin: 0;
+            letter-spacing: -0.025em;
         }
 
         h2 {
-            color: #666;
-            border-bottom: 1px solid #ddd;
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
         }
 
-        button {
-            background-color: #4a4a8c;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin: 5px 0;
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            border: 1px solid var(--border-color);
         }
 
-        button:hover {
-            background-color: #3a3a6c;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            width: calc(100% - 22px);
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        p {
-            margin: 10px 0;
+        /* Connection Section */
+        .wallet-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         #walletAddress {
-            font-weight: bold;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--bg-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 0;
         }
 
+        /* Inputs & Buttons */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* Result Area */
         #result {
-            font-weight: bold;
-            color: #d9534f;
-            /* Red for anomalies */
-        }
-
-        #blockchain {
-            background-color: white;
             padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            white-space: pre-wrap;
-            overflow-x: auto;
+            border-radius: 8px;
+            background-color: var(--bg-color);
+            text-align: center;
+            font-weight: 600;
+            min-height: 24px;
         }
 
-        #transactionHash {
-            font-style: italic;
+        /* Transaction Details */
+        #transactionDetails {
+            display: grid;
+            gap: 12px;
         }
 
+        .detail-row {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid var(--bg-color);
+            padding-bottom: 12px;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .value {
+            font-family: 'Roboto Mono', monospace;
+            color: var(--text-main);
+            word-break: break-all;
+            font-size: 0.95rem;
+        }
+
+        /* Status States */
         .anomaly-yes {
-            color: #d9534f;
-            /* Red for yes */
-            font-weight: bold;
+            color: var(--danger-color);
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 10px;
+            border-radius: 6px;
+            display: block;
         }
 
         .anomaly-no {
-            color: #5cb85c;
-            /* Green for no */
+            color: var(--success-color);
+            background-color: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            padding: 10px;
+            border-radius: 6px;
+            display: block;
         }
 
+        /* Mobile Responsive */
         @media (max-width: 600px) {
-            body {
-                padding: 10px;
+            .input-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .wallet-section {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
             }
         }
     </style>
 </head>
 
 <body>
-    <h1>Blockchain Anomaly Viewer</h1>
+    <div class="container">
+        <header>
+            <h1>Blockchain Anomaly Viewer</h1>
+        </header>
 
-    <!-- MetaMask Connection -->
-    <button id="connectMetaMask">Connect MetaMask</button>
-    <p id="walletAddress">Wallet Address: Not Connected</p>
+        <div class="card wallet-section">
+            <button id="connectMetaMask">Connect MetaMask</button>
+            <p id="walletAddress">Not Connected</p>
+        </div>
 
-    <!-- Input for Machine ID -->
-    <input type="text" id="machineID" placeholder="Enter Machine ID">
-    <button id="checkDataBtn">Check Machine</button>
-    <p id="result">Result will appear here...</p>
+        <div class="card">
+            <h2>Query Machine Data</h2>
+            <div class="input-group">
+                <input type="text" id="machineID" placeholder="Enter Machine ID (e.g. 0x123...)">
+                <button id="checkDataBtn">Check Machine</button>
+            </div>
+            <div id="result">Ready to scan...</div>
+        </div>
 
-    <!-- Blockchain Data -->
-    <h2>Blockchain Data</h2>
-    <div id="blockchain">
-        <p><strong>Machine ID:</strong> <span id="machineID">Loading...</span></p>
-        <p><strong>Merkle Root:</strong> <span id="merkleRoot">Loading...</span></p>
-        <p><strong>Anomaly Detected:</strong> <span id="anomalyStatus">Loading...</span></p>
-        <p><strong>Timestamp:</strong> <span id="blockchainTimestamp">Loading...</span></p>
-    </div>
-
-    <!-- Transaction Details -->
-    <h2>Transaction Details</h2>
-    <div id="transactionDetails">
-        <p><strong>Transaction Hash:</strong> <span id="txHash">Loading...</span></p>
-        <p><strong>Gas Used:</strong> <span id="gasUsed">Loading...</span></p>
-        <p><strong>From:</strong> <span id="fromAccount">Loading...</span></p>
-        <p><strong>To:</strong> <span id="toAccount">Loading...</span></p>
-        <p><strong>Timestamp:</strong> <span id="txTimestamp">Loading...</span></p>
+        <div class="card">
+            <h2>Transaction Details</h2>
+            <div id="transactionDetails">
+                <div class="detail-row">
+                    <span class="label">Transaction Hash</span>
+                    <span class="value" id="txHash">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Gas Used</span>
+                    <span class="value" id="gasUsed">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">From</span>
+                    <span class="value" id="fromAccount">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">To</span>
+                    <span class="value" id="toAccount">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Timestamp</span>
+                    <span class="value" id="txTimestamp">-</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
