@@ -74,11 +74,14 @@ copy the private key to the deploy-web3.js
 npx hardhat run scripts/deploy.js --network localhost
 
 ## copy the deployed address to 
-copy contract address to send-iot-data.js
+copy contract address to process.js
 copy contract address to index.html
 
 # start the IoT server
-node scripts/send-iot-data.js
+node scripts/process.js
+
+# store data to offchain IPFS
+node scipts/IPFS.js
 
 # serve frontend (in another terminal)
 http://localhost:8545 is the RPC URL

@@ -14,9 +14,14 @@
     "viem": "^2.38.6"
   },
   "dependencies": {
+    "@pinata/sdk": "^2.1.0",
+    "axios": "^1.13.2",
     "crypto-js": "^4.2.0",
     "csv-parser": "^3.2.0",
+    "dotenv": "^17.2.3",
+    "ipfs-http-client": "^60.0.1",
     "merkletreejs": "^0.6.0",
+    "pinata": "^2.5.3",
     "web3": "^4.16.0"
   }
 }
