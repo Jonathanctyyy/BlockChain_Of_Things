@@ -256,7 +256,7 @@ async function fetchOffChainData(machineID) {
 
 let chartInstance; // Global variable to store the chart instance
 
-// Render time-series graph with adjusted x-axis
+// Render time-series graph with anomaly highlights
 function renderTimeSeriesGraph(data) {
     console.log('Data passed to the chart:', data); // Debugging log
 
@@ -264,19 +264,15 @@ function renderTimeSeriesGraph(data) {
     const labels = data.map(record => record.datetime.split(' ')[1]); // Extract time only for x-axis labels
     const date = data[0]?.datetime.split(' ')[0]; // Extract the date from the first record
 
-    // Destroy the existing chart instance if it exists
-    if (chartInstance) {
-        chartInstance.destroy();
-    }
-
-    // Extract data for each indicator
+    // Extract data for each indicator and mark anomalies
     const voltages = data.map(record => parseFloat(record.volt));
     const rotations = data.map(record => parseFloat(record.rotate));
     const pressures = data.map(record => parseFloat(record.pressure));
     const vibrations = data.map(record => parseFloat(record.vibration));
 
-    // Create a new chart instance
-    chartInstance = new Chart(ctx, {
+    const anomalyPoints = data.map(record => checkAnomaly(record)); // Check for anomalies
+
+    new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
@@ -285,7 +281,7 @@ function renderTimeSeriesGraph(data) {
                     label: 'Voltage (V)',
                     data: voltages,
                     borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    backgroundColor: anomalyPoints.map((isAnomaly, index) => isAnomaly ? 'rgba(0, 255, 0, 1)' : 'rgba(153, 102, 255, 0.2)'),
                     borderWidth: 1.5,
                     tension: 0.4, // Smooth lines
                 },
@@ -309,7 +305,7 @@ function renderTimeSeriesGraph(data) {
                     label: 'Vibration (mm/s)',
                     data: vibrations,
                     borderColor: 'rgba(153, 102, 255, 1)',
-                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    backgroundColor: anomalyPoints.map((isAnomaly, index) => isAnomaly ? 'rgba(153, 102, 255, 0.8)' : 'rgba(153, 102, 255, 0.2)'),
                     borderWidth: 1.5,
                     tension: 0.4,
                 },
@@ -344,6 +340,23 @@ function renderTimeSeriesGraph(data) {
             },
         },
     });
+}
+
+// Function to check for anomalies
+function checkAnomaly(data) {
+    const vibration = parseFloat(data.vibration);
+    const volt = parseFloat(data.volt);
+    // Rule 1: Catch the spike at 21:00 (Value: 51.02)
+    if (vibration > 50.0) {
+        console.log(`[ALERT] High Vibration detected: ${vibration} at ${data.datetime}`);
+        return true;
+    }
+    // Rule 2: Catch the voltage drop at 22:00 (Value: 151.33)
+    if (volt < 155.0) {
+        console.log(`[ALERT] Low Voltage detected: ${volt} at ${data.datetime}`);
+        return true;
+    }
+    return false;
 }
 
 // Filter data for the selected date and render the graph
