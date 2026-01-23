@@ -239,6 +239,139 @@ async function fetchTransactionDetails(machineID) {
     }
 }
 
+// Fetch database_analyzed.json instead of IPFS data
+async function fetchOffChainData(machineID) {
+    try {
+        const response = await fetch('../database_analyzed.json'); // Fetch the JSON file
+        const data = await response.json();
+        console.log('Fetched JSON data:', data); // Debugging log
+
+        // Filter data for the given machine ID
+        return data.filter(record => record.machineID === machineID);
+    } catch (error) {
+        console.error('Error fetching or parsing JSON data:', error);
+        throw error;
+    }
+}
+
+let chartInstance; // Global variable to store the chart instance
+
+// Render time-series graph with adjusted x-axis
+function renderTimeSeriesGraph(data) {
+    console.log('Data passed to the chart:', data); // Debugging log
+
+    const ctx = document.getElementById('timeSeriesGraph').getContext('2d');
+    const labels = data.map(record => record.datetime.split(' ')[1]); // Extract time only for x-axis labels
+    const date = data[0]?.datetime.split(' ')[0]; // Extract the date from the first record
+
+    // Destroy the existing chart instance if it exists
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    // Extract data for each indicator
+    const voltages = data.map(record => parseFloat(record.volt));
+    const rotations = data.map(record => parseFloat(record.rotate));
+    const pressures = data.map(record => parseFloat(record.pressure));
+    const vibrations = data.map(record => parseFloat(record.vibration));
+
+    // Create a new chart instance
+    chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Voltage (V)',
+                    data: voltages,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 1.5,
+                    tension: 0.4, // Smooth lines
+                },
+                {
+                    label: 'Rotation (RPM)',
+                    data: rotations,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderWidth: 1.5,
+                    tension: 0.4,
+                },
+                {
+                    label: 'Pressure (PSI)',
+                    data: pressures,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1.5,
+                    tension: 0.4,
+                },
+                {
+                    label: 'Vibration (mm/s)',
+                    data: vibrations,
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderWidth: 1.5,
+                    tension: 0.4,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                },
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: `Datetime (${date})`, // Include the extracted date in the x-axis title
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Values',
+                    },
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+}
+
+// Filter data for the selected date and render the graph
+async function filterDataByDate() {
+    const selectedDate = document.getElementById('dateSelector').value; // Get the selected date
+    if (!selectedDate) {
+        alert('Please select a date.');
+        return;
+    }
+
+    try {
+        const machineID = document.getElementById('machineID').value.trim(); // Get the machine ID
+        const data = await fetchOffChainData(machineID); // Fetch the data
+
+        // Filter data for the selected date
+        const filteredData = data.filter(record => record.datetime.startsWith(selectedDate));
+        console.log('Filtered data for date:', selectedDate, filteredData); // Debugging log
+
+        renderTimeSeriesGraph(filteredData, selectedDate); // Re-render the graph with filtered data
+    } catch (error) {
+        console.error('Error filtering data by date:', error);
+        alert('Failed to filter data for the selected date.');
+    }
+}
+
+// Add event listener for filtering data by date
+document.getElementById('filterDateBtn').addEventListener('click', filterDataByDate);
+
 // Initialize the app
 async function init() {
   document.getElementById('connectMetaMask').addEventListener('click', connectToMetaMask);
@@ -251,6 +384,7 @@ async function init() {
 
     // await fetchAndDisplayMachineData();
     await fetchTransactionDetails(machineID);
+    const offChainData = await fetchOffChainData(machineID);
   });
 
   // Optional: Fetch default data on load if desired, but requires a default machineID

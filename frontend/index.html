@@ -264,9 +264,23 @@
                 </div>
             </div>
         </div>
+
+        <div class="card">
+            <h2>Select Date</h2>
+            <div class="input-group">
+                <input type="date" id="dateSelector" placeholder="Select Date">
+                <button id="filterDateBtn">Filter Data</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Time-Series Graph</h2>
+            <canvas id="timeSeriesGraph" width="400" height="200"></canvas>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./scripts/app.js" type="module" defer></script>
 </body>
 
