@@ -20,29 +20,12 @@ async function deploy() {
   web3.eth.defaultAccount = account.address;
   console.log("Deploying contract from account:", account.address);
   const contract = new web3.eth.Contract(abi);
-  // Pass constructor arguments here
-  // Updated constructor arguments based on statistical analysis (mean ± 3std)
+  // Deploy contract (no constructor arguments needed)
   const deployTx = contract.deploy({
     data: bytecode,
-    arguments: [
-      139, // minVoltage
-      196, // maxVoltage
-      294, // minRotation
-      590, // maxRotation
-      67,  // minPressure
-      129, // maxPressure
-      56,  // maxVibration
-    ],
+    arguments: [],
   });
-  console.log("Deploying contract with statistically derived thresholds:", {
-    minVoltage: 139,
-    maxVoltage: 196,
-    minRotation: 294,
-    maxRotation: 590,
-    minPressure: 67,
-    maxPressure: 129,
-    maxVibration: 56,
-  });
+  console.log("Deploying PredictiveMaintenance contract...");
   const gas = await deployTx.estimateGas();
   const deployedContract = await deployTx.send({
     from: account.address,

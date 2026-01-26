@@ -91,3 +91,11 @@ http://localhost:8045/anomalies.json is the list of anomalies
 
 address
 0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f
+
+
+# action of this project
+    - it firstly deploys the smart contract to web3
+    - then it processes the IoT data by doing the CheckAnomaly function in javascript
+    - in order to tackle the problem of data integrity, each machine must have signature and verify via smart contract
+    - it outputs the full log and store it as off-chain data to a IPFS
+    - a transaction log for each machine is also stored, which can be seen in the frontend interface
