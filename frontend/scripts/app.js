@@ -234,6 +234,8 @@ async function fetchTransactionDetails(machineID) {
         document.getElementById('fromAccount').textContent = transaction.from;
         document.getElementById('toAccount').textContent = transaction.to;
         document.getElementById('txTimestamp').textContent = new Date(transaction.timestamp * 1000).toLocaleString();
+        document.getElementById('ipfsCID').textContent = transaction.ipfsCID || '-';
+        document.getElementById('machineSignature').textContent = transaction.machineSignature || '-';
     } catch (error) {
         console.error('Error fetching transaction details:', error);
     }
@@ -260,6 +262,11 @@ let chartInstance; // Global variable to store the chart instance
 function renderTimeSeriesGraph(data) {
     console.log('Data passed to the chart:', data); // Debugging log
 
+    // Destroy existing chart instance before creating a new one
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
     const ctx = document.getElementById('timeSeriesGraph').getContext('2d');
     const labels = data.map(record => record.datetime.split(' ')[1]); // Extract time only for x-axis labels
     const date = data[0]?.datetime.split(' ')[0]; // Extract the date from the first record
@@ -272,7 +279,7 @@ function renderTimeSeriesGraph(data) {
 
     const anomalyPoints = data.map(record => checkAnomaly(record)); // Check for anomalies
 
-    new Chart(ctx, {
+    chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
