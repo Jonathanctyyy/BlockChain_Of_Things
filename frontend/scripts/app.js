@@ -256,18 +256,20 @@ async function fetchOffChainData(machineID) {
     }
 }
 
-let chartInstance; // Global variable to store the chart instance
+let voltageChartInstance;
+let rotationChartInstance;
+let pressureChartInstance;
+let vibrationChartInstance;
 
 // Render time-series graph with anomaly highlights
 function renderTimeSeriesGraph(data) {
     console.log('Data passed to the chart:', data); // Debugging log
 
-    // Destroy existing chart instance before creating a new one
-    if (chartInstance) {
-        chartInstance.destroy();
-    }
-
-    const ctx = document.getElementById('timeSeriesGraph').getContext('2d');
+    // Destroy existing chart instances before creating new ones
+    if (voltageChartInstance) voltageChartInstance.destroy();
+    if (rotationChartInstance) rotationChartInstance.destroy();
+    if (pressureChartInstance) pressureChartInstance.destroy();
+    if (vibrationChartInstance) vibrationChartInstance.destroy();
     const labels = data.map(record => record.datetime.split(' ')[1]); // Extract time only for x-axis labels
     const date = data[0]?.datetime.split(' ')[0]; // Extract the date from the first record
 
@@ -277,72 +279,168 @@ function renderTimeSeriesGraph(data) {
     const pressures = data.map(record => parseFloat(record.pressure));
     const vibrations = data.map(record => parseFloat(record.vibration));
 
-    const anomalyPoints = data.map(record => checkAnomaly(record)); // Check for anomalies
+    // Check for anomalies specific to each metric
+    const voltageAnomalies = data.map(record => {
+        const volt = parseFloat(record.volt);
+        return volt < 155.0 || volt > 190.0;
+    });
+    const rotationAnomalies = data.map(record => {
+        const rotation = parseFloat(record.rotate);
+        return rotation > 550.0 || rotation < 350.0;
+    });
+    const pressureAnomalies = data.map(record => {
+        const pressure = parseFloat(record.pressure);
+        return pressure > 120.0 || pressure < 80.0;
+    });
+    const vibrationAnomalies = data.map(record => parseFloat(record.vibration) > 50.0);
+    
+    const anomalyPoints = data.map(record => checkAnomaly(record)); // Check for anomalies (for general status)
 
-    chartInstance = new Chart(ctx, {
+    // Common options for all charts
+    const commonOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false,
+            },
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+            },
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: `Time (${date})`,
+                },
+            },
+        },
+    };
+
+    // Voltage Chart
+    const voltageCtx = document.getElementById('voltageGraph').getContext('2d');
+    voltageChartInstance = new Chart(voltageCtx, {
         type: 'line',
         data: {
             labels: labels,
-            datasets: [
-                {
-                    label: 'Voltage (V)',
-                    data: voltages,
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: anomalyPoints.map((isAnomaly, index) => isAnomaly ? 'rgba(0, 255, 0, 1)' : 'rgba(153, 102, 255, 0.2)'),
-                    borderWidth: 1.5,
-                    tension: 0.4, // Smooth lines
-                },
-                {
-                    label: 'Rotation (RPM)',
-                    data: rotations,
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderWidth: 1.5,
-                    tension: 0.4,
-                },
-                {
-                    label: 'Pressure (PSI)',
-                    data: pressures,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 1.5,
-                    tension: 0.4,
-                },
-                {
-                    label: 'Vibration (mm/s)',
-                    data: vibrations,
-                    borderColor: 'rgba(153, 102, 255, 1)',
-                    backgroundColor: anomalyPoints.map((isAnomaly, index) => isAnomaly ? 'rgba(153, 102, 255, 0.8)' : 'rgba(153, 102, 255, 0.2)'),
-                    borderWidth: 1.5,
-                    tension: 0.4,
-                },
-            ],
+            datasets: [{
+                label: 'Voltage (V)',
+                data: voltages,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: voltageAnomalies.map((isAnomaly) => isAnomaly ? 'rgba(255, 99, 132, 0.8)' : 'rgba(255, 99, 132, 0.2)'),
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: voltageAnomalies.map((isAnomaly) => isAnomaly ? 6 : 3),
+                pointBackgroundColor: voltageAnomalies.map((isAnomaly) => isAnomaly ? 'rgba(255, 0, 0, 1)' : 'rgba(255, 99, 132, 1)'),
+            }],
         },
         options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
-                },
-            },
+            ...commonOptions,
             scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: `Datetime (${date})`, // Include the extracted date in the x-axis title
-                    },
-                },
+                ...commonOptions.scales,
                 y: {
                     title: {
                         display: true,
-                        text: 'Values',
+                        text: 'Voltage (V)',
                     },
-                    beginAtZero: true,
+                    beginAtZero: false,
+                },
+            },
+        },
+    });
+
+    // Rotation Chart
+    const rotationCtx = document.getElementById('rotationGraph').getContext('2d');
+    rotationChartInstance = new Chart(rotationCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Rotation (RPM)',
+                data: rotations,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: rotationAnomalies.map((isAnomaly) => isAnomaly ? 'rgba(54, 162, 235, 0.8)' : 'rgba(54, 162, 235, 0.2)'),
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: rotationAnomalies.map((isAnomaly) => isAnomaly ? 6 : 3),
+                pointBackgroundColor: rotationAnomalies.map((isAnomaly) => isAnomaly ? 'rgba(255, 0, 0, 1)' : 'rgba(54, 162, 235, 1)'),
+            }],
+        },
+        options: {
+            ...commonOptions,
+            scales: {
+                ...commonOptions.scales,
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Rotation (RPM)',
+                    },
+                    beginAtZero: false,
+                },
+            },
+        },
+    });
+
+    // Pressure Chart
+    const pressureCtx = document.getElementById('pressureGraph').getContext('2d');
+    pressureChartInstance = new Chart(pressureCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Pressure (PSI)',
+                data: pressures,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: pressureAnomalies.map((isAnomaly) => isAnomaly ? 'rgba(75, 192, 192, 0.8)' : 'rgba(75, 192, 192, 0.2)'),
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: pressureAnomalies.map((isAnomaly) => isAnomaly ? 6 : 3),
+                pointBackgroundColor: pressureAnomalies.map((isAnomaly) => isAnomaly ? 'rgba(255, 0, 0, 1)' : 'rgba(75, 192, 192, 1)'),
+            }],
+        },
+        options: {
+            ...commonOptions,
+            scales: {
+                ...commonOptions.scales,
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Pressure (PSI)',
+                    },
+                    beginAtZero: false,
+                },
+            },
+        },
+    });
+
+    // Vibration Chart
+    const vibrationCtx = document.getElementById('vibrationGraph').getContext('2d');
+    vibrationChartInstance = new Chart(vibrationCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Vibration (mm/s)',
+                data: vibrations,
+                borderColor: 'rgba(153, 102, 255, 1)',
+                backgroundColor: vibrationAnomalies.map((isAnomaly) => isAnomaly ? 'rgba(153, 102, 255, 0.8)' : 'rgba(153, 102, 255, 0.2)'),
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: vibrationAnomalies.map((isAnomaly) => isAnomaly ? 6 : 3),
+                pointBackgroundColor: vibrationAnomalies.map((isAnomaly) => isAnomaly ? 'rgba(255, 0, 0, 1)' : 'rgba(153, 102, 255, 1)'),
+            }],
+        },
+        options: {
+            ...commonOptions,
+            scales: {
+                ...commonOptions.scales,
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Vibration (mm/s)',
+                    },
+                    beginAtZero: false,
                 },
             },
         },
@@ -353,14 +451,27 @@ function renderTimeSeriesGraph(data) {
 function checkAnomaly(data) {
     const vibration = parseFloat(data.vibration);
     const volt = parseFloat(data.volt);
-    // Rule 1: Catch the spike at 21:00 (Value: 51.02)
+    const pressure = parseFloat(data.pressure);
+    const rotation = parseFloat(data.rotate);
+    
+    // Rule 1: High vibration - indicates mechanical issues
     if (vibration > 50.0) {
         console.log(`[ALERT] High Vibration detected: ${vibration} at ${data.datetime}`);
         return true;
     }
-    // Rule 2: Catch the voltage drop at 22:00 (Value: 151.33)
-    if (volt < 155.0) {
-        console.log(`[ALERT] Low Voltage detected: ${volt} at ${data.datetime}`);
+    // Rule 2: Low voltage - indicates electrical issues
+    if (volt < 155.0 || volt > 190.0) {
+        console.log(`[ALERT] Abnormal Voltage detected: ${volt} at ${data.datetime}`);
+        return true;
+    }
+    // Rule 3: Abnormal pressure - too high or too low
+    if (pressure > 120.0 || pressure < 80.0) {
+        console.log(`[ALERT] Abnormal Pressure detected: ${pressure} at ${data.datetime}`);
+        return true;
+    }
+    // Rule 4: Abnormal rotation - too high or too low RPM
+    if (rotation > 550.0 || rotation < 350.0) {
+        console.log(`[ALERT] Abnormal Rotation detected: ${rotation} at ${data.datetime}`);
         return true;
     }
     return false;
