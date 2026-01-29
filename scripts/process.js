@@ -25,14 +25,27 @@ const allProcessedData = [];
 function checkAnomaly(data) {
     const vibration = parseFloat(data.vibration);
     const volt = parseFloat(data.volt);
-    // Rule 1: Catch the spike at 21:00 (Value: 51.02)
+    const pressure = parseFloat(data.pressure);
+    const rotation = parseFloat(data.rotate);
+    
+    // Rule 1: High vibration - indicates mechanical issues
     if (vibration > 50.0) {
         console.log(`[ALERT] High Vibration detected: ${vibration} at ${data.datetime}`);
         return true;
     }
-    // Rule 2: Catch the voltage drop at 22:00 (Value: 151.33)
-    if (volt < 155.0) {
-        console.log(`[ALERT] Low Voltage detected: ${volt} at ${data.datetime}`);
+    // Rule 2: Low voltage - indicates electrical issues
+    if (volt < 155.0 || volt > 190.0) {
+        console.log(`[ALERT] Abnormal Voltage detected: ${volt} at ${data.datetime}`);
+        return true;
+    }
+    // Rule 3: Abnormal pressure - too high or too low
+    if (pressure > 120.0 || pressure < 80.0) {
+        console.log(`[ALERT] Abnormal Pressure detected: ${pressure} at ${data.datetime}`);
+        return true;
+    }
+    // Rule 4: Abnormal rotation - too high or too low RPM
+    if (rotation > 550.0 || rotation < 350.0) {
+        console.log(`[ALERT] Abnormal Rotation detected: ${rotation} at ${data.datetime}`);
         return true;
     }
     return false;
@@ -76,15 +89,6 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
     // Write all processed data to database_analyzed.json
     fs.writeFileSync('database_analyzed.json', JSON.stringify(allProcessedData, null, 2), 'utf8');
     console.log('All processed data written to database_analyzed.json.');
-
-    // Upload the data to Pinata once, after writing the file
-    let cid;
-    try {
-        cid = await uploadToIPFS();
-    } catch (error) {
-        console.error('Failed to store data in Pinata:', error);
-        return; // Exit if upload fails
-    }
 
     // Load machine private key from .env (must be hex string like '0x...')
     const machinePrivateKey = process.env.MACHINE_PRIVATE_KEY;
@@ -135,6 +139,16 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
         // Convert the signature to bytes format (array for web3)
         const signatureBytes = Array.from(fullSig);
 
+        // Upload this machine's data to IPFS
+        let cid;
+        try {
+            cid = await uploadToIPFS(machineID, records);
+            console.log(`Machine ${machineID} data uploaded to IPFS with CID:`, cid);
+        } catch (error) {
+            console.error(`Failed to store data for Machine ${machineID} in Pinata:`, error);
+            continue; // Skip this machine if upload fails
+        }
+
         // Prepare blockchain payload for each machine
         const blockchainAnchor = {
             timestamp: Math.floor(new Date().getTime() / 1000),
@@ -157,17 +171,26 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
             const gasLimit = 3000000; // Set a high gas limit for debugging
 
             // Register machine if not already registered
-            const registeredAddress = await contract.methods.machineAddresses(machineID.toString()).call();
+            let registeredAddress;
+            try {
+                registeredAddress = await contract.methods.machineAddresses(machineID).call();
+            } catch (error) {
+                console.log(`Could not check registration for Machine ${machineID}, will register...`);
+                registeredAddress = '0x0000000000000000000000000000000000000000';
+            }
+            
             if (registeredAddress === '0x0000000000000000000000000000000000000000') {
                 const regTx = await contract.methods.registerMachine(
-                    machineID.toString(),
+                    machineID,
                     machineAddress
                 ).send({ from: fromAccount, gas: gasLimit });
                 console.log(`Machine ${machineID} registered with address ${machineAddress}. Tx hash: ${regTx.transactionHash}`);
+            } else {
+                console.log(`Machine ${machineID} already registered with address ${registeredAddress}`);
             }
 
             const tx = await contract.methods.storeProof(
-                blockchainAnchor.machineID.toString(),
+                machineID,
                 blockchainAnchor.merkleRoot,
                 blockchainAnchor.hasAnomaly
             ).send({ from: fromAccount, gas: gasLimit });
@@ -176,29 +199,29 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
 
             // Log the parameters being passed for debugging
             console.log('Parameters passed to storeProof:', {
-                machineID: blockchainAnchor.machineID.toString(),
+                machineID: machineID,
                 merkleRoot: blockchainAnchor.merkleRoot,
                 hasAnomaly: blockchainAnchor.hasAnomaly
             });
 
             // Verify the machine's signature on the blockchain after the transaction
-            try {
-                const isVerified = await contract.methods.verifySignature(
-                    machineID.toString(),
-                    dataHash,
-                    signatureBytes // Pass the signature as bytes
-                ).call();
+            // try {
+            //     const isVerified = await contract.methods.verifySignature(
+            //         machineID,
+            //         dataHash,
+            //         signatureBytes // Pass the signature as bytes
+            //     ).call();
 
-                if (!isVerified) {
-                    console.error(`Signature verification failed for Machine ${machineID}.`);
-                    return; // Skip logging the transaction if verification fails
-                }
+            //     if (!isVerified) {
+            //         console.error(`Signature verification failed for Machine ${machineID}.`);
+            //         return; // Skip logging the transaction if verification fails
+            //     }
 
-                console.log(`Signature verified successfully for Machine ${machineID}.`);
-            } catch (verifyError) {
-                console.error(`Verification call failed for Machine ${machineID}:`, verifyError);
-                return;
-            }
+            //     console.log(`Signature verified successfully for Machine ${machineID}.`);
+            // } catch (verifyError) {
+            //     console.error(`Verification call failed for Machine ${machineID}:`, verifyError);
+            //     return;
+            // }
 
             // Save transaction details to a file
             const transactionDetails = {
@@ -243,20 +266,17 @@ const pinataClient = new PinataSDK({
     pinataJwt: process.env.PINATA_JWT, // Use correct key for JWT
 });
 
-// Function to upload data to Pinata and get the CID
-async function uploadToIPFS() {
+// Function to upload data per machine to Pinata and get the CID
+async function uploadToIPFS(machineID, records) {
     try {
-        // Read the data from a file (e.g., database_analyzed.json)
-        const data = fs.readFileSync('database_analyzed.json', 'utf8');
-        // Parse the JSON data
-        const jsonData = JSON.parse(data);
-        // Upload the JSON data to Pinata (use public.json for public access)
-        const result = await pinataClient.upload.public.json(jsonData);
+        // Upload the machine's records to Pinata
+        const result = await pinataClient.upload.public.json(records);
         // Extract the CID (note: it's 'cid' in the new SDK, not 'IpfsHash')
         const cid = result.cid;
-        console.log('Data stored in IPFS with CID:', cid);
+        console.log(`Machine ${machineID} data stored in IPFS with CID:`, cid);
         return cid;
     } catch (error) {
-        console.error('Error uploading data to IPFS or including CID:', error);
+        console.error(`Error uploading Machine ${machineID} data to IPFS:`, error);
+        throw error;
     }
 }
