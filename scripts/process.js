@@ -136,9 +136,6 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
         // Use Buffer for bytes-to-hex conversion
         const machineSignature = '0x' + Buffer.from(fullSig).toString('hex');
 
-        // Convert the signature to bytes format (array for web3)
-        const signatureBytes = Array.from(fullSig);
-
         // Upload this machine's data to IPFS
         let cid;
         try {
@@ -162,7 +159,19 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
 
         try {
             const contractABI = JSON.parse(fs.readFileSync('./artifacts/contracts/PredictiveMaintenance.sol/PredictiveMaintenance.json', 'utf8')).abi;
-            const contractAddress = '0xB581C9264f59BF0289fA76D61B2D0746dCE3C30D';
+            
+            // Read contract address from deployment file
+            let contractAddress;
+            try {
+                const deploymentInfo = JSON.parse(fs.readFileSync('./contract-address.json', 'utf8'));
+                contractAddress = deploymentInfo.contractAddress;
+                console.log(`Using contract at: ${contractAddress} (deployed at ${deploymentInfo.deployedAt})`);
+            } catch (error) {
+                console.error('Error reading contract address from contract-address.json:', error.message);
+                console.error('Please run deploy-web3.js first to deploy the contract.');
+                return;
+            }
+            
             const contract = new web3.eth.Contract(contractABI, contractAddress);
             const accounts = await web3.eth.getAccounts();
             const fromAccount = accounts[accounts.length - 1];
@@ -204,26 +213,48 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
                 hasAnomaly: blockchainAnchor.hasAnomaly
             });
 
-            // Verify the machine's signature on the blockchain after the transaction
-            // try {
-            //     const isVerified = await contract.methods.verifySignature(
-            //         machineID,
-            //         dataHash,
-            //         signatureBytes // Pass the signature as bytes
-            //     ).call();
+            // === DECENTRALIZED VERIFICATION: Verify the machine's signature on the blockchain ===
+            // This verification happens on-chain through the smart contract, making it trustless
+            // Set ENABLE_SIGNATURE_VERIFICATION=true in .env to enable this feature
+            const enableVerification = process.env.ENABLE_SIGNATURE_VERIFICATION === 'true';
+            let signatureVerified = false;
+            
+            if (enableVerification) {
+                console.log(`\n Verifying Machine ${machineID} signature on-chain...`);
+                try {
+                    // Call verifySignature with the signature as hex string (web3 will convert it)
+                    const isVerified = await contract.methods.verifySignature(
+                        machineID,
+                        dataHash,
+                        machineSignature // Pass the signature as hex string
+                    ).call();
 
-            //     if (!isVerified) {
-            //         console.error(`Signature verification failed for Machine ${machineID}.`);
-            //         return; // Skip logging the transaction if verification fails
-            //     }
+                    if (!isVerified) {
+                        console.warn(`  VERIFICATION FAILED: Machine ${machineID} signature does not match registered address.`);
+                        console.warn(`   This means the data was NOT sent by the authentic machine!`);
+                        console.warn(`   Continuing anyway, but marking as unverified...\n`);
+                        signatureVerified = false;
+                    } else {
+                        console.log(`  VERIFICATION SUCCESSFUL: Machine ${machineID} signature verified on-chain!`);
+                        console.log(`   Signer address matches registered machine address: ${machineAddress}`);
+                        console.log(`   This proves the data authenticity in a decentralized, trustless manner.\n`);
+                        signatureVerified = true;
+                    }
+                } catch (verifyError) {
+                    console.warn(`  Verification call failed for Machine ${machineID}:`, verifyError.message);
+                    console.warn(`   This may mean the contract doesn't support verification yet.`);
+                    console.warn(`   Data Hash: ${dataHash}`);
+                    console.warn(`   Signature: ${machineSignature}`);
+                    console.warn(`   Registered Address: ${machineAddress}`);
+                    console.warn(`   Continuing without verification...\n`);
+                    signatureVerified = false;
+                }
+            } else {
+                console.log(`  Signature verification disabled. Set ENABLE_SIGNATURE_VERIFICATION=true in .env to enable.\n`);
+                signatureVerified = null; // null means verification was not attempted
+            }
 
-            //     console.log(`Signature verified successfully for Machine ${machineID}.`);
-            // } catch (verifyError) {
-            //     console.error(`Verification call failed for Machine ${machineID}:`, verifyError);
-            //     return;
-            // }
-
-            // Save transaction details to a file
+            // Save transaction details to a file (only if verification passed)
             const transactionDetails = {
                 machineID: machineID,
                 transactionHash: tx.transactionHash,
@@ -232,7 +263,9 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
                 to: contractAddress,
                 timestamp: blockchainAnchor.timestamp,
                 ipfsCID: cid, // Include the CID in the transaction details
-                machineSignature: machineSignature // Add the machine signature here
+                machineSignature: machineSignature, // Add the machine signature here
+                signatureVerified: signatureVerified, // true/false/null (true=verified, false=failed, null=not attempted)
+                verifiedAddress: machineAddress // The address that was verified
             };
 
             // Read existing transaction log or initialize an empty array
