@@ -1,30 +1,69 @@
 let web3;
 let contract;
+let contractAddress; // Will be loaded from contract-address.json
 
-// Replace with your deployed contract address and ABI
-const contractAddress = "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f"; // Replace with your contract address
 const contractABI = [
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "machineID",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "message",
+        "type": "string"
+      }
+    ],
+    "name": "AnomalyDetected",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "machineID",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "DataAnchored",
+    "type": "event"
+  },
   {
     "inputs": [
       {
         "internalType": "string",
-        "name": "_machineID",
+        "name": "",
         "type": "string"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "_merkleRoot",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bool",
-        "name": "_hasAnomaly",
-        "type": "bool"
       }
     ],
-    "name": "storeProof",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "machineAddresses",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -62,48 +101,74 @@ const contractABI = [
     "type": "function"
   },
   {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
         "internalType": "string",
-        "name": "machineID",
+        "name": "_machineID",
         "type": "string"
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "_machineAddress",
+        "type": "address"
       }
     ],
-    "name": "DataAnchored",
-    "type": "event"
+    "name": "registerMachine",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
         "internalType": "string",
-        "name": "machineID",
+        "name": "_machineID",
         "type": "string"
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
+        "internalType": "bytes32",
+        "name": "_merkleRoot",
+        "type": "bytes32"
       },
       {
-        "indexed": false,
-        "internalType": "string",
-        "name": "message",
-        "type": "string"
+        "internalType": "bool",
+        "name": "_hasAnomaly",
+        "type": "bool"
       }
     ],
-    "name": "AnomalyDetected",
-    "type": "event"
+    "name": "storeProof",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_machineID",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "dataHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      }
+    ],
+    "name": "verifySignature",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   }
 ];
 
@@ -248,11 +313,6 @@ async function fetchTransactionDetails(machineID) {
                 verifiedElement.style.color = '#ef4444';
             }
         }
-
-        // Show verify button and store transaction data for verification
-        const verifyBtn = document.getElementById('verifySignatureBtn');
-        verifyBtn.style.display = 'block';
-        verifyBtn.onclick = () => verifyMachineSignature(machineID, transaction);
     } catch (error) {
         console.error('Error fetching transaction details:', error);
     }
@@ -590,8 +650,26 @@ async function verifyMachineSignature(machineID, transaction) {
     }
 }
 
+// Load contract address from deployment file
+async function loadContractAddress() {
+  try {
+    const response = await fetch('../contract-address.json');
+    const deploymentInfo = await response.json();
+    contractAddress = deploymentInfo.contractAddress;
+    console.log(`📄 Contract address loaded: ${contractAddress}`);
+    console.log(`🕒 Deployed at: ${deploymentInfo.deployedAt}`);
+    console.log(`👤 Deployer: ${deploymentInfo.deployer}`);
+  } catch (error) {
+    console.error('❌ Error loading contract address:', error);
+    alert('Could not load contract address. Please ensure contract-address.json exists and the contract is deployed.');
+  }
+}
+
 // Initialize the app
 async function init() {
+  // Load contract address first
+  await loadContractAddress();
+  
   document.getElementById('connectMetaMask').addEventListener('click', connectToMetaMask);
   document.getElementById('checkDataBtn').addEventListener('click', async () => {
     const machineID = document.getElementById('machineID').value.trim();
