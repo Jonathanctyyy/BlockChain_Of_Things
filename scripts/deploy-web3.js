@@ -32,6 +32,18 @@ async function deploy() {
     gas,
   });
   console.log("Contract deployed at address:", deployedContract.options.address);
+  
+  // Save the contract address to a file for other scripts to use
+  const deploymentInfo = {
+    contractAddress: deployedContract.options.address,
+    deployedAt: new Date().toISOString(),
+    deployer: account.address
+  };
+  fs.writeFileSync(
+    path.resolve(__dirname, "../contract-address.json"),
+    JSON.stringify(deploymentInfo, null, 2)
+  );
+  console.log("Contract address saved to contract-address.json");
 }
 deploy().catch((error) => {
   console.error("Error deploying contract:", error);

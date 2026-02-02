@@ -236,6 +236,23 @@ async function fetchTransactionDetails(machineID) {
         document.getElementById('txTimestamp').textContent = new Date(transaction.timestamp * 1000).toLocaleString();
         document.getElementById('ipfsCID').textContent = transaction.ipfsCID || '-';
         document.getElementById('machineSignature').textContent = transaction.machineSignature || '-';
+        
+        // Display verification status if available
+        if (transaction.signatureVerified !== undefined) {
+            const verifiedElement = document.getElementById('signatureVerified');
+            if (transaction.signatureVerified) {
+                verifiedElement.innerHTML = '✅ Verified On-Chain';
+                verifiedElement.style.color = '#10b981';
+            } else {
+                verifiedElement.innerHTML = '❌ Not Verified';
+                verifiedElement.style.color = '#ef4444';
+            }
+        }
+
+        // Show verify button and store transaction data for verification
+        const verifyBtn = document.getElementById('verifySignatureBtn');
+        verifyBtn.style.display = 'block';
+        verifyBtn.onclick = () => verifyMachineSignature(machineID, transaction);
     } catch (error) {
         console.error('Error fetching transaction details:', error);
     }
@@ -502,6 +519,76 @@ async function filterDataByDate() {
 
 // Add event listener for filtering data by date
 document.getElementById('filterDateBtn').addEventListener('click', filterDataByDate);
+
+// === DECENTRALIZED SIGNATURE VERIFICATION ===
+// This function verifies the machine's signature on-chain through the smart contract
+// proving data authenticity in a trustless manner
+async function verifyMachineSignature(machineID, transaction) {
+    const resultDiv = document.getElementById('verificationResult');
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = '🔄 Verifying signature on blockchain...';
+    resultDiv.style.backgroundColor = '#f1f5f9';
+    resultDiv.style.padding = '12px';
+    resultDiv.style.borderRadius = '8px';
+    resultDiv.style.marginTop = '15px';
+
+    try {
+        // Fetch the off-chain data to reconstruct the data hash
+        const response = await fetch('../database_analyzed.json');
+        const allData = await response.json();
+        const machineData = allData.filter(record => record.machineID === machineID);
+
+        // Reconstruct the data string used for signing (must match process.js)
+        const machineDataString = machineData
+            .map(record => `${record.datetime},${record.volt},${record.vibration},${record.status}`)
+            .join('|');
+        
+        // Hash it the same way (Keccak256)
+        const dataHash = web3.utils.soliditySha3(machineDataString);
+
+        // Convert signature from hex string to bytes array
+        const signatureHex = transaction.machineSignature;
+        const signatureBytes = web3.utils.hexToBytes(signatureHex);
+
+        // Call the smart contract's verifySignature function (on-chain verification)
+        console.log('Calling smart contract verifySignature...');
+        const isVerified = await contract.methods.verifySignature(
+            machineID,
+            dataHash,
+            signatureBytes
+        ).call();
+
+        if (isVerified) {
+            resultDiv.innerHTML = `
+                <strong style="color: #10b981;">✅ SIGNATURE VERIFIED ON-CHAIN!</strong><br>
+                <span style="font-size: 0.9rem;">
+                    • Verification performed by smart contract at ${contractAddress}<br>
+                    • The signature was created by the registered machine address<br>
+                    • Data authenticity proven in a decentralized, trustless manner<br>
+                    • No central authority needed - anyone can verify this signature
+                </span>
+            `;
+            resultDiv.style.backgroundColor = '#d1fae5';
+        } else {
+            resultDiv.innerHTML = `
+                <strong style="color: #ef4444;">❌ SIGNATURE VERIFICATION FAILED!</strong><br>
+                <span style="font-size: 0.9rem;">
+                    • The signature does not match the registered machine address<br>
+                    • This data may have been tampered with or sent by an imposter<br>
+                    • DO NOT TRUST this data
+                </span>
+            `;
+            resultDiv.style.backgroundColor = '#fee2e2';
+        }
+    } catch (error) {
+        console.error('Verification error:', error);
+        resultDiv.innerHTML = `
+            <strong style="color: #ef4444;">❌ Verification Error</strong><br>
+            <span style="font-size: 0.9rem;">${error.message}</span>
+        `;
+        resultDiv.style.backgroundColor = '#fee2e2';
+    }
+}
 
 // Initialize the app
 async function init() {
