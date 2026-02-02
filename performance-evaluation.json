@@ -1,0 +1,130 @@
+{
+  "gasMetrics": [
+    {
+      "operation": "registerMachine",
+      "gasUsed": "45816",
+      "gasPriceGwei": "1.000000008",
+      "costEth": "0.000045816000366528",
+      "txHash": "0x86d411873cfa601c7b964083393f7c19274555307ccc1afd3f4d9a017c7151ad"
+    },
+    {
+      "operation": "storeProof",
+      "gasUsed": "94732",
+      "gasPriceGwei": "1.000000008",
+      "costEth": "0.000094732000757856",
+      "txHash": "0xb38c6eb5928056a00fb6c15c13d0103c0a3fcb759a40d36daa4f92729e78c311"
+    },
+    {
+      "operation": "verifySignature",
+      "gasUsed": 0,
+      "estimatedGas": "32002",
+      "gasPriceGwei": 0,
+      "costEth": 0,
+      "note": "View function - no gas consumed"
+    }
+  ],
+  "latencyMetrics": [
+    {
+      "operation": "registerMachine",
+      "iterations": 10,
+      "avgLatencyMs": 17.9,
+      "minLatencyMs": 12,
+      "maxLatencyMs": 26,
+      "samples": [
+        13,
+        12,
+        13,
+        17,
+        18,
+        19,
+        18,
+        22,
+        26,
+        21
+      ]
+    },
+    {
+      "operation": "storeProof",
+      "iterations": 10,
+      "avgLatencyMs": 14.2,
+      "minLatencyMs": 12,
+      "maxLatencyMs": 17,
+      "samples": [
+        17,
+        12,
+        13,
+        16,
+        15,
+        13,
+        12,
+        13,
+        15,
+        16
+      ]
+    },
+    {
+      "operation": "verifySignature",
+      "iterations": 10,
+      "avgLatencyMs": 5.2,
+      "minLatencyMs": 4,
+      "maxLatencyMs": 7,
+      "samples": [
+        4,
+        4,
+        4,
+        7,
+        4,
+        7,
+        6,
+        4,
+        5,
+        7
+      ],
+      "note": "View function - no transaction"
+    }
+  ],
+  "scalabilityMetrics": [
+    {
+      "scenario": "Single Machine Registration",
+      "machineCount": 1,
+      "totalTimeMs": 47,
+      "totalTimeSec": "0.05",
+      "throughputTxPerSec": "21.28",
+      "avgRegGas": "45912",
+      "avgStoreGas": "94828",
+      "totalGas": 140740
+    },
+    {
+      "scenario": "Batch Machine Registration (10)",
+      "machineCount": 10,
+      "totalTimeMs": 373,
+      "totalTimeSec": "0.37",
+      "throughputTxPerSec": "26.81",
+      "avgRegGas": "45912",
+      "avgStoreGas": "94828",
+      "totalGas": 1407400
+    },
+    {
+      "scenario": "Batch Machine Registration (50)",
+      "machineCount": 50,
+      "totalTimeMs": 1657,
+      "totalTimeSec": "1.66",
+      "throughputTxPerSec": "30.18",
+      "avgRegGas": "45922",
+      "avgStoreGas": "94836",
+      "totalGas": 7037888
+    },
+    {
+      "scenario": "Batch Machine Registration (100)",
+      "machineCount": 100,
+      "totalTimeMs": 3424,
+      "totalTimeSec": "3.42",
+      "throughputTxPerSec": "29.21",
+      "avgRegGas": "45923",
+      "avgStoreGas": "94837",
+      "totalGas": 14075944
+    }
+  ],
+  "timestamp": "2026-02-02T18:07:08.145Z",
+  "contractAddress": "0x7A847155d3Aa20373440D5a7da141A5874785ae3"
+}
