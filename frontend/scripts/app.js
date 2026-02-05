@@ -338,17 +338,35 @@ let rotationChartInstance;
 let pressureChartInstance;
 let vibrationChartInstance;
 
-// Render time-series graph with anomaly highlights
-function renderTimeSeriesGraph(data) {
-    console.log('Data passed to the chart:', data); // Debugging log
+// Chart instances for comparison (second date)
+let voltageChart2Instance;
+let rotationChart2Instance;
+let pressureChart2Instance;
+let vibrationChart2Instance;
 
+// Render time-series graph with anomaly highlights
+function renderTimeSeriesGraph(data, dateLabel = '', isComparison = false) {
+    console.log('Data passed to the chart:', data, 'isComparison:', isComparison); // Debugging log
+
+    // Determine which chart instances and canvases to use
+    const canvasIds = isComparison ? 
+        { voltage: 'voltageGraph2', rotation: 'rotationGraph2', pressure: 'pressureGraph2', vibration: 'vibrationGraph2' } :
+        { voltage: 'voltageGraph', rotation: 'rotationGraph', pressure: 'pressureGraph', vibration: 'vibrationGraph' };
+    
     // Destroy existing chart instances before creating new ones
-    if (voltageChartInstance) voltageChartInstance.destroy();
-    if (rotationChartInstance) rotationChartInstance.destroy();
-    if (pressureChartInstance) pressureChartInstance.destroy();
-    if (vibrationChartInstance) vibrationChartInstance.destroy();
+    if (isComparison) {
+        if (voltageChart2Instance) voltageChart2Instance.destroy();
+        if (rotationChart2Instance) rotationChart2Instance.destroy();
+        if (pressureChart2Instance) pressureChart2Instance.destroy();
+        if (vibrationChart2Instance) vibrationChart2Instance.destroy();
+    } else {
+        if (voltageChartInstance) voltageChartInstance.destroy();
+        if (rotationChartInstance) rotationChartInstance.destroy();
+        if (pressureChartInstance) pressureChartInstance.destroy();
+        if (vibrationChartInstance) vibrationChartInstance.destroy();
+    }
     const labels = data.map(record => record.datetime.split(' ')[1]); // Extract time only for x-axis labels
-    const date = data[0]?.datetime.split(' ')[0]; // Extract the date from the first record
+    const date = dateLabel || data[0]?.datetime.split(' ')[0]; // Use provided date label or extract from data
 
     // Extract data for each indicator and mark anomalies
     const voltages = data.map(record => parseFloat(record.volt));
@@ -396,8 +414,8 @@ function renderTimeSeriesGraph(data) {
     };
 
     // Voltage Chart
-    const voltageCtx = document.getElementById('voltageGraph').getContext('2d');
-    voltageChartInstance = new Chart(voltageCtx, {
+    const voltageCtx = document.getElementById(canvasIds.voltage).getContext('2d');
+    const voltageChart = new Chart(voltageCtx, {
         type: 'line',
         data: {
             labels: labels,
@@ -426,10 +444,16 @@ function renderTimeSeriesGraph(data) {
             },
         },
     });
+    
+    if (isComparison) {
+        voltageChart2Instance = voltageChart;
+    } else {
+        voltageChartInstance = voltageChart;
+    }
 
     // Rotation Chart
-    const rotationCtx = document.getElementById('rotationGraph').getContext('2d');
-    rotationChartInstance = new Chart(rotationCtx, {
+    const rotationCtx = document.getElementById(canvasIds.rotation).getContext('2d');
+    const rotationChart = new Chart(rotationCtx, {
         type: 'line',
         data: {
             labels: labels,
@@ -458,10 +482,16 @@ function renderTimeSeriesGraph(data) {
             },
         },
     });
+    
+    if (isComparison) {
+        rotationChart2Instance = rotationChart;
+    } else {
+        rotationChartInstance = rotationChart;
+    }
 
     // Pressure Chart
-    const pressureCtx = document.getElementById('pressureGraph').getContext('2d');
-    pressureChartInstance = new Chart(pressureCtx, {
+    const pressureCtx = document.getElementById(canvasIds.pressure).getContext('2d');
+    const pressureChart = new Chart(pressureCtx, {
         type: 'line',
         data: {
             labels: labels,
@@ -490,10 +520,16 @@ function renderTimeSeriesGraph(data) {
             },
         },
     });
+    
+    if (isComparison) {
+        pressureChart2Instance = pressureChart;
+    } else {
+        pressureChartInstance = pressureChart;
+    }
 
     // Vibration Chart
-    const vibrationCtx = document.getElementById('vibrationGraph').getContext('2d');
-    vibrationChartInstance = new Chart(vibrationCtx, {
+    const vibrationCtx = document.getElementById(canvasIds.vibration).getContext('2d');
+    const vibrationChart = new Chart(vibrationCtx, {
         type: 'line',
         data: {
             labels: labels,
@@ -522,6 +558,12 @@ function renderTimeSeriesGraph(data) {
             },
         },
     });
+    
+    if (isComparison) {
+        vibrationChart2Instance = vibrationChart;
+    } else {
+        vibrationChartInstance = vibrationChart;
+    }
 }
 
 // Function to check for anomalies
@@ -570,15 +612,111 @@ async function filterDataByDate() {
         const filteredData = data.filter(record => record.datetime.startsWith(selectedDate));
         console.log('Filtered data for date:', selectedDate, filteredData); // Debugging log
 
-        renderTimeSeriesGraph(filteredData, selectedDate); // Re-render the graph with filtered data
+        // Hide comparison graphs and show only main graphs
+        hideComparisonGraphs();
+        renderTimeSeriesGraph(filteredData, selectedDate, false); // Re-render the graph with filtered data
     } catch (error) {
         console.error('Error filtering data by date:', error);
         alert('Failed to filter data for the selected date.');
     }
 }
 
+// Compare data from two different dates
+async function compareDataByDate() {
+    const date1 = document.getElementById('dateSelector').value;
+    const date2 = document.getElementById('dateSelector2').value;
+    
+    if (!date1 || !date2) {
+        alert('Please select both dates for comparison.');
+        return;
+    }
+    
+    if (date1 === date2) {
+        alert('Please select two different dates to compare.');
+        return;
+    }
+
+    try {
+        const machineID = document.getElementById('machineID').value.trim();
+        if (!machineID) {
+            alert('Please enter a Machine ID first.');
+            return;
+        }
+        
+        const data = await fetchOffChainData(machineID);
+
+        // Filter data for both dates
+        const filteredData1 = data.filter(record => record.datetime.startsWith(date1));
+        const filteredData2 = data.filter(record => record.datetime.startsWith(date2));
+        
+        if (filteredData1.length === 0) {
+            alert(`No data found for ${date1}`);
+            return;
+        }
+        
+        if (filteredData2.length === 0) {
+            alert(`No data found for ${date2}`);
+            return;
+        }
+        
+        console.log('Comparing data:', { date1, date2, data1: filteredData1, data2: filteredData2 });
+
+        // Show comparison graphs
+        showComparisonGraphs();
+        
+        // Update titles to show which date is which
+        document.getElementById('voltageTitle').textContent = `Voltage (V) - Comparison: ${date1} vs ${date2}`;
+        document.getElementById('rotationTitle').textContent = `Rotation (RPM) - Comparison: ${date1} vs ${date2}`;
+        document.getElementById('pressureTitle').textContent = `Pressure (PSI) - Comparison: ${date1} vs ${date2}`;
+        document.getElementById('vibrationTitle').textContent = `Vibration (mm/s) - Comparison: ${date1} vs ${date2}`;
+        
+        // Render both graphs
+        renderTimeSeriesGraph(filteredData1, date1, false);
+        renderTimeSeriesGraph(filteredData2, date2, true);
+    } catch (error) {
+        console.error('Error comparing data by date:', error);
+        alert('Failed to compare data for the selected dates.');
+    }
+}
+
+// Show comparison graphs
+function showComparisonGraphs() {
+    document.getElementById('voltageGraph2Container').style.display = 'block';
+    document.getElementById('rotationGraph2Container').style.display = 'block';
+    document.getElementById('pressureGraph2Container').style.display = 'block';
+    document.getElementById('vibrationGraph2Container').style.display = 'block';
+}
+
+// Hide comparison graphs
+function hideComparisonGraphs() {
+    document.getElementById('voltageGraph2Container').style.display = 'none';
+    document.getElementById('rotationGraph2Container').style.display = 'none';
+    document.getElementById('pressureGraph2Container').style.display = 'none';
+    document.getElementById('vibrationGraph2Container').style.display = 'none';
+    
+    // Reset titles
+    document.getElementById('voltageTitle').textContent = 'Voltage (V)';
+    document.getElementById('rotationTitle').textContent = 'Rotation (RPM)';
+    document.getElementById('pressureTitle').textContent = 'Pressure (PSI)';
+    document.getElementById('vibrationTitle').textContent = 'Vibration (mm/s)';
+}
+
 // Add event listener for filtering data by date
 document.getElementById('filterDateBtn').addEventListener('click', filterDataByDate);
+
+// Add event listener for comparison mode toggle
+document.getElementById('compareMode').addEventListener('change', function() {
+    const comparisonSection = document.getElementById('comparisonDateSection');
+    if (this.checked) {
+        comparisonSection.style.display = 'block';
+    } else {
+        comparisonSection.style.display = 'none';
+        hideComparisonGraphs();
+    }
+});
+
+// Add event listener for compare button
+document.getElementById('compareBtn').addEventListener('click', compareDataByDate);
 
 // === DECENTRALIZED SIGNATURE VERIFICATION ===
 // This function verifies the machine's signature on-chain through the smart contract

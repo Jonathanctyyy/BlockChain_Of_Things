@@ -283,26 +283,71 @@
                 <input type="date" id="dateSelector" placeholder="Select Date">
                 <button id="filterDateBtn">Filter Data</button>
             </div>
+
+            <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                <label style="display: flex; align-items: center; cursor: pointer; font-weight: 600;">
+                    <input type="checkbox" id="compareMode"
+                        style="margin-right: 10px; width: 18px; height: 18px; cursor: pointer;">
+                    Enable Comparison Mode
+                </label>
+                <div id="comparisonDateSection" style="display: none; margin-top: 15px;">
+                    <label
+                        style="display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 0.9rem;">Select
+                        second date to compare:</label>
+                    <div class="input-group">
+                        <input type="date" id="dateSelector2" placeholder="Select Second Date">
+                        <button id="compareBtn">Compare</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="card">
-            <h2>Voltage (V)</h2>
-            <canvas id="voltageGraph" width="400" height="150"></canvas>
+            <h2 id="voltageTitle">Voltage (V)</h2>
+            <div id="voltageContainer" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <canvas id="voltageGraph" width="400" height="150"></canvas>
+                </div>
+                <div id="voltageGraph2Container" style="flex: 1; min-width: 300px; display: none;">
+                    <canvas id="voltageGraph2" width="400" height="150"></canvas>
+                </div>
+            </div>
         </div>
 
         <div class="card">
-            <h2>Rotation (RPM)</h2>
-            <canvas id="rotationGraph" width="400" height="150"></canvas>
+            <h2 id="rotationTitle">Rotation (RPM)</h2>
+            <div id="rotationContainer" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <canvas id="rotationGraph" width="400" height="150"></canvas>
+                </div>
+                <div id="rotationGraph2Container" style="flex: 1; min-width: 300px; display: none;">
+                    <canvas id="rotationGraph2" width="400" height="150"></canvas>
+                </div>
+            </div>
         </div>
 
         <div class="card">
-            <h2>Pressure (PSI)</h2>
-            <canvas id="pressureGraph" width="400" height="150"></canvas>
+            <h2 id="pressureTitle">Pressure (PSI)</h2>
+            <div id="pressureContainer" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <canvas id="pressureGraph" width="400" height="150"></canvas>
+                </div>
+                <div id="pressureGraph2Container" style="flex: 1; min-width: 300px; display: none;">
+                    <canvas id="pressureGraph2" width="400" height="150"></canvas>
+                </div>
+            </div>
         </div>
 
         <div class="card">
-            <h2>Vibration (mm/s)</h2>
-            <canvas id="vibrationGraph" width="400" height="150"></canvas>
+            <h2 id="vibrationTitle">Vibration (mm/s)</h2>
+            <div id="vibrationContainer" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <canvas id="vibrationGraph" width="400" height="150"></canvas>
+                </div>
+                <div id="vibrationGraph2Container" style="flex: 1; min-width: 300px; display: none;">
+                    <canvas id="vibrationGraph2" width="400" height="150"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 
