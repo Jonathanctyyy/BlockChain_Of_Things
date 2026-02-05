@@ -5,14 +5,14 @@
       "gasUsed": "45816",
       "gasPriceGwei": "1.000000008",
       "costEth": "0.000045816000366528",
-      "txHash": "0x86d411873cfa601c7b964083393f7c19274555307ccc1afd3f4d9a017c7151ad"
+      "txHash": "0x204dc8d51b7c54421d3ab046da06f8b9582feaad230c2b56b1d4cbf75a29c5c7"
     },
     {
       "operation": "storeProof",
       "gasUsed": "94732",
       "gasPriceGwei": "1.000000008",
       "costEth": "0.000094732000757856",
-      "txHash": "0xb38c6eb5928056a00fb6c15c13d0103c0a3fcb759a40d36daa4f92729e78c311"
+      "txHash": "0x0350ae9ff3c6c679b1272dd3a1ca64d4623093fd64b0c512496df46809e5d867"
     },
     {
       "operation": "verifySignature",
@@ -27,57 +27,57 @@
     {
       "operation": "registerMachine",
       "iterations": 10,
-      "avgLatencyMs": 17.9,
-      "minLatencyMs": 12,
-      "maxLatencyMs": 26,
+      "avgLatencyMs": 26.6,
+      "minLatencyMs": 19,
+      "maxLatencyMs": 35,
       "samples": [
-        13,
-        12,
-        13,
-        17,
-        18,
         19,
-        18,
         22,
-        26,
-        21
+        25,
+        22,
+        28,
+        34,
+        35,
+        25,
+        27,
+        29
       ]
     },
     {
       "operation": "storeProof",
       "iterations": 10,
-      "avgLatencyMs": 14.2,
-      "minLatencyMs": 12,
-      "maxLatencyMs": 17,
+      "avgLatencyMs": 25.7,
+      "minLatencyMs": 18,
+      "maxLatencyMs": 37,
       "samples": [
-        17,
-        12,
-        13,
-        16,
-        15,
-        13,
-        12,
-        13,
-        15,
-        16
+        28,
+        37,
+        26,
+        22,
+        18,
+        20,
+        23,
+        25,
+        29,
+        29
       ]
     },
     {
       "operation": "verifySignature",
       "iterations": 10,
-      "avgLatencyMs": 5.2,
-      "minLatencyMs": 4,
-      "maxLatencyMs": 7,
+      "avgLatencyMs": 8.5,
+      "minLatencyMs": 5,
+      "maxLatencyMs": 13,
       "samples": [
-        4,
-        4,
-        4,
+        10,
+        12,
         7,
-        4,
-        7,
-        6,
-        4,
+        8,
         5,
+        13,
+        8,
+        6,
+        9,
         7
       ],
       "note": "View function - no transaction"
@@ -87,9 +87,9 @@
     {
       "scenario": "Single Machine Registration",
       "machineCount": 1,
-      "totalTimeMs": 47,
-      "totalTimeSec": "0.05",
-      "throughputTxPerSec": "21.28",
+      "totalTimeMs": 61,
+      "totalTimeSec": "0.06",
+      "throughputTxPerSec": "16.39",
       "avgRegGas": "45912",
       "avgStoreGas": "94828",
       "totalGas": 140740
@@ -97,9 +97,9 @@
     {
       "scenario": "Batch Machine Registration (10)",
       "machineCount": 10,
-      "totalTimeMs": 373,
-      "totalTimeSec": "0.37",
-      "throughputTxPerSec": "26.81",
+      "totalTimeMs": 665,
+      "totalTimeSec": "0.67",
+      "throughputTxPerSec": "15.04",
       "avgRegGas": "45912",
       "avgStoreGas": "94828",
       "totalGas": 1407400
@@ -107,24 +107,24 @@
     {
       "scenario": "Batch Machine Registration (50)",
       "machineCount": 50,
-      "totalTimeMs": 1657,
-      "totalTimeSec": "1.66",
-      "throughputTxPerSec": "30.18",
+      "totalTimeMs": 2382,
+      "totalTimeSec": "2.38",
+      "throughputTxPerSec": "20.99",
       "avgRegGas": "45922",
-      "avgStoreGas": "94836",
-      "totalGas": 7037888
+      "avgStoreGas": "94837",
+      "totalGas": 7037912
     },
     {
       "scenario": "Batch Machine Registration (100)",
       "machineCount": 100,
-      "totalTimeMs": 3424,
-      "totalTimeSec": "3.42",
-      "throughputTxPerSec": "29.21",
+      "totalTimeMs": 4503,
+      "totalTimeSec": "4.50",
+      "throughputTxPerSec": "22.21",
       "avgRegGas": "45923",
       "avgStoreGas": "94837",
-      "totalGas": 14075944
+      "totalGas": 14076004
     }
   ],
-  "timestamp": "2026-02-02T18:07:08.145Z",
-  "contractAddress": "0x7A847155d3Aa20373440D5a7da141A5874785ae3"
+  "timestamp": "2026-02-03T11:38:29.668Z",
+  "contractAddress": "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f"
 }
