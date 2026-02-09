@@ -1,0 +1,51 @@
+{
+  "offchain": {
+    "10": {
+      "storeProofGas": "115688",
+      "verifySignatureGas": "31810",
+      "totalGas": "147498",
+      "recordsProcessed": 10
+    },
+    "50": {
+      "storeProofGas": "115700",
+      "verifySignatureGas": "31810",
+      "totalGas": "147510",
+      "recordsProcessed": 50
+    },
+    "100": {
+      "storeProofGas": "115712",
+      "verifySignatureGas": "31822",
+      "totalGas": "147534",
+      "recordsProcessed": 100
+    },
+    "200": {
+      "storeProofGas": "115712",
+      "verifySignatureGas": "31822",
+      "totalGas": "147534",
+      "recordsProcessed": 200
+    }
+  },
+  "onchain": {
+    "10": {
+      "totalGas": "142895",
+      "recordsProcessed": 10,
+      "gasPerRecord": "14289"
+    },
+    "50": {
+      "totalGas": "267996",
+      "recordsProcessed": 50,
+      "gasPerRecord": "5359"
+    },
+    "100": {
+      "totalGas": "488609",
+      "recordsProcessed": 100,
+      "gasPerRecord": "4886"
+    },
+    "200": {
+      "totalGas": "769084",
+      "recordsProcessed": 200,
+      "gasPerRecord": "3845"
+    }
+  },
+  "timestamp": "2026-02-09T18:58:20.131Z"
+}

@@ -1,0 +1,143 @@
+{
+  "testDate": "2026-02-09T18:25:32.618Z",
+  "approach": "Off-chain Anomaly Detection + Signatures",
+  "contractAddress": "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f",
+  "machinesTested": 10,
+  "gasUsage": {
+    "totalRegistration": "0",
+    "totalStoreProof": "985880",
+    "totalVerifySignature": "317956",
+    "grandTotal": "1303836",
+    "averageRegistration": "0",
+    "averageStoreProof": "98588",
+    "averageVerifySignature": "31795",
+    "averageTotal": "130383"
+  },
+  "anomalyStats": {
+    "withAnomalies": 10,
+    "normal": 0,
+    "percentage": "100.00%"
+  },
+  "transactions": [
+    {
+      "machineID": 1,
+      "records": 8761,
+      "hasAnomaly": true,
+      "merkleRoot": "0x98e05ae79bb86dfff28ab3af92cf9eac1c0c68178672c9fb4c27773157a13b9d",
+      "registrationGas": "0",
+      "storeProofGas": "98588",
+      "verifySignatureGas": "31798",
+      "totalGas": "130386",
+      "transactionHash": "0xe9bd1f4ce51a57e94eba6f5f713f81bd0e7ecc1e37fbcaf8467f54a65d69d40d",
+      "timestamp": "2026-02-09T18:25:24.511Z"
+    },
+    {
+      "machineID": 2,
+      "records": 8761,
+      "hasAnomaly": true,
+      "merkleRoot": "0xb35efedb7ad334a03308ae541dcddc344030062721a427bbab3154ab75d046ee",
+      "registrationGas": "0",
+      "storeProofGas": "98588",
+      "verifySignatureGas": "31798",
+      "totalGas": "130386",
+      "transactionHash": "0x378bbeb5440d68eb9636f0036f0301a5c86b580c8ef5ff08d7147ade01470a73",
+      "timestamp": "2026-02-09T18:25:25.327Z"
+    },
+    {
+      "machineID": 3,
+      "records": 8761,
+      "hasAnomaly": true,
+      "merkleRoot": "0x4f4bd90e7490bd2ce034e09deb13f7e3bd588e98ad781a4b95e49e1a37be4657",
+      "registrationGas": "0",
+      "storeProofGas": "98588",
+      "verifySignatureGas": "31798",
+      "totalGas": "130386",
+      "transactionHash": "0x40e3149313445e1b08c5df46f5cb1933b684e2f1cdfd4fbd93a83c5edc989d59",
+      "timestamp": "2026-02-09T18:25:26.133Z"
+    },
+    {
+      "machineID": 4,
+      "records": 8761,
+      "hasAnomaly": true,
+      "merkleRoot": "0x11253a674a50026534d941409c369429dfb645c18d3b0bdbf7d436d5d44d87b8",
+      "registrationGas": "0",
+      "storeProofGas": "98588",
+      "verifySignatureGas": "31798",
+      "totalGas": "130386",
+      "transactionHash": "0x254d4582563539895c556fb4728db6d8b54976f8c528dbe2c7d85efbe9eab576",
+      "timestamp": "2026-02-09T18:25:26.963Z"
+    },
+    {
+      "machineID": 5,
+      "records": 8761,
+      "hasAnomaly": true,
+      "merkleRoot": "0x8037c7b6022b24b23c80564db5cf4a1847f0499f36e9bee56f76aea56955d02c",
+      "registrationGas": "0",
+      "storeProofGas": "98588",
+      "verifySignatureGas": "31798",
+      "totalGas": "130386",
+      "transactionHash": "0xdf16810a23275302d42fa2c7df03eb938101d288bfe1d796475c37898a4d2d2c",
+      "timestamp": "2026-02-09T18:25:27.759Z"
+    },
+    {
+      "machineID": 6,
+      "records": 8761,
+      "hasAnomaly": true,
+      "merkleRoot": "0xd8ca58597db7e6d89ae918bbb77ff91bc2501ae07799ea779c0f14952e3fadbc",
+      "registrationGas": "0",
+      "storeProofGas": "98588",
+      "verifySignatureGas": "31786",
+      "totalGas": "130374",
+      "transactionHash": "0x25d3d6174a2bc861f246aa56571f657314d2ccc9af43475866ef115f4d8ee93d",
+      "timestamp": "2026-02-09T18:25:28.692Z"
+    },
+    {
+      "machineID": 7,
+      "records": 8761,
+      "hasAnomaly": true,
+      "merkleRoot": "0xf98d97086e6a9425ea99a4338e8faa46eb39a83e8d5c292524a25cb8069603fd",
+      "registrationGas": "0",
+      "storeProofGas": "98588",
+      "verifySignatureGas": "31786",
+      "totalGas": "130374",
+      "transactionHash": "0xd3649f455460623f8fa180ef691feb12ead3b6b014d334842c65e0f548660400",
+      "timestamp": "2026-02-09T18:25:29.540Z"
+    },
+    {
+      "machineID": 8,
+      "records": 8761,
+      "hasAnomaly": true,
+      "merkleRoot": "0x08b42215e19b7e0928b4c827be4d57edc66141356dc4f6202701ec056c003494",
+      "registrationGas": "0",
+      "storeProofGas": "98576",
+      "verifySignatureGas": "31786",
+      "totalGas": "130362",
+      "transactionHash": "0x6b261e67694dccd39036bda5e33e920d4b2cbd00a24eba06b294ddc345bcef49",
+      "timestamp": "2026-02-09T18:25:30.454Z"
+    },
+    {
+      "machineID": 9,
+      "records": 8761,
+      "hasAnomaly": true,
+      "merkleRoot": "0x07b75f16cc80279ca3fbb1cf0fde43fdd51c068415383b342a979c8d2eed8dbd",
+      "registrationGas": "0",
+      "storeProofGas": "98588",
+      "verifySignatureGas": "31798",
+      "totalGas": "130386",
+      "transactionHash": "0xd7bc8ebe5642e95d3195a9fb6abcfb21ee8616453c6bd32cdd52581038833b64",
+      "timestamp": "2026-02-09T18:25:31.275Z"
+    },
+    {
+      "machineID": 10,
+      "records": 8761,
+      "hasAnomaly": true,
+      "merkleRoot": "0xa15d012c0984f18a8f725eef0e398e6d25106c96c2402898911f32ad959a0da9",
+      "registrationGas": "0",
+      "storeProofGas": "98600",
+      "verifySignatureGas": "31810",
+      "totalGas": "130410",
+      "transactionHash": "0xdd19b6911159b1ba81993e4b93cd0372529b01fa1c325d674b4be3ec73198ce2",
+      "timestamp": "2026-02-09T18:25:32.103Z"
+    }
+  ]
+}

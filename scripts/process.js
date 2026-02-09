@@ -90,6 +90,13 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
     fs.writeFileSync('database_analyzed.json', JSON.stringify(allProcessedData, null, 2), 'utf8');
     console.log('All processed data written to database_analyzed.json.');
 
+    // Delete all existing files on Pinata before uploading new data
+    try {
+        await deleteAllPinataFiles();
+    } catch (error) {
+        console.error('Warning: Could not clean up old Pinata data, continuing anyway...');
+    }
+
     // Load machine private key from .env (must be hex string like '0x...')
     const machinePrivateKey = process.env.MACHINE_PRIVATE_KEY;
     if (!machinePrivateKey) {
@@ -299,11 +306,45 @@ const pinataClient = new PinataSDK({
     pinataJwt: process.env.PINATA_JWT, // Use correct key for JWT
 });
 
+// Function to delete all existing files on Pinata
+async function deleteAllPinataFiles() {
+    try {
+        console.log('\n=== Cleaning up old Pinata data ===');
+        
+        // List all pinned files
+        const files = await pinataClient.files.list();
+        
+        if (!files || !files.files || files.files.length === 0) {
+            console.log('No existing files found on Pinata to delete.');
+            return;
+        }
+        
+        console.log(`Found ${files.files.length} files to delete...`);
+        
+        // Delete each file by unpinning it
+        for (const file of files.files) {
+            try {
+                await pinataClient.files.delete([file.id]);
+                console.log(`Deleted file: ${file.name || file.cid} (ID: ${file.id})`);
+            } catch (error) {
+                console.error(`Failed to delete file ${file.id}:`, error.message);
+            }
+        }
+        
+        console.log('All existing Pinata files have been deleted.\n');
+    } catch (error) {
+        console.error('Error deleting Pinata files:', error.message);
+        throw error;
+    }
+}
+
 // Function to upload data per machine to Pinata and get the CID
 async function uploadToIPFS(machineID, records) {
     try {
-        // Upload the machine's records to Pinata
-        const result = await pinataClient.upload.public.json(records);
+        // Upload the machine's records to Pinata with custom filename
+        const result = await pinataClient.upload.public.json(records, {
+            name: `machine_${machineID}.json`
+        });
         // Extract the CID (note: it's 'cid' in the new SDK, not 'IpfsHash')
         const cid = result.cid;
         console.log(`Machine ${machineID} data stored in IPFS with CID:`, cid);

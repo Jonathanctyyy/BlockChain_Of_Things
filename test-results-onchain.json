@@ -1,0 +1,189 @@
+{
+  "testDate": "2026-02-09T18:18:05.168Z",
+  "contractAddress": "0x372300F1caDd00Cb65BAFF85a57f09Ca4b0ca3FE",
+  "machinesTested": 10,
+  "gasUsage": {
+    "totalRegistration": "462920",
+    "totalStoreProof": "972748",
+    "grandTotal": "1435668",
+    "averageRegistration": "46292",
+    "averageStoreProof": "97274"
+  },
+  "anomalyStats": {
+    "withAnomalies": 0,
+    "normal": 10,
+    "percentage": "0.00%"
+  },
+  "transactions": [
+    {
+      "machineID": 1,
+      "records": 8761,
+      "avgSensors": {
+        "vibration": 41,
+        "volt": 171,
+        "pressure": 101,
+        "rotation": 446
+      },
+      "expectedAnomaly": false,
+      "merkleRoot": "0x98e05ae79bb86dfff28ab3af92cf9eac1c0c68178672c9fb4c27773157a13b9d",
+      "registrationGas": "46292",
+      "storeProofGas": "97276",
+      "totalGas": "143568",
+      "transactionHash": "0xb1e6d6744854af703081bec01f7a63215e360ca8565f564f559ce4b2ca9e31e4",
+      "timestamp": "2026-02-09T18:17:53.143Z"
+    },
+    {
+      "machineID": 2,
+      "records": 8761,
+      "avgSensors": {
+        "vibration": 40,
+        "volt": 171,
+        "pressure": 101,
+        "rotation": 446
+      },
+      "expectedAnomaly": false,
+      "merkleRoot": "0xb35efedb7ad334a03308ae541dcddc344030062721a427bbab3154ab75d046ee",
+      "registrationGas": "46292",
+      "storeProofGas": "97276",
+      "totalGas": "143568",
+      "transactionHash": "0x480d280a2f84a718c58dc7df920de638453ff45a13be45b0299418a94ab353d8",
+      "timestamp": "2026-02-09T18:17:54.566Z"
+    },
+    {
+      "machineID": 3,
+      "records": 8761,
+      "avgSensors": {
+        "vibration": 40,
+        "volt": 171,
+        "pressure": 101,
+        "rotation": 447
+      },
+      "expectedAnomaly": false,
+      "merkleRoot": "0x4f4bd90e7490bd2ce034e09deb13f7e3bd588e98ad781a4b95e49e1a37be4657",
+      "registrationGas": "46292",
+      "storeProofGas": "97276",
+      "totalGas": "143568",
+      "transactionHash": "0x885ce6611c49a369209b96c96d23a67d3adf8bf4de44544ef1d64fd79b72aeb0",
+      "timestamp": "2026-02-09T18:17:55.862Z"
+    },
+    {
+      "machineID": 4,
+      "records": 8761,
+      "avgSensors": {
+        "vibration": 40,
+        "volt": 171,
+        "pressure": 101,
+        "rotation": 446
+      },
+      "expectedAnomaly": false,
+      "merkleRoot": "0x11253a674a50026534d941409c369429dfb645c18d3b0bdbf7d436d5d44d87b8",
+      "registrationGas": "46292",
+      "storeProofGas": "97276",
+      "totalGas": "143568",
+      "transactionHash": "0x5c83efd497a26473d14592a9a76db746c64e597da1c2dc74c92aa1eb967a4b35",
+      "timestamp": "2026-02-09T18:17:57.519Z"
+    },
+    {
+      "machineID": 5,
+      "records": 8761,
+      "avgSensors": {
+        "vibration": 40,
+        "volt": 171,
+        "pressure": 101,
+        "rotation": 447
+      },
+      "expectedAnomaly": false,
+      "merkleRoot": "0x8037c7b6022b24b23c80564db5cf4a1847f0499f36e9bee56f76aea56955d02c",
+      "registrationGas": "46292",
+      "storeProofGas": "97276",
+      "totalGas": "143568",
+      "transactionHash": "0x2cac2049c966c16688690b834e324343d3ed40a3537b62a2d1dd8bdb02b9c2ac",
+      "timestamp": "2026-02-09T18:17:58.708Z"
+    },
+    {
+      "machineID": 6,
+      "records": 8761,
+      "avgSensors": {
+        "vibration": 40,
+        "volt": 170,
+        "pressure": 101,
+        "rotation": 449
+      },
+      "expectedAnomaly": false,
+      "merkleRoot": "0xd8ca58597db7e6d89ae918bbb77ff91bc2501ae07799ea779c0f14952e3fadbc",
+      "registrationGas": "46292",
+      "storeProofGas": "97276",
+      "totalGas": "143568",
+      "transactionHash": "0xd23289597c3cfec44c151c30a8c47a14dc30a24a7f9387f168ef9088ea179a56",
+      "timestamp": "2026-02-09T18:17:59.891Z"
+    },
+    {
+      "machineID": 7,
+      "records": 8761,
+      "avgSensors": {
+        "vibration": 40,
+        "volt": 171,
+        "pressure": 101,
+        "rotation": 446
+      },
+      "expectedAnomaly": false,
+      "merkleRoot": "0xf98d97086e6a9425ea99a4338e8faa46eb39a83e8d5c292524a25cb8069603fd",
+      "registrationGas": "46292",
+      "storeProofGas": "97276",
+      "totalGas": "143568",
+      "transactionHash": "0xccb88ca759818f9598825109ce4b13edfc9c9c718e0a93a39f5ef21096092c6f",
+      "timestamp": "2026-02-09T18:18:01.162Z"
+    },
+    {
+      "machineID": 8,
+      "records": 8761,
+      "avgSensors": {
+        "vibration": 40,
+        "volt": 171,
+        "pressure": 101,
+        "rotation": 447
+      },
+      "expectedAnomaly": false,
+      "merkleRoot": "0x08b42215e19b7e0928b4c827be4d57edc66141356dc4f6202701ec056c003494",
+      "registrationGas": "46292",
+      "storeProofGas": "97264",
+      "totalGas": "143556",
+      "transactionHash": "0x97af32b6919f218fd29d6b6daec40d38cc8d8f9f777d5d004e81b16865b4c686",
+      "timestamp": "2026-02-09T18:18:02.151Z"
+    },
+    {
+      "machineID": 9,
+      "records": 8761,
+      "avgSensors": {
+        "vibration": 40,
+        "volt": 171,
+        "pressure": 101,
+        "rotation": 446
+      },
+      "expectedAnomaly": false,
+      "merkleRoot": "0x07b75f16cc80279ca3fbb1cf0fde43fdd51c068415383b342a979c8d2eed8dbd",
+      "registrationGas": "46292",
+      "storeProofGas": "97276",
+      "totalGas": "143568",
+      "transactionHash": "0x74a30d631b92a271fbe1c98d73dea86abdc344ae48b03a4a479b2319df0ea6db",
+      "timestamp": "2026-02-09T18:18:03.435Z"
+    },
+    {
+      "machineID": 10,
+      "records": 8761,
+      "avgSensors": {
+        "vibration": 40,
+        "volt": 171,
+        "pressure": 101,
+        "rotation": 446
+      },
+      "expectedAnomaly": false,
+      "merkleRoot": "0xa15d012c0984f18a8f725eef0e398e6d25106c96c2402898911f32ad959a0da9",
+      "registrationGas": "46292",
+      "storeProofGas": "97276",
+      "totalGas": "143568",
+      "transactionHash": "0x9f439f755e5e1d1457fd0c85721046d80cb801ddc98887b846c29de1cc2ddc14",
+      "timestamp": "2026-02-09T18:18:04.660Z"
+    }
+  ]
+}
