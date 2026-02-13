@@ -21,58 +21,178 @@ let anomalyDetectedInBatch = false;
 // Initialize an array to store all processed data
 const allProcessedData = [];
 
-// --- UPDATED ANOMALY DETECTION LOGIC ---
-function checkAnomaly(data) {
+// ====================================
+// ADVANCED ANOMALY DETECTION SYSTEM
+// ====================================
+// This system prevents false positives by:
+// 1. TEMPORAL PERSISTENCE: Requires anomalies to persist across multiple consecutive readings
+// 2. MULTI-SENSOR CORRELATION: Triggers when multiple sensors show anomalies simultaneously
+// 3. TIME-WINDOW VALIDATION: Analyzes patterns within a configurable time window
+//
+// An anomaly is only flagged as CRITICAL if:
+// - Multiple sensors (≥2) show abnormal readings at the same time, OR
+// - The same sensor shows anomalies for 3+ consecutive readings
+//
+// This reduces noise and focuses on genuine equipment degradation patterns.
+// 
+// CONFIGURATION: Adjust the values below to tune sensitivity
+// ====================================
+
+// Configuration for anomaly detection
+const ANOMALY_CONFIG = {
+    // Number of consecutive anomalies required to trigger alert (higher = fewer alerts)
+    CONSECUTIVE_THRESHOLD: 3,
+    // Number of concurrent sensor anomalies required (higher = fewer alerts)
+    MULTI_SENSOR_THRESHOLD: 2,
+    // Time window in hours to check for persistent anomalies
+    TIME_WINDOW_HOURS: 1,
+    // Maximum number of anomaly proofs to store per machine (to prevent massive files)
+    MAX_PROOFS_PER_MACHINE: 10
+};
+
+// Store recent readings per machine for temporal analysis
+const machineHistory = {};
+
+// --- ENHANCED ANOMALY DETECTION LOGIC ---
+// Check if a single reading exceeds threshold
+function checkThresholdViolation(data) {
+    const violations = [];
     const vibration = parseFloat(data.vibration);
     const volt = parseFloat(data.volt);
     const pressure = parseFloat(data.pressure);
     const rotation = parseFloat(data.rotate);
     
-    // Rule 1: High vibration - indicates mechanical issues
     if (vibration > 50.0) {
-        console.log(`[ALERT] High Vibration detected: ${vibration} at ${data.datetime}`);
-        return true;
+        violations.push({ type: 'vibration', value: vibration, threshold: 50.0 });
     }
-    // Rule 2: Low voltage - indicates electrical issues
     if (volt < 155.0 || volt > 190.0) {
-        console.log(`[ALERT] Abnormal Voltage detected: ${volt} at ${data.datetime}`);
-        return true;
+        violations.push({ type: 'voltage', value: volt, threshold: '155.0-190.0' });
     }
-    // Rule 3: Abnormal pressure - too high or too low
     if (pressure > 120.0 || pressure < 80.0) {
-        console.log(`[ALERT] Abnormal Pressure detected: ${pressure} at ${data.datetime}`);
-        return true;
+        violations.push({ type: 'pressure', value: pressure, threshold: '80.0-120.0' });
     }
-    // Rule 4: Abnormal rotation - too high or too low RPM
     if (rotation > 550.0 || rotation < 350.0) {
-        console.log(`[ALERT] Abnormal Rotation detected: ${rotation} at ${data.datetime}`);
+        violations.push({ type: 'rotation', value: rotation, threshold: '350.0-550.0' });
+    }
+    
+    return violations;
+}
+
+// Advanced anomaly detection with temporal and multi-metric validation
+function checkAnomaly(data) {
+    const machineID = data.machineID;
+    const currentTime = new Date(data.datetime);
+    
+    // Initialize history for this machine if not exists
+    if (!machineHistory[machineID]) {
+        machineHistory[machineID] = [];
+    }
+    
+    // Check current reading for threshold violations
+    const currentViolations = checkThresholdViolation(data);
+    
+    // Add current reading to history
+    machineHistory[machineID].push({
+        datetime: currentTime,
+        violations: currentViolations,
+        data: data
+    });
+    
+    // Keep only recent history within time window
+    const timeWindowMs = ANOMALY_CONFIG.TIME_WINDOW_HOURS * 60 * 60 * 1000;
+    machineHistory[machineID] = machineHistory[machineID].filter(record => {
+        return (currentTime - record.datetime) <= timeWindowMs;
+    });
+    
+    // If no violations in current reading, return false
+    if (currentViolations.length === 0) {
+        return false;
+    }
+    
+    // RULE 1: Multi-Sensor Validation - Multiple sensors showing anomalies simultaneously
+    if (currentViolations.length >= ANOMALY_CONFIG.MULTI_SENSOR_THRESHOLD) {
+        console.log(`[ALERT] Multi-Sensor Anomaly detected for Machine ${machineID} at ${data.datetime}`);
+        console.log(`  ${currentViolations.length} sensors showing abnormal readings:`);
+        currentViolations.forEach(v => {
+            console.log(`    - ${v.type}: ${v.value} (threshold: ${v.threshold})`);
+        });
         return true;
     }
+    
+    // RULE 2: Temporal Persistence - Same sensor showing anomalies consecutively
+    const recentReadings = machineHistory[machineID].slice(-ANOMALY_CONFIG.CONSECUTIVE_THRESHOLD);
+    
+    if (recentReadings.length >= ANOMALY_CONFIG.CONSECUTIVE_THRESHOLD) {
+        // Check if any sensor type has violations in all recent readings
+        const sensorTypes = ['vibration', 'voltage', 'pressure', 'rotation'];
+        
+        for (const sensorType of sensorTypes) {
+            const consecutiveViolations = recentReadings.every(reading => 
+                reading.violations.some(v => v.type === sensorType)
+            );
+            
+            if (consecutiveViolations) {
+                console.log(`[ALERT] Persistent ${sensorType} anomaly detected for Machine ${machineID} at ${data.datetime}`);
+                console.log(`  Anomaly persisted for ${recentReadings.length} consecutive readings`);
+                console.log(`  Time span: ${recentReadings[0].datetime.toISOString()} to ${currentTime.toISOString()}`);
+                return true;
+            }
+        }
+    }
+    
+    // No alert triggered - isolated anomaly (likely false positive)
+    if (currentViolations.length > 0) {
+        console.log(`[INFO] Isolated anomaly detected for Machine ${machineID} at ${data.datetime} - not triggering alert (likely false positive)`);
+        currentViolations.forEach(v => {
+            console.log(`  - ${v.type}: ${v.value}`);
+        });
+    }
+    
     return false;
 }
 
 // Clear the data inside database_analyzed.json before writing new data
 fs.writeFileSync('database_analyzed.json', JSON.stringify([], null, 2));
 fs.writeFileSync('transaction_log.json', JSON.stringify([], null, 2));
+fs.writeFileSync('anomaly_proofs.json', JSON.stringify([], null, 2));
 
 // Initialize Web3 globally
 const web3 = new Web3('http://127.0.0.1:8545');
+
+// Statistics tracking for anomaly detection
+const anomalyStats = {
+    totalReadings: 0,
+    thresholdViolations: 0,
+    criticalAnomalies: 0,
+    filteredIsolated: 0
+};
 
 // ==================================== Writing Processed Data and Blockchain Interaction ====================================
 // 1. READ & ANALYZE
 fs.createReadStream('./iot-data/PdM_telemetry.csv')
   .pipe(csv())
   .on('data', (data) => {
+    anomalyStats.totalReadings++;
     
-    // Check for anomalies using your custom thresholds
+    // Track threshold violations before anomaly check
+    const violations = checkThresholdViolation(data);
+    if (violations.length > 0) {
+        anomalyStats.thresholdViolations++;
+    }
+    
+    // Check for anomalies using advanced temporal and multi-metric validation
     const isAnomaly = checkAnomaly(data);
     
     // Tag the data status
     if (isAnomaly) {
         data.status = "CRITICAL";
         anomalyDetectedInBatch = true;
+        anomalyStats.criticalAnomalies++;
     } else {
         data.status = "NORMAL";
+        if (violations.length > 0) {
+            anomalyStats.filteredIsolated++;
+        }
     }
     // Create the string for hashing and signing
     const rowString = `${data.datetime},${data.machineID},${data.volt},${data.vibration},${data.status}`;
@@ -89,6 +209,26 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
     // Write all processed data to database_analyzed.json
     fs.writeFileSync('database_analyzed.json', JSON.stringify(allProcessedData, null, 2), 'utf8');
     console.log('All processed data written to database_analyzed.json.');
+
+    // Display Anomaly Detection Statistics
+    console.log('\n========================================');
+    console.log('   ANOMALY DETECTION SUMMARY');
+    console.log('========================================');
+    console.log(`Total readings processed: ${anomalyStats.totalReadings}`);
+    console.log(`Threshold violations detected: ${anomalyStats.thresholdViolations}`);
+    console.log(`Critical anomalies flagged: ${anomalyStats.criticalAnomalies}`);
+    console.log(`False positives filtered: ${anomalyStats.filteredIsolated}`);
+    
+    if (anomalyStats.thresholdViolations > 0) {
+        const filterRate = ((anomalyStats.filteredIsolated / anomalyStats.thresholdViolations) * 100).toFixed(1);
+        console.log(`False positive filter rate: ${filterRate}%`);
+    }
+    
+    console.log('\nDetection Rules Applied:');
+    console.log(`  • Multi-Sensor: ≥${ANOMALY_CONFIG.MULTI_SENSOR_THRESHOLD} concurrent sensor anomalies`);
+    console.log(`  • Temporal: ${ANOMALY_CONFIG.CONSECUTIVE_THRESHOLD}+ consecutive anomalies in same sensor`);
+    console.log(`  • Time Window: ${ANOMALY_CONFIG.TIME_WINDOW_HOURS} hour(s)`);
+    console.log('========================================\n');
 
     // Delete all existing files on Pinata before uploading new data
     try {
@@ -110,12 +250,65 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
 
     // After processing all data, generate Merkle Trees and store hashes per machine
     for (const [machineID, records] of Object.entries(machineRecords)) {
+        // Use keccak256 (Ethereum's hash function) for Solidity compatibility
         const leaves = records.map(record => {
             const rowString = `${record.datetime},${record.machineID},${record.volt},${record.vibration},${record.status}`;
-            return SHA256(rowString);
+            // Use web3's keccak256 for Ethereum compatibility
+            return web3.utils.keccak256(rowString);
         });
-        const tree = new MerkleTree(leaves, SHA256);
-        const root = tree.getRoot().toString('hex');
+        
+        // Create Merkle tree with keccak256
+        const tree = new MerkleTree(leaves, (data) => {
+            // For internal nodes, hash the concatenation
+            if (Buffer.isBuffer(data)) {
+                return Buffer.from(web3.utils.keccak256(data).slice(2), 'hex');
+            }
+            return Buffer.from(web3.utils.keccak256(data).slice(2), 'hex');
+        }, { sortPairs: false });
+        
+        const root = '0x' + tree.getRoot().toString('hex');
+
+        // ====================================
+        // MERKLE PROOF GENERATION FOR ANOMALIES
+        // ====================================
+        // Generate compact Merkle proofs for anomalous readings
+        // This allows efficient O(log n) verification on-chain
+        const anomalyProofs = [];
+        
+        records.forEach((record, index) => {
+            if (record.status === 'CRITICAL') {
+                const leaf = leaves[index];
+                const proof = tree.getProof(leaf);
+                
+                // Convert proof to hex format for blockchain verification
+                const proofHex = proof.map(p => ({
+                    position: p.position, // 'left' or 'right'
+                    data: '0x' + p.data.toString('hex')
+                }));
+                
+                anomalyProofs.push({
+                    recordIndex: index,
+                    datetime: record.datetime,
+                    machineID: record.machineID,
+                    leaf: leaf, // Already in hex format from keccak256
+                    proof: proofHex,
+                    proofLength: proofHex.length,
+                    data: {
+                        volt: record.volt,
+                        vibration: record.vibration,
+                        pressure: record.pressure,
+                        rotation: record.rotate,
+                        status: record.status
+                    }
+                });
+            }
+        });
+
+        if (anomalyProofs.length > 0) {
+            console.log(`\n📊 Generated ${anomalyProofs.length} Merkle proofs for anomalous readings (Machine ${machineID})`);
+            console.log(`   Proof size: ${anomalyProofs[0].proofLength} hashes (O(log n) = log₂(${records.length}) ≈ ${Math.ceil(Math.log2(records.length))})`);
+            console.log(`   Hash function: keccak256 (Ethereum compatible)`);
+        }
 
         // Generate a single signature for the machine
         const machineDataString = records.map(record => `${record.datetime},${record.volt},${record.vibration},${record.status}`).join('|');
@@ -156,7 +349,7 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
         // Prepare blockchain payload for each machine
         const blockchainAnchor = {
             timestamp: Math.floor(new Date().getTime() / 1000),
-            merkleRoot: `0x${root}`,
+            merkleRoot: root, // Already has '0x' prefix
             machineID: parseInt(machineID),
             hasAnomaly: records.some(record => record.status === 'CRITICAL')
         };
@@ -269,11 +462,42 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
                 from: fromAccount,
                 to: contractAddress,
                 timestamp: blockchainAnchor.timestamp,
+                merkleRoot: blockchainAnchor.merkleRoot, // Include the Merkle Root hash
                 ipfsCID: cid, // Include the CID in the transaction details
                 machineSignature: machineSignature, // Add the machine signature here
                 signatureVerified: signatureVerified, // true/false/null (true=verified, false=failed, null=not attempted)
-                verifiedAddress: machineAddress // The address that was verified
+                verifiedAddress: machineAddress, // The address that was verified
+                anomalyCount: anomalyProofs.length, // Number of anomalous readings
+                hasAnomalyProofs: anomalyProofs.length > 0 // Flag indicating proofs are available
             };
+
+            // Save Merkle proofs for anomalous readings to a separate file
+            if (anomalyProofs.length > 0) {
+                // Limit to most recent proofs to prevent file bloat
+                const limitedProofs = anomalyProofs.slice(-ANOMALY_CONFIG.MAX_PROOFS_PER_MACHINE);
+                
+                let allAnomalyProofs = [];
+                try {
+                    const existingProofs = fs.readFileSync('anomaly_proofs.json', 'utf8');
+                    allAnomalyProofs = JSON.parse(existingProofs);
+                } catch (error) {
+                    if (error.code !== 'ENOENT') {
+                        console.error('Error reading anomaly proofs:', error);
+                    }
+                }
+
+                allAnomalyProofs.push({
+                    machineID: machineID,
+                    merkleRoot: blockchainAnchor.merkleRoot,
+                    transactionHash: tx.transactionHash,
+                    timestamp: blockchainAnchor.timestamp,
+                    totalRecords: records.length,
+                    anomalies: limitedProofs
+                });
+
+                fs.writeFileSync('anomaly_proofs.json', JSON.stringify(allAnomalyProofs, null, 2));
+                console.log(`✅ Saved ${limitedProofs.length} Merkle proofs to anomaly_proofs.json (limited from ${anomalyProofs.length})`);
+            }
 
             // Read existing transaction log or initialize an empty array
             let transactionLog = [];

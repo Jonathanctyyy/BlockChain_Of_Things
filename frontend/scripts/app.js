@@ -1,6 +1,7 @@
 let web3;
 let contract;
 let contractAddress; // Will be loaded from contract-address.json
+let connectedAccount; // Store the connected MetaMask account
 
 const contractABI = [
   {
@@ -45,6 +46,149 @@ const contractABI = [
       }
     ],
     "name": "DataAnchored",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "machineID",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "anchorIndex",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "leaf",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "verified",
+        "type": "bool"
+      }
+    ],
+    "name": "ProofVerified",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "machineID",
+        "type": "string"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "setter",
+        "type": "address"
+      }
+    ],
+    "name": "PolicySet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "machineID",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "anchorIndex",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "leaf",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "proofValid",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "policyMet",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "ClaimValidated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "machineID",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "claimType",
+        "type": "string"
+      }
+    ],
+    "name": "ClaimApproved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "machineID",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "ClaimRejected",
     "type": "event"
   },
   {
@@ -94,6 +238,60 @@ const contractABI = [
       {
         "internalType": "bool",
         "name": "hasAnomaly",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "insurancePolicies",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "voltageMin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "voltageMax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "vibrationMax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pressureMin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pressureMax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rotationMin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rotationMax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "enabled",
         "type": "bool"
       }
     ],
@@ -169,6 +367,258 @@ const contractABI = [
     ],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_machineID",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_anchorIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_leaf",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32[]",
+        "name": "_proof",
+        "type": "bytes32[]"
+      },
+      {
+        "internalType": "uint8[]",
+        "name": "_positions",
+        "type": "uint8[]"
+      }
+    ],
+    "name": "verifyMerkleProof",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_machineID",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_anchorIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_leaf",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32[]",
+        "name": "_proof",
+        "type": "bytes32[]"
+      },
+      {
+        "internalType": "uint8[]",
+        "name": "_positions",
+        "type": "uint8[]"
+      }
+    ],
+    "name": "verifyAndLog",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_machineID",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_voltageMin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_voltageMax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_vibrationMax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_pressureMin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_pressureMax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_rotationMin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_rotationMax",
+        "type": "uint256"
+      }
+    ],
+    "name": "setInsurancePolicy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_machineID",
+        "type": "string"
+      }
+    ],
+    "name": "disablePolicy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_machineID",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_anchorIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_leaf",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32[]",
+        "name": "_proof",
+        "type": "bytes32[]"
+      },
+      {
+        "internalType": "uint8[]",
+        "name": "_positions",
+        "type": "uint8[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "voltage",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "vibration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pressure",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rotation",
+        "type": "uint256"
+      }
+    ],
+    "name": "validateInsuranceClaim",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "proofValid",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "policyMet",
+        "type": "bool"
+      },
+      {
+        "internalType": "string",
+        "name": "claimType",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_machineID",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "voltage",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "vibration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pressure",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rotation",
+        "type": "uint256"
+      }
+    ],
+    "name": "checkClaimEligibility",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "eligible",
+        "type": "bool"
+      },
+      {
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   }
 ];
 
@@ -178,14 +628,57 @@ async function connectToMetaMask() {
     try {
       // Request account access
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const account = accounts[0];
-      document.getElementById('walletAddress').textContent = `Wallet Address: ${account}`;
+      connectedAccount = accounts[0];
+      document.getElementById('walletAddress').textContent = `Wallet Address: ${connectedAccount}`;
       web3 = new Web3(window.ethereum);
-      console.log('MetaMask connected:', account);
+      console.log('MetaMask connected:', connectedAccount);
+
+      // Listen for account changes
+      window.ethereum.on('accountsChanged', async (accounts) => {
+        if (accounts.length > 0) {
+          connectedAccount = accounts[0];
+          // Check new account balance
+          const balance = await web3.eth.getBalance(connectedAccount);
+          const balanceInEth = web3.utils.fromWei(balance, 'ether');
+          document.getElementById('walletAddress').textContent = `Wallet: ${connectedAccount} (${parseFloat(balanceInEth).toFixed(2)} ETH)`;
+          console.log('Account switched to:', connectedAccount, '- Balance:', balanceInEth, 'ETH');
+          
+          if (parseFloat(balanceInEth) < 0.01) {
+            alert(`⚠️ Switched to low balance account!\n\nNew Account: ${connectedAccount}\nBalance: ${balanceInEth} ETH\n\nThis account may not have enough ETH for transactions.\nConsider switching to your Hardhat test account with 10,000 ETH.`);
+          }
+        } else {
+          connectedAccount = null;
+          document.getElementById('walletAddress').textContent = 'Wallet: Not connected';
+          console.log('MetaMask disconnected');
+        }
+      });
+
+      // Check network
+      const networkId = await web3.eth.net.getId();
+      const chainId = await web3.eth.getChainId();
+      console.log('Connected to network ID:', networkId, 'Chain ID:', chainId);
+      
+      // Check account balance
+      const balance = await web3.eth.getBalance(connectedAccount);
+      const balanceInEth = web3.utils.fromWei(balance, 'ether');
+      console.log('Account balance:', balanceInEth, 'ETH');
+      
+      // Display balance in UI
+      document.getElementById('walletAddress').textContent = `Wallet: ${connectedAccount} (${parseFloat(balanceInEth).toFixed(2)} ETH)`;
+      
+      // Hardhat default chain ID is 31337
+    //   if (chainId !== 31337n && chainId !== 1337n) {
+    //     alert(`⚠️ Warning: You're connected to chain ID ${chainId}.\n\nThe contract is deployed on Hardhat local network (chain ID 31337).\n\nPlease switch MetaMask to http://localhost:8545 to view blockchain data.`);
+    //   }
 
       // Initialize the contract
       contract = new web3.eth.Contract(contractABI, contractAddress);
-      console.log('Contract initialized:', contract);
+      console.log('Contract initialized at address:', contractAddress);
+      console.log('Contract has setInsurancePolicy?', typeof contract.methods.setInsurancePolicy);
+      console.log('Contract has validateInsuranceClaim?', typeof contract.methods.validateInsuranceClaim);
+      console.log('Available insurance methods:', 
+        Object.keys(contract.methods).filter(m => m.includes('Insurance') || m.includes('Policy')));
+      console.log('✅ Ready to fetch blockchain data');
     } catch (error) {
       console.error('User rejected MetaMask connection:', error);
     }
@@ -228,16 +721,18 @@ async function fetchAndDisplayMachineData() {
     }
 
     if (!contract) {
-        alert('Please connect MetaMask first.');
+        const blockchainContainer = document.getElementById('blockchain');
+        blockchainContainer.textContent = '⚠️ Please connect MetaMask first to view blockchain data.\n\nSteps:\n1. Click "Connect MetaMask"\n2. Make sure MetaMask is connected to http://localhost:8545\n3. Enter a Machine ID (e.g., 1, 2, 3)\n4. Click "Check Machine" again';
+        blockchainContainer.style.color = '#ef4444';
         return;
     }
 
     try {
         const blockchainContainer = document.getElementById('blockchain');
+        blockchainContainer.style.color = ''; // Reset color
         const resultElement = document.getElementById('result');
 
-        let displayText = `Blockchain Data for Machine ID: ${machineID}\n`;
-        let hasAnyAnomaly = false;
+        let displayText = `Merkle Root Hash for Machine ID: ${machineID}\n\n`;
         let index = 0;
         console.log('Fetching blockchain data for Machine ID:', machineID);
 
@@ -251,13 +746,7 @@ async function fetchAndDisplayMachineData() {
                     break;
                 }
 
-                const date = new Date(parseInt(anchor.timestamp) * 1000).toLocaleString();
-                displayText += `Record ${index + 1}:\n`;
-                displayText += `  Timestamp: ${date} (${anchor.timestamp})\n`;
-                displayText += `  Merkle Root: ${anchor.merkleRoot}\n`;
-                displayText += `  Anomaly Detected: ${anchor.hasAnomaly ? 'Yes ⚠️' : 'No ✅'}\n\n`;
-
-                if (anchor.hasAnomaly) hasAnyAnomaly = true;
+                displayText += `${anchor.merkleRoot}\n`;
                 index++;
             } catch (error) {
                 // Stop fetching if an error occurs (e.g., out of bounds)
@@ -267,10 +756,10 @@ async function fetchAndDisplayMachineData() {
 
         if (index === 0) {
             blockchainContainer.textContent = `No blockchain data found for Machine ID: ${machineID}`;
-            resultElement.textContent = 'No anomalies or records stored on the blockchain.';
+            resultElement.textContent = 'No records stored on the blockchain.';
         } else {
             blockchainContainer.textContent = displayText;
-            resultElement.textContent = hasAnyAnomaly ? 'Anomaly detected in one or more records!' : 'No anomalies detected.';
+            resultElement.textContent = `${index} Merkle root hash${index > 1 ? 'es' : ''} found on blockchain.`;
         }
     } catch (error) {
         console.error('Error fetching blockchain data:', error);
@@ -302,6 +791,21 @@ async function fetchTransactionDetails(machineID) {
         document.getElementById('ipfsCID').textContent = transaction.ipfsCID || '-';
         document.getElementById('machineSignature').textContent = transaction.machineSignature || '-';
         
+        // Display Merkle Root - first try from transaction log, then fetch from blockchain
+        if (transaction.merkleRoot) {
+            document.getElementById('merkleRootHash').textContent = transaction.merkleRoot;
+        } else if (contract) {
+            try {
+                const anchor = await contract.methods.machineLedger(machineID, 0).call();
+                document.getElementById('merkleRootHash').textContent = anchor.merkleRoot || '-';
+            } catch (error) {
+                console.error('Error fetching Merkle Root:', error);
+                document.getElementById('merkleRootHash').textContent = '-';
+            }
+        } else {
+            document.getElementById('merkleRootHash').textContent = 'Connect MetaMask to view';
+        }
+        
         // Display verification status if available
         if (transaction.signatureVerified !== undefined) {
             const verifiedElement = document.getElementById('signatureVerified');
@@ -312,6 +816,25 @@ async function fetchTransactionDetails(machineID) {
                 verifiedElement.innerHTML = '❌ Not Verified';
                 verifiedElement.style.color = '#ef4444';
             }
+        }
+
+        // Display anomaly proof information
+        const anomalyCount = transaction.anomalyCount || 0;
+        const hasProofs = transaction.hasAnomalyProofs || false;
+        
+        document.getElementById('anomalyCount').textContent = anomalyCount;
+        
+        const proofsElement = document.getElementById('hasProofs');
+        if (hasProofs && anomalyCount > 0) {
+            proofsElement.innerHTML = `✅ Yes (${anomalyCount} proof${anomalyCount > 1 ? 's' : ''})`;
+            proofsElement.style.color = '#10b981';
+            proofsElement.style.fontWeight = '600';
+        } else if (anomalyCount > 0) {
+            proofsElement.innerHTML = '⚠️ Anomalies detected but no proofs';
+            proofsElement.style.color = '#f59e0b';
+        } else {
+            proofsElement.innerHTML = 'No anomalies';
+            proofsElement.style.color = '#64748b';
         }
     } catch (error) {
         console.error('Error fetching transaction details:', error);
@@ -788,6 +1311,212 @@ async function verifyMachineSignature(machineID, transaction) {
     }
 }
 
+// ====================================
+// INSURANCE CLAIM VALIDATION
+// (DOUBLE CONFIRMATION SYSTEM)
+// ====================================
+
+// Set insurance policy for a machine
+async function setInsurancePolicy() {
+    const machineID = document.getElementById('policyMachineID').value.trim();
+    
+    if (!machineID) {
+        alert('Please enter a Machine ID');
+        return;
+    }
+
+    if (!contract) {
+        alert('Please connect MetaMask first');
+        return;
+    }
+
+    try {
+        console.log('=== SET POLICY DEBUG ===');
+        console.log('Contract address:', contract.options.address);
+        console.log('Contract methods available:', Object.keys(contract.methods).slice(0, 10));
+        console.log('setInsurancePolicy method type:', typeof contract.methods.setInsurancePolicy);
+        console.log(`Setting insurance policy for Machine ${machineID}...`);
+        
+        if (!connectedAccount) {
+            alert('No account connected. Please connect MetaMask first.');
+            return;
+        }
+        
+        console.log('Using account:', connectedAccount);
+
+        // Set policy thresholds (multiply by 10 to preserve one decimal)
+        const tx = await contract.methods.setInsurancePolicy(
+            machineID,
+            1550,  // voltageMin: 155.0V
+            1900,  // voltageMax: 190.0V
+            500,   // vibrationMax: 50.0 mm/s
+            800,   // pressureMin: 80.0 PSI
+            1200,  // pressureMax: 120.0 PSI
+            350,   // rotationMin: 350 RPM
+            550    // rotationMax: 550 RPM
+        ).send({ from: connectedAccount, value: '0', gas: 300000 });
+
+        console.log('Policy set successfully:', tx);
+        alert(`✅ Insurance policy set for Machine ${machineID}\nTx Hash: ${tx.transactionHash}`);
+
+    } catch (error) {
+        console.error('Error setting policy:', error);
+        
+        // Handle user rejection gracefully
+        if (error.code === 4001) {
+            alert('⚠️ Transaction cancelled by user');
+        } else {
+            alert(`Error setting policy: ${error.message}`);
+        }
+    }
+}
+
+// Validate insurance claim with double confirmation
+async function validateInsuranceClaim() {
+    const machineID = document.getElementById('claimMachineID').value.trim();
+    const anomalyIndex = parseInt(document.getElementById('claimAnomalyIndex').value) || 0;
+
+    if (!machineID) {
+        alert('Please enter a Machine ID');
+        return;
+    }
+
+    if (!contract) {
+        alert('Please connect MetaMask first');
+        return;
+    }
+
+    try {
+        // Load anomaly proofs
+        const response = await fetch('../anomaly_proofs.json');
+        const anomalyProofs = await response.json();
+        
+        const machineProofs = anomalyProofs.find(p => p.machineID === machineID);
+        
+        if (!machineProofs || machineProofs.anomalies.length === 0) {
+            alert(`No anomalies found for Machine ${machineID}`);
+            return;
+        }
+
+        const anomaly = machineProofs.anomalies[anomalyIndex];
+        
+        if (!anomaly) {
+            alert(`Anomaly index ${anomalyIndex} not found for Machine ${machineID}`);
+            return;
+        }
+
+        console.log('Validating claim for anomaly:', anomaly);
+
+        // Prepare values (multiply by 10 for decimals)
+        const voltage = Math.round(parseFloat(anomaly.data.volt) * 10);
+        const vibration = Math.round(parseFloat(anomaly.data.vibration) * 10);
+        const pressure = Math.round(parseFloat(anomaly.data.pressure) * 10);
+        const rotation = parseInt(anomaly.data.rotation);
+
+        // Prepare proof
+        const proofHashes = anomaly.proof.map(p => p.data);
+        const proofPositions = anomaly.proof.map(p => p.position === 'left' ? 0 : 1);
+
+        if (!connectedAccount) {
+            alert('No account connected. Please connect MetaMask first.');
+            return;
+        }
+
+        console.log('Executing double confirmation with account:', connectedAccount);
+
+        // Call the double confirmation function
+        const tx = await contract.methods.validateInsuranceClaim(
+            machineID,
+            0, // anchor index
+            anomaly.leaf,
+            proofHashes,
+            proofPositions,
+            voltage,
+            vibration,
+            pressure,
+            rotation
+        ).send({ from: connectedAccount, value: '0', gas: 500000 });
+
+        console.log('Validation complete:', tx);
+
+        // Display results
+        displayClaimResult(tx, anomaly, machineID);
+
+    } catch (error) {
+        console.error('Error validating claim:', error);
+        
+        // Handle user rejection gracefully
+        if (error.code === 4001) {
+            alert('⚠️ Transaction cancelled by user');
+        } else {
+            alert(`Error validating claim: ${error.message}`);
+        }
+    }
+}
+
+// Display claim validation result
+function displayClaimResult(tx, anomaly, machineID) {
+    const resultDiv = document.getElementById('claimResult');
+    resultDiv.style.display = 'block';
+
+    // Get event data
+    const validated = tx.events.ClaimValidated?.returnValues;
+    const approved = tx.events.ClaimApproved;
+    const rejected = tx.events.ClaimRejected;
+
+    // Phase 1: Integrity Check
+    const phase1Div = document.getElementById('phase1Result');
+    const phase1Details = document.getElementById('phase1Details');
+    
+    if (validated && validated.proofValid) {
+        phase1Div.innerHTML = '✅ PASSED';
+        phase1Div.style.color = '#10b981';
+        phase1Details.innerHTML = 'Merkle proof verified - Data integrity confirmed';
+    } else {
+        phase1Div.innerHTML = '❌ FAILED';
+        phase1Div.style.color = '#ef4444';
+        phase1Details.innerHTML = 'Merkle proof invalid - Data may be tampered';
+    }
+
+    // Phase 2: Policy Check
+    const phase2Div = document.getElementById('phase2Result');
+    const phase2Details = document.getElementById('phase2Details');
+    
+    if (validated && validated.policyMet) {
+        phase2Div.innerHTML = '✅ PASSED';
+        phase2Div.style.color = '#10b981';
+        phase2Details.innerHTML = `Policy violation: ${validated.reason}<br>Readings exceed insurance thresholds`;
+    } else if (validated) {
+        phase2Div.innerHTML = '❌ FAILED';
+        phase2Div.style.color = '#ef4444';
+        phase2Details.innerHTML = `${validated.reason}<br>Readings within acceptable range`;
+    }
+
+    // Final Decision
+    const finalDiv = document.getElementById('finalDecision');
+    
+    if (approved) {
+        finalDiv.innerHTML = '🎉 CLAIM APPROVED';
+        finalDiv.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+        finalDiv.style.color = 'white';
+        finalDiv.style.border = '2px solid #047857';
+    } else if (rejected) {
+        finalDiv.innerHTML = '❌ CLAIM REJECTED';
+        finalDiv.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+        finalDiv.style.color = 'white';
+        finalDiv.style.border = '2px solid #b91c1c';
+    }
+
+    // Claim Details
+    document.getElementById('claimMachineIDDisplay').textContent = machineID;
+    document.getElementById('claimDateTime').textContent = anomaly.datetime;
+    document.getElementById('claimTxHash').textContent = tx.transactionHash;
+    document.getElementById('claimGasUsed').textContent = tx.gasUsed.toLocaleString();
+
+    // Scroll to result
+    resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
 // Load contract address from deployment file
 async function loadContractAddress() {
   try {
@@ -821,8 +1550,12 @@ async function init() {
     const offChainData = await fetchOffChainData(machineID);
   });
 
+  // Insurance claim event listeners
+  document.getElementById('setPolicyBtn').addEventListener('click', setInsurancePolicy);
+  document.getElementById('validateClaimBtn').addEventListener('click', validateInsuranceClaim);
+
   // Optional: Fetch default data on load if desired, but requires a default machineID
-  fetchAndDisplayMachineData();
+  // fetchAndDisplayMachineData();
 }
 
 init();
