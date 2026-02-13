@@ -2,8 +2,8 @@
   "offchain": {
     "10": {
       "storeProofGas": "115688",
-      "verifySignatureGas": "31810",
-      "totalGas": "147498",
+      "verifySignatureGas": "31798",
+      "totalGas": "147486",
       "recordsProcessed": 10
     },
     "50": {
@@ -47,5 +47,5 @@
       "gasPerRecord": "3845"
     }
   },
-  "timestamp": "2026-02-09T18:58:20.131Z"
+  "timestamp": "2026-02-10T12:09:49.706Z"
 }

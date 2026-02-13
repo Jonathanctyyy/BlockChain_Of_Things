@@ -263,6 +263,10 @@
                     <span class="value" id="txTimestamp">-</span>
                 </div>
                 <div class="detail-row">
+                    <span class="label">Merkle Root Hash</span>
+                    <span class="value" id="merkleRootHash">-</span>
+                </div>
+                <div class="detail-row">
                     <span class="label">IPFS CID</span>
                     <span class="value" id="ipfsCID">-</span>
                 </div>
@@ -273,6 +277,110 @@
                 <div class="detail-row">
                     <span class="label">Signature Verified</span>
                     <span class="value" id="signatureVerified">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Anomaly Count</span>
+                    <span class="value" id="anomalyCount">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Merkle Proofs Available</span>
+                    <span class="value" id="hasProofs">-</span>
+                </div>
+            </div>
+            <div
+                style="margin-top: 15px; padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #2563eb;">
+                <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
+                    💡 <strong>Merkle Proofs:</strong> Enables O(log n) verification of anomalous readings on-chain
+                    without storing full dataset.
+                    For verification, use: <code
+                        style="background: #e2e8f0; padding: 2px 6px; border-radius: 3px; font-size: 0.8rem;">node scripts/verify-merkle-proof.js [machineID]</code>
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🏥 Insurance Claim Validation (Double Confirmation)</h2>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">
+                Validate insurance claims using two-phase verification: <strong>Integrity Check</strong> (Merkle proof)
+                + <strong>Policy Check</strong> (threshold validation)
+            </p>
+
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="font-size: 1rem; margin-top: 0; margin-bottom: 12px; color: var(--text-main);">Step 1: Set
+                    Insurance Policy</h3>
+                <div class="input-group">
+                    <input type="text" id="policyMachineID" placeholder="Machine ID (e.g., 1)">
+                    <button id="setPolicyBtn">Set Policy Thresholds</button>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-secondary);">
+                    <strong>Default Thresholds:</strong> Voltage: 155-190V, Vibration: &lt;50 mm/s, Pressure: 80-120
+                    PSI, Rotation: 350-550 RPM
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="font-size: 1rem; margin-top: 0; margin-bottom: 12px; color: var(--text-main);">Step 2:
+                    Validate Claim</h3>
+                <div class="input-group">
+                    <input type="text" id="claimMachineID" placeholder="Machine ID">
+                    <input type="number" id="claimAnomalyIndex" placeholder="Anomaly Index (0, 1, 2...)" value="0"
+                        style="max-width: 200px;">
+                    <button id="validateClaimBtn">Validate Claim</button>
+                </div>
+            </div>
+
+            <div id="claimResult" style="display: none;">
+                <h3 style="font-size: 1rem; margin-bottom: 15px;">Validation Result</h3>
+
+                <div style="display: grid; gap: 15px; margin-bottom: 20px;">
+                    <div
+                        style="padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb; background: #f1f5f9;">
+                        <div
+                            style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600;">
+                            Phase 1: Integrity Check (Merkle Proof)
+                        </div>
+                        <div id="phase1Result" style="font-size: 1.1rem; font-weight: 600;">-</div>
+                        <div id="phase1Details"
+                            style="font-size: 0.85rem; margin-top: 5px; color: var(--text-secondary);"></div>
+                    </div>
+
+                    <div
+                        style="padding: 15px; border-radius: 8px; border-left: 4px solid #10b981; background: #f1f5f9;">
+                        <div
+                            style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600;">
+                            Phase 2: Policy Check (Thresholds)
+                        </div>
+                        <div id="phase2Result" style="font-size: 1.1rem; font-weight: 600;">-</div>
+                        <div id="phase2Details"
+                            style="font-size: 0.85rem; margin-top: 5px; color: var(--text-secondary);"></div>
+                    </div>
+
+                    <div id="finalDecision"
+                        style="padding: 20px; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 700;">
+                        -
+                    </div>
+                </div>
+
+                <div id="claimDetails" style="background: var(--bg-color); padding: 15px; border-radius: 8px;">
+                    <h4 style="font-size: 0.9rem; margin-top: 0; margin-bottom: 10px;">Claim Details</h4>
+                    <div style="display: grid; gap: 8px; font-size: 0.9rem;">
+                        <div><strong>Machine ID:</strong> <span id="claimMachineIDDisplay">-</span></div>
+                        <div><strong>Date/Time:</strong> <span id="claimDateTime">-</span></div>
+                        <div><strong>Transaction Hash:</strong> <span id="claimTxHash"
+                                style="font-family: 'Roboto Mono', monospace; font-size: 0.8rem; word-break: break-all;">-</span>
+                        </div>
+                        <div><strong>Gas Used:</strong> <span id="claimGasUsed">-</span></div>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top: 15px; padding: 12px; background: #fef3c7; border-radius: 6px; border-left: 3px solid #f59e0b;">
+                    <p style="margin: 0; font-size: 0.85rem; color: #92400e;">
+                        <strong>💡 Why Double Confirmation?</strong><br>
+                        • <strong>Phase 1</strong> ensures data hasn't been tampered with (Merkle proof)<br>
+                        • <strong>Phase 2</strong> ensures the claim meets policy requirements (threshold check)<br>
+                        • Both must pass for claim approval - prevents fraud and false positives
+                    </p>
                 </div>
             </div>
         </div>
