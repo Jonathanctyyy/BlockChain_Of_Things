@@ -1439,7 +1439,7 @@ async function validateInsuranceClaim() {
 
         console.log('Validation complete:', tx);
 
-        // Display results
+        // Display results (validation only, no automatic payout)
         displayClaimResult(tx, anomaly, machineID);
 
     } catch (error) {
@@ -1450,6 +1450,84 @@ async function validateInsuranceClaim() {
             alert('⚠️ Transaction cancelled by user');
         } else {
             alert(`Error validating claim: ${error.message}`);
+        }
+    }
+}
+
+// Process claim payout - separate from validation
+async function processClaimPayout() {
+    const beneficiaryAddress = document.getElementById('beneficiaryAddress').value.trim();
+    const payoutAmount = document.getElementById('payoutAmount').value;
+
+    if (!beneficiaryAddress) {
+        alert('Please enter a beneficiary address');
+        return;
+    }
+
+    if (!web3.utils.isAddress(beneficiaryAddress)) {
+        alert('Invalid beneficiary address. Please enter a valid Ethereum address.');
+        return;
+    }
+
+    if (!payoutAmount || parseFloat(payoutAmount) <= 0) {
+        alert('Please enter a valid payout amount greater than 0');
+        return;
+    }
+
+    if (!connectedAccount) {
+        alert('No account connected. Please connect MetaMask first.');
+        return;
+    }
+
+    // Show payout section with "Processing" status
+    const payoutDetailsDiv = document.getElementById('payoutDetails');
+    payoutDetailsDiv.style.display = 'block';
+    document.getElementById('payoutStatus').innerHTML = '🔄 Processing...';
+    document.getElementById('payoutBeneficiary').textContent = beneficiaryAddress;
+    document.getElementById('payoutAmountDisplay').textContent = payoutAmount;
+    document.getElementById('payoutTxHash').textContent = 'Pending...';
+    document.getElementById('payoutGasUsed').textContent = 'Pending...';
+    
+    try {
+        // Convert ETH to Wei
+        const amountInWei = web3.utils.toWei(payoutAmount, 'ether');
+        
+        console.log(`Sending ${payoutAmount} ETH (${amountInWei} Wei) to ${beneficiaryAddress}...`);
+        
+        // Send ETH to beneficiary
+        const payoutTx = await web3.eth.sendTransaction({
+            from: connectedAccount,
+            to: beneficiaryAddress,
+            value: amountInWei,
+            gas: 21000 // Standard ETH transfer gas limit
+        });
+        
+        console.log('Payout transaction successful:', payoutTx);
+        
+        // Update payout details with success
+        document.getElementById('payoutStatus').innerHTML = '✅ <span style="color: #065f46;">Transfer Completed</span>';
+        document.getElementById('payoutTxHash').textContent = payoutTx.transactionHash;
+        document.getElementById('payoutGasUsed').textContent = payoutTx.gasUsed.toLocaleString();
+        
+        // Hide the process claim section after successful transfer
+        document.getElementById('processClaimSection').style.display = 'none';
+        
+        // Show success notification
+        alert(`✅ Payout Successful!\n💰 ${payoutAmount} ETH transferred to ${beneficiaryAddress}\n\nTransaction Hash: ${payoutTx.transactionHash}`);
+        
+    } catch (payoutError) {
+        console.error('Error processing payout:', payoutError);
+        
+        // Update payout details with error
+        document.getElementById('payoutStatus').innerHTML = '❌ <span style="color: #dc2626;">Transfer Failed</span>';
+        document.getElementById('payoutTxHash').textContent = payoutError.message;
+        document.getElementById('payoutGasUsed').textContent = 'N/A';
+        
+        // Handle user rejection gracefully
+        if (payoutError.code === 4001) {
+            alert('⚠️ Payout transfer was cancelled by user');
+        } else {
+            alert(`⚠️ Payout transfer failed:\n${payoutError.message}`);
         }
     }
 }
@@ -1494,17 +1572,24 @@ function displayClaimResult(tx, anomaly, machineID) {
 
     // Final Decision
     const finalDiv = document.getElementById('finalDecision');
+    const processClaimSection = document.getElementById('processClaimSection');
     
     if (approved) {
         finalDiv.innerHTML = '🎉 CLAIM APPROVED';
         finalDiv.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
         finalDiv.style.color = 'white';
         finalDiv.style.border = '2px solid #047857';
+        
+        // Show the process claim section for approved claims
+        processClaimSection.style.display = 'block';
     } else if (rejected) {
         finalDiv.innerHTML = '❌ CLAIM REJECTED';
         finalDiv.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
         finalDiv.style.color = 'white';
         finalDiv.style.border = '2px solid #b91c1c';
+        
+        // Hide the process claim section for rejected claims
+        processClaimSection.style.display = 'none';
     }
 
     // Claim Details
@@ -1512,6 +1597,9 @@ function displayClaimResult(tx, anomaly, machineID) {
     document.getElementById('claimDateTime').textContent = anomaly.datetime;
     document.getElementById('claimTxHash').textContent = tx.transactionHash;
     document.getElementById('claimGasUsed').textContent = tx.gasUsed.toLocaleString();
+
+    // Hide payout details initially (will be shown when user clicks Process Claim)
+    document.getElementById('payoutDetails').style.display = 'none';
 
     // Scroll to result
     resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1553,6 +1641,7 @@ async function init() {
   // Insurance claim event listeners
   document.getElementById('setPolicyBtn').addEventListener('click', setInsurancePolicy);
   document.getElementById('validateClaimBtn').addEventListener('click', validateInsuranceClaim);
+  document.getElementById('processClaimBtn').addEventListener('click', processClaimPayout);
 
   // Optional: Fetch default data on load if desired, but requires a default machineID
   // fetchAndDisplayMachineData();
