@@ -327,6 +327,9 @@
                         style="max-width: 200px;">
                     <button id="validateClaimBtn">Validate Claim</button>
                 </div>
+                <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-secondary);">
+                    💡 First validate the claim to check proof integrity and policy compliance
+                </div>
             </div>
 
             <div id="claimResult" style="display: none;">
@@ -361,15 +364,53 @@
                     </div>
                 </div>
 
+                <!-- Process Claim Section - Only shown when claim is approved -->
+                <div id="processClaimSection"
+                    style="background: #ecfdf5; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #10b981; display: none;">
+                    <h3 style="font-size: 1rem; margin-top: 0; margin-bottom: 12px; color: #065f46;">💰 Step 3: Process
+                        Automatic Payout</h3>
+                    <div style="margin-bottom: 10px;">
+                        <input type="text" id="beneficiaryAddress" placeholder="Beneficiary Address (0x...)"
+                            style="width: 100%; margin-bottom: 10px; padding: 12px 16px; border: 1px solid #a7f3d0; border-radius: 8px;">
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="payoutAmount" placeholder="Payout Amount (ETH)" value="0.01"
+                            step="0.001" style="max-width: 200px;">
+                        <button id="processClaimBtn" style="background-color: #10b981;">
+                            <span style="margin-right: 5px;">💸</span>Process Claim & Transfer
+                        </button>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 0.85rem; color: #065f46;">
+                        ✅ Claim approved! Enter beneficiary details and click to transfer ETH
+                    </div>
+                </div>
+
                 <div id="claimDetails" style="background: var(--bg-color); padding: 15px; border-radius: 8px;">
                     <h4 style="font-size: 0.9rem; margin-top: 0; margin-bottom: 10px;">Claim Details</h4>
                     <div style="display: grid; gap: 8px; font-size: 0.9rem;">
                         <div><strong>Machine ID:</strong> <span id="claimMachineIDDisplay">-</span></div>
                         <div><strong>Date/Time:</strong> <span id="claimDateTime">-</span></div>
-                        <div><strong>Transaction Hash:</strong> <span id="claimTxHash"
+                        <div><strong>Validation Tx Hash:</strong> <span id="claimTxHash"
                                 style="font-family: 'Roboto Mono', monospace; font-size: 0.8rem; word-break: break-all;">-</span>
                         </div>
                         <div><strong>Gas Used:</strong> <span id="claimGasUsed">-</span></div>
+                    </div>
+                </div>
+
+                <div id="payoutDetails"
+                    style="background: #ecfdf5; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #10b981; display: none;">
+                    <h4 style="font-size: 0.9rem; margin-top: 0; margin-bottom: 10px; color: #065f46;">💰 Automatic
+                        Payout</h4>
+                    <div style="display: grid; gap: 8px; font-size: 0.9rem;">
+                        <div><strong>Status:</strong> <span id="payoutStatus">-</span></div>
+                        <div><strong>Beneficiary:</strong> <span id="payoutBeneficiary"
+                                style="font-family: 'Roboto Mono', monospace; font-size: 0.8rem; word-break: break-all;">-</span>
+                        </div>
+                        <div><strong>Amount:</strong> <span id="payoutAmountDisplay">-</span> ETH</div>
+                        <div><strong>Transfer Tx Hash:</strong> <span id="payoutTxHash"
+                                style="font-family: 'Roboto Mono', monospace; font-size: 0.8rem; word-break: break-all;">-</span>
+                        </div>
+                        <div><strong>Transfer Gas Used:</strong> <span id="payoutGasUsed">-</span></div>
                     </div>
                 </div>
 
