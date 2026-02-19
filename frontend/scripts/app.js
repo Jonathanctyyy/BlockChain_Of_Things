@@ -455,67 +455,6 @@ const contractABI = [
       },
       {
         "internalType": "uint256",
-        "name": "_voltageMin",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_voltageMax",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_vibrationMax",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_pressureMin",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_pressureMax",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_rotationMin",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_rotationMax",
-        "type": "uint256"
-      }
-    ],
-    "name": "setInsurancePolicy",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_machineID",
-        "type": "string"
-      }
-    ],
-    "name": "disablePolicy",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_machineID",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
         "name": "_anchorIndex",
         "type": "uint256"
       },
@@ -533,92 +472,60 @@ const contractABI = [
         "internalType": "uint8[]",
         "name": "_positions",
         "type": "uint8[]"
-      },
-      {
-        "internalType": "uint256",
-        "name": "voltage",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "vibration",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "pressure",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "rotation",
-        "type": "uint256"
       }
     ],
     "name": "validateInsuranceClaim",
     "outputs": [
       {
         "internalType": "bool",
-        "name": "proofValid",
+        "name": "verified",
         "type": "bool"
       },
       {
         "internalType": "bool",
-        "name": "policyMet",
+        "name": "hasAnomaly",
         "type": "bool"
-      },
-      {
-        "internalType": "string",
-        "name": "claimType",
-        "type": "string"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
+    "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
         "internalType": "string",
-        "name": "_machineID",
+        "name": "machineID",
         "type": "string"
       },
       {
+        "indexed": false,
         "internalType": "uint256",
-        "name": "voltage",
+        "name": "anchorIndex",
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "vibration",
-        "type": "uint256"
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "leaf",
+        "type": "bytes32"
       },
       {
-        "internalType": "uint256",
-        "name": "pressure",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "rotation",
-        "type": "uint256"
-      }
-    ],
-    "name": "checkClaimEligibility",
-    "outputs": [
-      {
+        "indexed": false,
         "internalType": "bool",
-        "name": "eligible",
+        "name": "verified",
         "type": "bool"
       },
       {
-        "internalType": "string",
-        "name": "reason",
-        "type": "string"
+        "indexed": false,
+        "internalType": "bool",
+        "name": "hasAnomaly",
+        "type": "bool"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "name": "ClaimValidated",
+    "type": "event"
   }
 ];
 
@@ -674,10 +581,6 @@ async function connectToMetaMask() {
       // Initialize the contract
       contract = new web3.eth.Contract(contractABI, contractAddress);
       console.log('Contract initialized at address:', contractAddress);
-      console.log('Contract has setInsurancePolicy?', typeof contract.methods.setInsurancePolicy);
-      console.log('Contract has validateInsuranceClaim?', typeof contract.methods.validateInsuranceClaim);
-      console.log('Available insurance methods:', 
-        Object.keys(contract.methods).filter(m => m.includes('Insurance') || m.includes('Policy')));
       console.log('✅ Ready to fetch blockchain data');
     } catch (error) {
       console.error('User rejected MetaMask connection:', error);
@@ -1316,61 +1219,6 @@ async function verifyMachineSignature(machineID, transaction) {
 // (DOUBLE CONFIRMATION SYSTEM)
 // ====================================
 
-// Set insurance policy for a machine
-async function setInsurancePolicy() {
-    const machineID = document.getElementById('policyMachineID').value.trim();
-    
-    if (!machineID) {
-        alert('Please enter a Machine ID');
-        return;
-    }
-
-    if (!contract) {
-        alert('Please connect MetaMask first');
-        return;
-    }
-
-    try {
-        console.log('=== SET POLICY DEBUG ===');
-        console.log('Contract address:', contract.options.address);
-        console.log('Contract methods available:', Object.keys(contract.methods).slice(0, 10));
-        console.log('setInsurancePolicy method type:', typeof contract.methods.setInsurancePolicy);
-        console.log(`Setting insurance policy for Machine ${machineID}...`);
-        
-        if (!connectedAccount) {
-            alert('No account connected. Please connect MetaMask first.');
-            return;
-        }
-        
-        console.log('Using account:', connectedAccount);
-
-        // Set policy thresholds (multiply by 10 to preserve one decimal)
-        const tx = await contract.methods.setInsurancePolicy(
-            machineID,
-            1550,  // voltageMin: 155.0V
-            1900,  // voltageMax: 190.0V
-            500,   // vibrationMax: 50.0 mm/s
-            800,   // pressureMin: 80.0 PSI
-            1200,  // pressureMax: 120.0 PSI
-            350,   // rotationMin: 350 RPM
-            550    // rotationMax: 550 RPM
-        ).send({ from: connectedAccount, value: '0', gas: 300000 });
-
-        console.log('Policy set successfully:', tx);
-        alert(`✅ Insurance policy set for Machine ${machineID}\nTx Hash: ${tx.transactionHash}`);
-
-    } catch (error) {
-        console.error('Error setting policy:', error);
-        
-        // Handle user rejection gracefully
-        if (error.code === 4001) {
-            alert('⚠️ Transaction cancelled by user');
-        } else {
-            alert(`Error setting policy: ${error.message}`);
-        }
-    }
-}
-
 // Validate insurance claim with double confirmation
 async function validateInsuranceClaim() {
     const machineID = document.getElementById('claimMachineID').value.trim();
@@ -1407,12 +1255,6 @@ async function validateInsuranceClaim() {
 
         console.log('Validating claim for anomaly:', anomaly);
 
-        // Prepare values (multiply by 10 for decimals)
-        const voltage = Math.round(parseFloat(anomaly.data.volt) * 10);
-        const vibration = Math.round(parseFloat(anomaly.data.vibration) * 10);
-        const pressure = Math.round(parseFloat(anomaly.data.pressure) * 10);
-        const rotation = parseInt(anomaly.data.rotation);
-
         // Prepare proof
         const proofHashes = anomaly.proof.map(p => p.data);
         const proofPositions = anomaly.proof.map(p => p.position === 'left' ? 0 : 1);
@@ -1422,20 +1264,17 @@ async function validateInsuranceClaim() {
             return;
         }
 
-        console.log('Executing double confirmation with account:', connectedAccount);
+        console.log('Verifying proof with account:', connectedAccount);
+        console.log('Anomaly detection was already done off-chain in process.js');
 
-        // Call the double confirmation function
+        // Call the simplified validation function (only Merkle proof + hasAnomaly flag check)
         const tx = await contract.methods.validateInsuranceClaim(
             machineID,
             0, // anchor index
             anomaly.leaf,
             proofHashes,
-            proofPositions,
-            voltage,
-            vibration,
-            pressure,
-            rotation
-        ).send({ from: connectedAccount, value: '0', gas: 500000 });
+            proofPositions
+        ).send({ from: connectedAccount, value: '0', gas: 300000 });
 
         console.log('Validation complete:', tx);
 
@@ -1539,14 +1378,12 @@ function displayClaimResult(tx, anomaly, machineID) {
 
     // Get event data
     const validated = tx.events.ClaimValidated?.returnValues;
-    const approved = tx.events.ClaimApproved;
-    const rejected = tx.events.ClaimRejected;
 
     // Phase 1: Integrity Check
     const phase1Div = document.getElementById('phase1Result');
     const phase1Details = document.getElementById('phase1Details');
     
-    if (validated && validated.proofValid) {
+    if (validated && validated.verified) {
         phase1Div.innerHTML = '✅ PASSED';
         phase1Div.style.color = '#10b981';
         phase1Details.innerHTML = 'Merkle proof verified - Data integrity confirmed';
@@ -1556,25 +1393,25 @@ function displayClaimResult(tx, anomaly, machineID) {
         phase1Details.innerHTML = 'Merkle proof invalid - Data may be tampered';
     }
 
-    // Phase 2: Policy Check
+    // Phase 2: Anomaly Detection (Off-Chain)
     const phase2Div = document.getElementById('phase2Result');
     const phase2Details = document.getElementById('phase2Details');
     
-    if (validated && validated.policyMet) {
-        phase2Div.innerHTML = '✅ PASSED';
+    if (validated && validated.hasAnomaly) {
+        phase2Div.innerHTML = '✅ DETECTED';
         phase2Div.style.color = '#10b981';
-        phase2Details.innerHTML = `Policy violation: ${validated.reason}<br>Readings exceed insurance thresholds`;
+        phase2Details.innerHTML = `Anomaly detected off-chain in process.js<br>Sensor readings exceeded thresholds at: ${anomaly.datetime}`;
     } else if (validated) {
-        phase2Div.innerHTML = '❌ FAILED';
-        phase2Div.style.color = '#ef4444';
-        phase2Details.innerHTML = `${validated.reason}<br>Readings within acceptable range`;
+        phase2Div.innerHTML = '✅ NONE';
+        phase2Div.style.color = '#64748b';
+        phase2Details.innerHTML = 'No anomaly detected - readings within normal range';
     }
 
     // Final Decision
     const finalDiv = document.getElementById('finalDecision');
     const processClaimSection = document.getElementById('processClaimSection');
     
-    if (approved) {
+    if (validated && validated.verified && validated.hasAnomaly) {
         finalDiv.innerHTML = '🎉 CLAIM APPROVED';
         finalDiv.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
         finalDiv.style.color = 'white';
@@ -1582,7 +1419,7 @@ function displayClaimResult(tx, anomaly, machineID) {
         
         // Show the process claim section for approved claims
         processClaimSection.style.display = 'block';
-    } else if (rejected) {
+    } else {
         finalDiv.innerHTML = '❌ CLAIM REJECTED';
         finalDiv.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
         finalDiv.style.color = 'white';
@@ -1639,7 +1476,6 @@ async function init() {
   });
 
   // Insurance claim event listeners
-  document.getElementById('setPolicyBtn').addEventListener('click', setInsurancePolicy);
   document.getElementById('validateClaimBtn').addEventListener('click', validateInsuranceClaim);
   document.getElementById('processClaimBtn').addEventListener('click', processClaimPayout);
 
