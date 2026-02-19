@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Company - Claims Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.9.0/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .pending-claim-card:hover {
+            transform: translateY(-2px);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🏢 Insurance Claims Management</h1>
+            <p style="color: var(--text-secondary); margin-top: 10px;">Review and process validated claims</p>
+        </header>
+
+        <!-- MetaMask Connection -->
+        <div class="card">
+            <h2>🔗 Connect Wallet</h2>
+            <div class="wallet-section">
+                <p id="walletAddress">Wallet: Not connected</p>
+                <button id="connectMetaMask">Connect MetaMask</button>
+            </div>
+        </div>
+
+        <!-- Pending Claims List -->
+        <div class="card">
+            <h2>📬 Pending Claims</h2>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">
+                Claims submitted by clients awaiting review and approval
+            </p>
+            <div
+                style="background: #eff6ff; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 0.85rem; border-left: 3px solid #3b82f6;">
+                <strong>ℹ️ Instructions:</strong><br>
+                1. Make sure you're connected to MetaMask<br>
+                2. Ensure you're on the correct network (Hardhat Local)<br>
+                3. Client must submit a claim first from the client portal<br>
+                4. Click "Load Pending Claims" to fetch from blockchain
+            </div>
+            <button id="loadPendingClaimsBtn" style="width: 100%; margin-bottom: 15px;">Load Pending Claims</button>
+            <div id="pendingClaimsList" style="display: none;">
+                <div id="claimsContainer" style="display: grid; gap: 10px; max-height: 400px; overflow-y: auto;">
+                    <!-- Claims will be dynamically loaded here -->
+                </div>
+                <p id="noClaimsMessage"
+                    style="display: none; text-align: center; color: var(--text-secondary); padding: 20px;">
+                    No pending claims found
+                </p>
+            </div>
+        </div>
+
+        <!-- Manual Claim Search -->
+        <div class="card">
+            <h2>🔍 Manual Claim Search</h2>
+            <div class="input-group">
+                <input type="text" id="machineID" placeholder="Enter Machine ID (e.g., 1, 2, 3)">
+                <button id="checkDataBtn">Search Claim</button>
+            </div>
+            <p id="result" style="margin-top: 15px;"></p>
+        </div>
+
+        <!-- Transaction Details -->
+        <div class="card">
+            <h2>📋 Transaction Details</h2>
+            <div style="display: grid; gap: 10px; font-size: 0.9rem;">
+                <div
+                    style="display: flex; justify-content: space-between; padding: 8px; background: var(--bg-color); border-radius: 6px;">
+                    <span style="color: var(--text-secondary);">Transaction Hash:</span>
+                    <span id="txHash" style="font-family: 'Roboto Mono', monospace; font-size: 0.85rem;">-</span>
+                </div>
+                <div
+                    style="display: flex; justify-content: space-between; padding: 8px; background: var(--bg-color); border-radius: 6px;">
+                    <span style="color: var(--text-secondary);">Gas Used:</span>
+                    <span id="gasUsed">-</span>
+                </div>
+                <div
+                    style="display: flex; justify-content: space-between; padding: 8px; background: var(--bg-color); border-radius: 6px;">
+                    <span style="color: var(--text-secondary);">From Account:</span>
+                    <span id="fromAccount" style="font-family: 'Roboto Mono', monospace; font-size: 0.85rem;">-</span>
+                </div>
+                <div
+                    style="display: flex; justify-content: space-between; padding: 8px; background: var(--bg-color); border-radius: 6px;">
+                    <span style="color: var(--text-secondary);">To Contract:</span>
+                    <span id="toAccount" style="font-family: 'Roboto Mono', monospace; font-size: 0.85rem;">-</span>
+                </div>
+                <div
+                    style="display: flex; justify-content: space-between; padding: 8px; background: var(--bg-color); border-radius: 6px;">
+                    <span style="color: var(--text-secondary);">Timestamp:</span>
+                    <span id="txTimestamp">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Claim Review -->
+        <div class="card" id="reviewSection">
+            <h2>✅ Claim Review & Verification</h2>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">
+                Review validated claims submitted by clients and verify the blockchain proof before processing payout.
+            </p>
+
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <div class="input-group">
+                    <input type="text" id="reviewMachineID" placeholder="Machine ID">
+                    <input type="number" id="reviewAnomalyIndex" placeholder="Anomaly Index (0, 1, 2...)" value="0"
+                        style="max-width: 200px;">
+                    <button id="reviewClaimBtn">Review Claim</button>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-secondary);">
+                    ℹ️ This is a read-only operation (no gas fees)
+                </div>
+            </div>
+
+            <!-- Review Result -->
+            <div id="reviewResult" style="display: none;">
+                <h3 style="font-size: 1rem; margin-bottom: 15px;">Claim Status</h3>
+
+                <div style="display: grid; gap: 15px; margin-bottom: 20px;">
+                    <div
+                        style="padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb; background: #f1f5f9;">
+                        <div
+                            style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600;">
+                            Data Integrity Status
+                        </div>
+                        <div id="reviewPhase1Result" style="font-size: 1.1rem; font-weight: 600;">-</div>
+                        <div id="reviewPhase1Details"
+                            style="font-size: 0.85rem; margin-top: 5px; color: var(--text-secondary);"></div>
+                    </div>
+
+                    <div
+                        style="padding: 15px; border-radius: 8px; border-left: 4px solid #10b981; background: #f1f5f9;">
+                        <div
+                            style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600;">
+                            Anomaly Detection Status
+                        </div>
+                        <div id="reviewPhase2Result" style="font-size: 1.1rem; font-weight: 600;">-</div>
+                        <div id="reviewPhase2Details"
+                            style="font-size: 0.85rem; margin-top: 5px; color: var(--text-secondary);"></div>
+                    </div>
+
+                    <div id="reviewDecision"
+                        style="padding: 20px; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 700;">
+                        -</div>
+                </div>
+
+                <!-- Claim Info -->
+                <div
+                    style="background: #fefce8; padding: 15px; border-radius: 8px; border-left: 3px solid #eab308; margin-bottom: 20px;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 0.9rem;">Claim Information</h4>
+                    <div style="display: grid; gap: 8px; font-size: 0.85rem;">
+                        <div><strong>Machine ID:</strong> <span id="reviewMachineIDDisplay"></span></div>
+                        <div><strong>Anomaly Date/Time:</strong> <span id="reviewDateTime"></span></div>
+                        <div><strong>Sensor Readings:</strong></div>
+                        <div style="margin-left: 20px;">
+                            • Voltage: <span id="reviewVoltage"></span> V<br>
+                            • Vibration: <span id="reviewVibration"></span> mm/s<br>
+                            • Pressure: <span id="reviewPressure"></span> PSI<br>
+                            • Rotation: <span id="reviewRotation"></span> RPM
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payout Processing -->
+        <div class="card" id="payoutSection" style="display: none;">
+            <h2>💰 Process Payout</h2>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">
+                After verifying the claim, process the insurance payout to the beneficiary.
+            </p>
+
+            <div
+                style="background: #fef3c7; padding: 15px; border-radius: 8px; border-left: 3px solid #f59e0b; margin-bottom: 20px;">
+                <p style="margin: 0; font-size: 0.85rem; color: #92400e;">
+                    <strong>⚠️ Important:</strong> Ensure you have verified the claim before processing payment. This
+                    action will transfer funds from your account.
+                </p>
+            </div>
+
+            <div style="background: #f8fafc; padding: 20px; border-radius: 8px;">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;">Beneficiary
+                        Address:</label>
+                    <input type="text" id="beneficiaryAddress" placeholder="0x..." style="width: 100%;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;">Payout
+                        Amount (ETH):</label>
+                    <input type="number" id="payoutAmount" placeholder="0.1" step="0.01" min="0" style="width: 100%;">
+                </div>
+                <button id="processPayoutBtn" style="width: 100%; padding: 15px; font-size: 1rem;">Process
+                    Payout</button>
+            </div>
+
+            <!-- Payout Status -->
+            <div id="payoutDetails"
+                style="display: none; margin-top: 20px; padding: 15px; border-radius: 8px; background: #f1f5f9;">
+                <h4 style="margin: 0 0 10px 0; font-size: 0.9rem;">Payout Status</h4>
+                <div style="display: grid; gap: 8px; font-size: 0.85rem;">
+                    <div><strong>Status:</strong> <span id="payoutStatus"></span></div>
+                    <div><strong>Beneficiary:</strong> <span id="payoutBeneficiary"
+                            style="font-family: 'Roboto Mono', monospace;"></span></div>
+                    <div><strong>Amount:</strong> <span id="payoutAmountDisplay"></span> ETH</div>
+                    <div><strong>Transaction Hash:</strong> <span id="payoutTxHash"
+                            style="font-family: 'Roboto Mono', monospace; font-size: 0.8rem;"></span></div>
+                    <div><strong>Gas Used:</strong> <span id="payoutGasUsed"></span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sensor Data Graphs -->
+        <div class="card">
+            <h2>📊 Sensor Data Analysis</h2>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">
+                View sensor readings over time. Red points indicate anomalies detected by the system.
+            </p>
+
+            <!-- Date Selector -->
+            <div class="input-group" style="margin-bottom: 20px;">
+                <input type="date" id="dateSelector" placeholder="Select Date">
+                <button id="filterDateBtn">Filter Data</button>
+            </div>
+        </div>
+
+        <!-- Voltage Chart -->
+        <div class="card">
+            <h2>⚡ Voltage (V)</h2>
+            <canvas id="voltageGraph" width="400" height="150"></canvas>
+        </div>
+
+        <!-- Rotation Chart -->
+        <div class="card">
+            <h2>🔄 Rotation (RPM)</h2>
+            <canvas id="rotationGraph" width="400" height="150"></canvas>
+        </div>
+
+        <!-- Pressure Chart -->
+        <div class="card">
+            <h2>💨 Pressure (PSI)</h2>
+            <canvas id="pressureGraph" width="400" height="150"></canvas>
+        </div>
+
+        <!-- Vibration Chart -->
+        <div class="card">
+            <h2>📳 Vibration (mm/s)</h2>
+            <canvas id="vibrationGraph" width="400" height="150"></canvas>
+        </div>
+
+        <footer
+            style="text-align: center; margin-top: 40px; padding: 20px; color: var(--text-secondary); font-size: 0.85rem;">
+            <p>Blockchain-Based Predictive Maintenance System | Insurance Portal</p>
+            <p style="margin-top: 5px;">
+                <a href="client.html" style="color: var(--primary-color);">← Switch to Client Portal</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="scripts/insurance.js"></script>
+</body>
+
+</html>

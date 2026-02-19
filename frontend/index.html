@@ -299,27 +299,16 @@
         </div>
 
         <div class="card">
-            <h2>🏥 Insurance Claim Validation (Double Confirmation)</h2>
+            <h2>🏭 Insurance Claim Validation</h2>
             <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">
-                Validate insurance claims using two-phase verification: <strong>Integrity Check</strong> (Merkle proof)
-                + <strong>Policy Check</strong> (threshold validation)
+                Validate insurance claims by verifying data integrity (Merkle proof) and checking if anomalies were
+                detected off-chain.
+                All anomaly detection logic runs in <strong>process.js</strong> (off-chain), and the blockchain only
+                verifies data authenticity.
             </p>
 
             <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <h3 style="font-size: 1rem; margin-top: 0; margin-bottom: 12px; color: var(--text-main);">Step 1: Set
-                    Insurance Policy</h3>
-                <div class="input-group">
-                    <input type="text" id="policyMachineID" placeholder="Machine ID (e.g., 1)">
-                    <button id="setPolicyBtn">Set Policy Thresholds</button>
-                </div>
-                <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-secondary);">
-                    <strong>Default Thresholds:</strong> Voltage: 155-190V, Vibration: &lt;50 mm/s, Pressure: 80-120
-                    PSI, Rotation: 350-550 RPM
-                </div>
-            </div>
-
-            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <h3 style="font-size: 1rem; margin-top: 0; margin-bottom: 12px; color: var(--text-main);">Step 2:
+                <h3 style="font-size: 1rem; margin-top: 0; margin-bottom: 12px; color: var(--text-main);">Step 1:
                     Validate Claim</h3>
                 <div class="input-group">
                     <input type="text" id="claimMachineID" placeholder="Machine ID">
@@ -328,7 +317,7 @@
                     <button id="validateClaimBtn">Validate Claim</button>
                 </div>
                 <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-secondary);">
-                    💡 First validate the claim to check proof integrity and policy compliance
+                    💡 First validate the claim to check proof integrity and confirm anomalies were detected off-chain
                 </div>
             </div>
 
@@ -351,7 +340,7 @@
                         style="padding: 15px; border-radius: 8px; border-left: 4px solid #10b981; background: #f1f5f9;">
                         <div
                             style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600;">
-                            Phase 2: Policy Check (Thresholds)
+                            Phase 2: Anomaly Detection (Off-Chain)
                         </div>
                         <div id="phase2Result" style="font-size: 1.1rem; font-weight: 600;">-</div>
                         <div id="phase2Details"
@@ -417,10 +406,10 @@
                 <div
                     style="margin-top: 15px; padding: 12px; background: #fef3c7; border-radius: 6px; border-left: 3px solid #f59e0b;">
                     <p style="margin: 0; font-size: 0.85rem; color: #92400e;">
-                        <strong>💡 Why Double Confirmation?</strong><br>
+                        <strong>💡 How Validation Works:</strong><br>
                         • <strong>Phase 1</strong> ensures data hasn't been tampered with (Merkle proof)<br>
-                        • <strong>Phase 2</strong> ensures the claim meets policy requirements (threshold check)<br>
-                        • Both must pass for claim approval - prevents fraud and false positives
+                        • <strong>Phase 2</strong> confirms anomalies were detected off-chain (in process.js)<br>
+                        • All threshold checking happens off-chain to minimize gas costs
                     </p>
                 </div>
             </div>
