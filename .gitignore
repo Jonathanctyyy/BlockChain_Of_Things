@@ -19,6 +19,11 @@
 # Hardhat coverage reports
 /coverage
 
+# Performance test reports
+gas-report.json
+latency-report.json
+visualizations/
+
 anomalies.json
 
 /database_analyzed.json

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity >=0.8.28;
 
 contract PredictiveMaintenance {
     
@@ -21,32 +21,32 @@ contract PredictiveMaintenance {
     // Maintenance bots can listen for this event to auto-schedule repairs.
     event AnomalyDetected(string indexed machineID, uint256 timestamp, string message);
 
-    function storeProof(string memory _machineID, bytes32 _merkleRoot, bool _hasAnomaly) public {
+    function storeProof(string memory machineID, bytes32 merkleRoot, bool hasAnomaly) public {
         
         Anchor memory newAnchor = Anchor({
             timestamp: block.timestamp,
-            merkleRoot: _merkleRoot,
-            hasAnomaly: _hasAnomaly
+            merkleRoot: merkleRoot,
+            hasAnomaly: hasAnomaly
         });
 
-        machineLedger[_machineID].push(newAnchor);
+        machineLedger[machineID].push(newAnchor);
 
-        if (_hasAnomaly) {
+        if (hasAnomaly) {
             // Trigger the alarm on the blockchain
-            emit AnomalyDetected(_machineID, block.timestamp, "CRITICAL: Sensor anomaly found in batch. Check off-chain data.");
+            emit AnomalyDetected(machineID, block.timestamp, "CRITICAL: Sensor anomaly found in batch. Check off-chain data.");
         } else {
-            emit DataAnchored(_machineID, block.timestamp);
+            emit DataAnchored(machineID, block.timestamp);
         }
     }
 
     // Function to register a machine's address
-    function registerMachine(string memory _machineID, address _machineAddress) public {
-        machineAddresses[_machineID] = _machineAddress;
+    function registerMachine(string memory machineID, address machineAddress) public {
+        machineAddresses[machineID] = machineAddress;
     }
 
     // Function to verify the machine's signature
     function verifySignature(
-        string memory _machineID,
+        string memory machineID,
         bytes32 dataHash,
         bytes memory signature
     ) public view returns (bool) {
@@ -54,10 +54,13 @@ contract PredictiveMaintenance {
         address signer = recoverSigner(dataHash, signature);
 
         // Check if the recovered address matches the registered machine address
-        return signer == machineAddresses[_machineID];
+        return signer == machineAddresses[machineID];
     }
 
     // Internal function to recover the signer's address
+    // Follows EIP-191: Ethereum Signed Message standard
+    // NOTE: Assembly usage is intentional and necessary for signature parsing
+    // This is the standard method for ECDSA signature recovery
     function recoverSigner(bytes32 dataHash, bytes memory signature) internal pure returns (address) {
         require(signature.length == 65, "Invalid signature length");
 
@@ -66,14 +69,20 @@ contract PredictiveMaintenance {
         uint8 v;
 
         // Split the signature into r, s, and v variables
+        // slither-disable-next-line assembly
         assembly {
             r := mload(add(signature, 0x20))
             s := mload(add(signature, 0x40))
             v := byte(0, mload(add(signature, 0x60)))
         }
 
+        // Create Ethereum Signed Message hash (EIP-191)
+        bytes32 ethSignedHash = keccak256(
+            abi.encodePacked("\x19Ethereum Signed Message:\n32", dataHash)
+        );
+
         // Return the recovered address
-        return ecrecover(dataHash, v, r, s);
+        return ecrecover(ethSignedHash, v, r, s);
     }
 
     // ====================================
@@ -93,30 +102,29 @@ contract PredictiveMaintenance {
     // Returns: true if the leaf is part of the tree, false otherwise
     // ====================================
     function verifyMerkleProof(
-        string memory _machineID,
-        uint256 _anchorIndex,
-        bytes32 _leaf,
-        bytes32[] memory _proof,
-        uint8[] memory _positions
+        string memory machineID,
+        uint256 anchorIndex,
+        bytes32 leaf,
+        bytes32[] memory proof,
+        uint8[] memory positions
     ) public view returns (bool) {
-        require(_proof.length == _positions.length, "Proof and positions length mismatch");
+        require(proof.length == positions.length, "Proof and positions length mismatch");
         
         // Get the stored Merkle root for this machine and anchor
-        bytes32 storedRoot = machineLedger[_machineID][_anchorIndex].merkleRoot;
+        bytes32 storedRoot = machineLedger[machineID][anchorIndex].merkleRoot;
         
         // Compute the root from the leaf and proof
-        bytes32 computedHash = _leaf;
+        bytes32 computedHash = leaf;
         
-        for (uint256 i = 0; i < _proof.length; i++) {
-            bytes32 proofElement = _proof[i];
+        for (uint256 i = 0; i < proof.length; i++) {
+            bytes32 proofElement = proof[i];
             
-            // Hash pairs in the correct order based on position
-            if (_positions[i] == 0) {
-                // Proof element is on the left
-                computedHash = keccak256(abi.encodePacked(proofElement, computedHash));
-            } else {
-                // Proof element is on the right
+            // Use sorted pairs (OpenZeppelin standard) for deterministic hashing
+            // This prevents position-dependent vulnerabilities
+            if (computedHash <= proofElement) {
                 computedHash = keccak256(abi.encodePacked(computedHash, proofElement));
+            } else {
+                computedHash = keccak256(abi.encodePacked(proofElement, computedHash));
             }
         }
         
@@ -134,14 +142,14 @@ contract PredictiveMaintenance {
 
     // Wrapper function that emits an event after verification
     function verifyAndLog(
-        string memory _machineID,
-        uint256 _anchorIndex,
-        bytes32 _leaf,
-        bytes32[] memory _proof,
-        uint8[] memory _positions
+        string memory machineID,
+        uint256 anchorIndex,
+        bytes32 leaf,
+        bytes32[] memory proof,
+        uint8[] memory positions
     ) public returns (bool) {
-        bool verified = verifyMerkleProof(_machineID, _anchorIndex, _leaf, _proof, _positions);
-        emit ProofVerified(_machineID, _anchorIndex, _leaf, verified);
+        bool verified = verifyMerkleProof(machineID, anchorIndex, leaf, proof, positions);
+        emit ProofVerified(machineID, anchorIndex, leaf, verified);
         return verified;
     }
 
@@ -165,24 +173,24 @@ contract PredictiveMaintenance {
     // Simplified claim validation: Only verify proof + check hasAnomaly flag
     // All anomaly detection logic happens off-chain (in process.js)
     function validateInsuranceClaim(
-        string memory _machineID,
-        uint256 _anchorIndex,
-        bytes32 _leaf,
-        bytes32[] memory _proof,
-        uint8[] memory _positions
+        string memory machineID,
+        uint256 anchorIndex,
+        bytes32 leaf,
+        bytes32[] memory proof,
+        uint8[] memory positions
     ) public returns (bool verified, bool hasAnomaly) {
         // Verify Merkle proof (data integrity check)
-        verified = verifyMerkleProof(_machineID, _anchorIndex, _leaf, _proof, _positions);
+        verified = verifyMerkleProof(machineID, anchorIndex, leaf, proof, positions);
         
         if (!verified) {
-            emit ClaimValidated(_machineID, _anchorIndex, _leaf, false, false);
+            emit ClaimValidated(machineID, anchorIndex, leaf, false, false);
             return (false, false);
         }
 
         // Get the hasAnomaly flag that was set off-chain
-        hasAnomaly = machineLedger[_machineID][_anchorIndex].hasAnomaly;
+        hasAnomaly = machineLedger[machineID][anchorIndex].hasAnomaly;
         
-        emit ClaimValidated(_machineID, _anchorIndex, _leaf, true, hasAnomaly);
+        emit ClaimValidated(machineID, anchorIndex, leaf, true, hasAnomaly);
         return (verified, hasAnomaly);
     }
 }
