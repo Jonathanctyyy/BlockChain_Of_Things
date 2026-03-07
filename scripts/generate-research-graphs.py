@@ -636,6 +636,279 @@ try:
 except Exception as e:
     print(f"❌ Error generating Graph G: {e}")
 
+# ============================================================================
+# GRAPH H: THROUGHPUT ANALYSIS (Platform Performance)
+# ============================================================================
+
+print("🔵 Graph H: Throughput Analysis")
+
+try:
+    with open("throughput-report.json", "r") as f:
+        throughput_data = json.load(f)
+
+    results = throughput_data["results"]
+
+    # Create figure with 2x2 subplots for comprehensive analysis
+    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+    fig.suptitle(
+        "Platform Throughput Performance Analysis\nTransactions Per Second (TPS) and Data Processing Capacity",
+        fontsize=14,
+        fontweight="bold",
+        y=0.995,
+    )
+
+    # ---- Subplot 1: TPS Comparison (Top Left) ----
+    ax1 = axes[0, 0]
+
+    tps_categories = [
+        "Sequential\nWrite",
+        "Parallel\nWrite",
+        "Sustained\n(30s)",
+        "Peak\nConcurrent",
+    ]
+    tps_values = [
+        results["sequential_write_tps"]["tps"],
+        results["parallel_write_tps"]["tps"],
+        results["sustained_tps"]["tps"],
+        results["max_concurrent"]["peakTPS"],
+    ]
+
+    colors_tps = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12"]
+    bars1 = ax1.bar(
+        tps_categories,
+        tps_values,
+        color=colors_tps,
+        edgecolor="black",
+        linewidth=1.2,
+        width=0.6,
+    )
+
+    # Add value labels
+    for bar, value in zip(bars1, tps_values):
+        height = bar.get_height()
+        ax1.text(
+            bar.get_x() + bar.get_width() / 2.0,
+            height,
+            f"{value:.1f}",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+            fontweight="bold",
+        )
+
+    ax1.set_ylabel("Transactions Per Second (TPS)", fontsize=10, fontweight="bold")
+    ax1.set_title(
+        "(a) Transaction Throughput Modes", fontsize=11, fontweight="bold", loc="left"
+    )
+    ax1.yaxis.grid(True, linestyle="--", alpha=0.3)
+    ax1.set_axisbelow(True)
+
+    # Add reference line for Ethereum
+    ax1.axhline(y=15, color="gray", linestyle=":", linewidth=2, alpha=0.5)
+    ax1.text(
+        3.5,
+        16,
+        "Ethereum (~15 TPS)",
+        ha="right",
+        fontsize=8,
+        color="gray",
+        style="italic",
+    )
+
+    # ---- Subplot 2: Batch Throughput Efficiency (Top Right) ----
+    ax2 = axes[0, 1]
+
+    batch_categories = ["Small Batch\n(10 records)", "Large Batch\n(100 records)"]
+    batch_values = [
+        results["batch_small_throughput"]["throughput"],
+        results["batch_large_throughput"]["throughput"],
+    ]
+
+    bars2 = ax2.bar(
+        batch_categories,
+        batch_values,
+        color=["#e67e22", "#27ae60"],
+        edgecolor="black",
+        linewidth=1.2,
+        width=0.5,
+    )
+
+    # Add value labels
+    for bar, value in zip(bars2, batch_values):
+        height = bar.get_height()
+        ax2.text(
+            bar.get_x() + bar.get_width() / 2.0,
+            height,
+            f"{value:.1f}\nrecords/s",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+            fontweight="bold",
+        )
+
+    # Show efficiency gain
+    efficiency_gain = batch_values[1] / batch_values[0]
+    ax2.text(
+        0.5,
+        max(batch_values) * 0.5,
+        f"{efficiency_gain:.1f}x\nmore efficient",
+        ha="center",
+        va="center",
+        fontsize=11,
+        fontweight="bold",
+        bbox=dict(boxstyle="round", facecolor="yellow", alpha=0.7),
+    )
+
+    ax2.set_ylabel("Records Per Second", fontsize=10, fontweight="bold")
+    ax2.set_title(
+        "(b) Batch Processing Efficiency", fontsize=11, fontweight="bold", loc="left"
+    )
+    ax2.yaxis.grid(True, linestyle="--", alpha=0.3)
+    ax2.set_axisbelow(True)
+
+    # ---- Subplot 3: Read vs Write Performance (Bottom Left) ----
+    ax3 = axes[1, 0]
+
+    operation_types = [
+        "Write\nOperations",
+        "Read\nOperations",
+        "Mixed\nWorkload\n(30% Write)",
+    ]
+    operation_speeds = [
+        results["sequential_write_tps"]["tps"],
+        results["read_throughput"]["readsPerSecond"],
+        results["mixed_workload"]["opsPerSecond"],
+    ]
+
+    colors_ops = ["#c0392b", "#16a085", "#8e44ad"]
+    bars3 = ax3.bar(
+        operation_types,
+        operation_speeds,
+        color=colors_ops,
+        edgecolor="black",
+        linewidth=1.2,
+        width=0.6,
+    )
+
+    # Add value labels
+    for bar, value in zip(bars3, operation_speeds):
+        height = bar.get_height()
+        ax3.text(
+            bar.get_x() + bar.get_width() / 2.0,
+            height,
+            f"{value:.1f}\nops/s",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+            fontweight="bold",
+        )
+
+    # Show read advantage
+    read_advantage = operation_speeds[1] / operation_speeds[0]
+    ax3.text(
+        1,
+        operation_speeds[1] * 0.5,
+        f"{read_advantage:.1f}x\nfaster",
+        ha="center",
+        va="center",
+        fontsize=10,
+        fontweight="bold",
+        bbox=dict(boxstyle="round", facecolor="lightblue", alpha=0.8),
+    )
+
+    ax3.set_ylabel("Operations Per Second", fontsize=10, fontweight="bold")
+    ax3.set_title(
+        "(c) Read vs Write Performance", fontsize=11, fontweight="bold", loc="left"
+    )
+    ax3.yaxis.grid(True, linestyle="--", alpha=0.3)
+    ax3.set_axisbelow(True)
+
+    # ---- Subplot 4: Performance Improvement Summary (Bottom Right) ----
+    ax4 = axes[1, 1]
+
+    # Calculate improvements
+    seq_to_parallel = (
+        (results["parallel_write_tps"]["tps"] / results["sequential_write_tps"]["tps"])
+        - 1
+    ) * 100
+    small_to_large_batch = (
+        (
+            results["batch_large_throughput"]["throughput"]
+            / results["batch_small_throughput"]["throughput"]
+        )
+        - 1
+    ) * 100
+    write_to_read = (
+        (
+            results["read_throughput"]["readsPerSecond"]
+            / results["sequential_write_tps"]["tps"]
+        )
+        - 1
+    ) * 100
+
+    improvement_categories = [
+        "Sequential\nto Parallel",
+        "Small to\nLarge Batch",
+        "Write to\nRead Speed",
+    ]
+    improvement_values = [seq_to_parallel, small_to_large_batch, write_to_read]
+
+    bars4 = ax4.barh(
+        improvement_categories,
+        improvement_values,
+        color=["#3498db", "#27ae60", "#16a085"],
+        edgecolor="black",
+        linewidth=1.2,
+        height=0.6,
+    )
+
+    # Add value labels
+    for bar, value in zip(bars4, improvement_values):
+        width = bar.get_width()
+        ax4.text(
+            width,
+            bar.get_y() + bar.get_height() / 2.0,
+            f"+{value:.0f}%",
+            ha="left",
+            va="center",
+            fontsize=10,
+            fontweight="bold",
+            bbox=dict(boxstyle="round", facecolor="white", alpha=0.8, pad=0.3),
+        )
+
+    ax4.set_xlabel("Performance Improvement (%)", fontsize=10, fontweight="bold")
+    ax4.set_title("(d) Optimization Impact", fontsize=11, fontweight="bold", loc="left")
+    ax4.xaxis.grid(True, linestyle="--", alpha=0.3)
+    ax4.set_axisbelow(True)
+
+    # Add vertical line at 0
+    ax4.axvline(x=0, color="black", linewidth=1)
+
+    # Add overall statistics box
+    fig.text(
+        0.5,
+        0.02,
+        f"Platform: {throughput_data['platform']} | "
+        + f"Max TPS: {throughput_data['summary']['maxTPS']:.1f} | "
+        + f"Max Throughput: {throughput_data['summary']['maxThroughput']:.1f} records/s | "
+        + f"Success Rate: {results['max_concurrent']['successRate']}",
+        ha="center",
+        fontsize=9,
+        style="italic",
+        bbox=dict(boxstyle="round", facecolor="lightyellow", alpha=0.8),
+    )
+
+    plt.tight_layout(rect=[0, 0.04, 1, 0.99])
+    plt.savefig(output_dir / "graph_h_throughput_analysis.png", bbox_inches="tight")
+    plt.savefig(output_dir / "graph_h_throughput_analysis.pdf", bbox_inches="tight")
+    print("✅ Generated: graph_h_throughput_analysis.png/pdf")
+    plt.close()
+
+except FileNotFoundError:
+    print("⚠️  throughput-report.json not found. Run: npm run test:throughput")
+except Exception as e:
+    print(f"❌ Error generating Graph H: {e}")
+
 print(f"\n✅ All advanced visualizations saved to: {output_dir.absolute()}")
 print("\n📄 New Graphs for Research Paper:")
 print("  📊 Graph A: Linear vs. Logarithmic Cost (Economic Scalability)")
@@ -645,4 +918,5 @@ print("  📊 Graph D: Latency vs. Machine Count (Performance Scaling)")
 print("  📊 Graph E: Contract Inheritance (via Slither - manual conversion)")
 print("  📊 Graph F: Vulnerability Density (Security Audit Results)")
 print("  📊 Graph G: Test Coverage Heatmap (Quality Assurance)")
+print("  📊 Graph H: Throughput Analysis (Platform Performance)")
 print("\n🎓 These graphs are publication-ready for academic papers!")

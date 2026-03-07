@@ -1,0 +1,1221 @@
+{
+  "timestamp": "2026-03-05T14:09:36.406Z",
+  "platform": "Hardhat (Ethereum-like)",
+  "networkType": "Local Development",
+  "results": {
+    "sequential_write_tps": {
+      "transactions": 20,
+      "totalTime": 2.9284963999999998,
+      "clientTime": 2.2992871999999998,
+      "contractTime": 0.6289839000000006,
+      "clientPercentage": "78.5%",
+      "contractPercentage": "21.5%",
+      "tps": 6.829443259687805,
+      "mode": "sequential",
+      "statistics": {
+        "contract": {
+          "mean": 0.0314,
+          "median": 0.031,
+          "stdDev": 0.0048,
+          "variance": 0,
+          "min": 0.0222,
+          "max": 0.0483,
+          "p25": 0.0289,
+          "p75": 0.0319,
+          "p90": 0.0363,
+          "p95": 0.0483,
+          "p99": 0.0483
+        },
+        "client": {
+          "mean": 0.115,
+          "median": 0.1255,
+          "stdDev": 0.0194,
+          "variance": 0.0004,
+          "min": 0.0852,
+          "max": 0.1468,
+          "p25": 0.0929,
+          "p75": 0.1287,
+          "p90": 0.1406,
+          "p95": 0.1468,
+          "p99": 0.1468
+        }
+      },
+      "probabilityDensity": {
+        "contract": {
+          "binCount": 15,
+          "binWidth": 0.0017,
+          "bins": [
+            {
+              "start": 0.0222,
+              "end": 0.024,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 28.832514
+            },
+            {
+              "start": 0.0274,
+              "end": 0.0292,
+              "count": 5,
+              "frequency": 0.25,
+              "density": 144.162569
+            },
+            {
+              "start": 0.0292,
+              "end": 0.0309,
+              "count": 3,
+              "frequency": 0.15,
+              "density": 86.497542
+            },
+            {
+              "start": 0.0309,
+              "end": 0.0326,
+              "count": 7,
+              "frequency": 0.35,
+              "density": 201.827597
+            },
+            {
+              "start": 0.0326,
+              "end": 0.0344,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 28.832514
+            },
+            {
+              "start": 0.0344,
+              "end": 0.0361,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 28.832514
+            },
+            {
+              "start": 0.0361,
+              "end": 0.0378,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 28.832514
+            },
+            {
+              "start": 0.0465,
+              "end": 0.0483,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 28.832514
+            }
+          ],
+          "totalSamples": 20
+        },
+        "client": {
+          "binCount": 15,
+          "binWidth": 0.0041,
+          "bins": [
+            {
+              "start": 0.0852,
+              "end": 0.0893,
+              "count": 2,
+              "frequency": 0.1,
+              "density": 24.368293
+            },
+            {
+              "start": 0.0893,
+              "end": 0.0934,
+              "count": 4,
+              "frequency": 0.2,
+              "density": 48.736585
+            },
+            {
+              "start": 0.0934,
+              "end": 0.0975,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 12.184146
+            },
+            {
+              "start": 0.1016,
+              "end": 0.1058,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 12.184146
+            },
+            {
+              "start": 0.1099,
+              "end": 0.114,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 12.184146
+            },
+            {
+              "start": 0.1222,
+              "end": 0.1263,
+              "count": 3,
+              "frequency": 0.15,
+              "density": 36.552439
+            },
+            {
+              "start": 0.1263,
+              "end": 0.1304,
+              "count": 4,
+              "frequency": 0.2,
+              "density": 48.736585
+            },
+            {
+              "start": 0.1304,
+              "end": 0.1345,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 12.184146
+            },
+            {
+              "start": 0.1345,
+              "end": 0.1386,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 12.184146
+            },
+            {
+              "start": 0.1386,
+              "end": 0.1427,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 12.184146
+            },
+            {
+              "start": 0.1427,
+              "end": 0.1468,
+              "count": 1,
+              "frequency": 0.05,
+              "density": 12.184146
+            }
+          ],
+          "totalSamples": 20
+        }
+      }
+    },
+    "parallel_write_tps": {
+      "transactions": 50,
+      "totalTime": 1.0819674999999997,
+      "clientTime": 0.9922054000000007,
+      "contractTime": 0.08975929999999971,
+      "clientPercentage": "91.7%",
+      "contractPercentage": "8.3%",
+      "tps": 46.21210895891051,
+      "mode": "parallel",
+      "statistics": {
+        "contract": {
+          "mean": 0.0896,
+          "median": 0.0896,
+          "stdDev": 0.0001,
+          "variance": 0,
+          "min": 0.0895,
+          "max": 0.0897,
+          "p25": 0.0895,
+          "p75": 0.0896,
+          "p90": 0.0896,
+          "p95": 0.0897,
+          "p99": 0.0897
+        }
+      },
+      "probabilityDensity": {
+        "contract": {
+          "binCount": 15,
+          "binWidth": 0,
+          "bins": [
+            {
+              "start": 0.0895,
+              "end": 0.0895,
+              "count": 5,
+              "frequency": 0.1,
+              "density": 7731.958763
+            },
+            {
+              "start": 0.0895,
+              "end": 0.0895,
+              "count": 4,
+              "frequency": 0.08,
+              "density": 6185.56701
+            },
+            {
+              "start": 0.0895,
+              "end": 0.0895,
+              "count": 5,
+              "frequency": 0.1,
+              "density": 7731.958763
+            },
+            {
+              "start": 0.0895,
+              "end": 0.0896,
+              "count": 5,
+              "frequency": 0.1,
+              "density": 7731.958763
+            },
+            {
+              "start": 0.0896,
+              "end": 0.0896,
+              "count": 3,
+              "frequency": 0.06,
+              "density": 4639.175258
+            },
+            {
+              "start": 0.0896,
+              "end": 0.0896,
+              "count": 5,
+              "frequency": 0.1,
+              "density": 7731.958763
+            },
+            {
+              "start": 0.0896,
+              "end": 0.0896,
+              "count": 5,
+              "frequency": 0.1,
+              "density": 7731.958763
+            },
+            {
+              "start": 0.0896,
+              "end": 0.0896,
+              "count": 1,
+              "frequency": 0.02,
+              "density": 1546.391753
+            },
+            {
+              "start": 0.0896,
+              "end": 0.0896,
+              "count": 5,
+              "frequency": 0.1,
+              "density": 7731.958763
+            },
+            {
+              "start": 0.0896,
+              "end": 0.0896,
+              "count": 8,
+              "frequency": 0.16,
+              "density": 12371.134021
+            },
+            {
+              "start": 0.0896,
+              "end": 0.0897,
+              "count": 3,
+              "frequency": 0.06,
+              "density": 4639.175258
+            },
+            {
+              "start": 0.0897,
+              "end": 0.0897,
+              "count": 1,
+              "frequency": 0.02,
+              "density": 1546.391753
+            }
+          ],
+          "totalSamples": 50
+        }
+      }
+    },
+    "sustained_tps": {
+      "transactions": 1925,
+      "totalTime": 30.163279200000005,
+      "clientTime": 0.3336321000000107,
+      "contractTime": 0.1518423000000039,
+      "clientPercentage": "1.1%",
+      "contractPercentage": "0.5%",
+      "tps": 63.81932107700013,
+      "mode": "sustained",
+      "testDuration": 30,
+      "statistics": {
+        "contract": {
+          "mean": 0.0598,
+          "median": 0.0513,
+          "stdDev": 0.0344,
+          "variance": 0.0012,
+          "min": 0.013,
+          "max": 0.3243,
+          "p25": 0.0381,
+          "p75": 0.0744,
+          "p90": 0.0977,
+          "p95": 0.1287,
+          "p99": 0.1813
+        },
+        "client": {
+          "mean": 0.0002,
+          "median": 0.0002,
+          "stdDev": 0.0001,
+          "variance": 0,
+          "min": 0,
+          "max": 0.0014,
+          "p25": 0.0001,
+          "p75": 0.0002,
+          "p90": 0.0003,
+          "p95": 0.0003,
+          "p99": 0.0005
+        }
+      },
+      "probabilityDensity": {
+        "contract": {
+          "binCount": 20,
+          "binWidth": 0.0156,
+          "bins": [
+            {
+              "start": 0.013,
+              "end": 0.0286,
+              "count": 199,
+              "frequency": 0.103377,
+              "density": 6.641843
+            },
+            {
+              "start": 0.0286,
+              "end": 0.0442,
+              "count": 517,
+              "frequency": 0.268571,
+              "density": 17.255351
+            },
+            {
+              "start": 0.0442,
+              "end": 0.0597,
+              "count": 502,
+              "frequency": 0.260779,
+              "density": 16.754725
+            },
+            {
+              "start": 0.0597,
+              "end": 0.0753,
+              "count": 244,
+              "frequency": 0.126753,
+              "density": 8.143722
+            },
+            {
+              "start": 0.0753,
+              "end": 0.0909,
+              "count": 221,
+              "frequency": 0.114805,
+              "density": 7.376078
+            },
+            {
+              "start": 0.0909,
+              "end": 0.1064,
+              "count": 75,
+              "frequency": 0.038961,
+              "density": 2.503196
+            },
+            {
+              "start": 0.1064,
+              "end": 0.122,
+              "count": 51,
+              "frequency": 0.026494,
+              "density": 1.702206
+            },
+            {
+              "start": 0.122,
+              "end": 0.1376,
+              "count": 50,
+              "frequency": 0.025974,
+              "density": 1.668797
+            },
+            {
+              "start": 0.1376,
+              "end": 0.1531,
+              "count": 27,
+              "frequency": 0.014026,
+              "density": 0.901153
+            },
+            {
+              "start": 0.1531,
+              "end": 0.1687,
+              "count": 13,
+              "frequency": 0.006753,
+              "density": 0.433872
+            },
+            {
+              "start": 0.1687,
+              "end": 0.1843,
+              "count": 16,
+              "frequency": 0.008312,
+              "density": 0.534036
+            },
+            {
+              "start": 0.1998,
+              "end": 0.2154,
+              "count": 1,
+              "frequency": 0.000519,
+              "density": 0.033345
+            },
+            {
+              "start": 0.2154,
+              "end": 0.231,
+              "count": 3,
+              "frequency": 0.001558,
+              "density": 0.1001
+            },
+            {
+              "start": 0.2465,
+              "end": 0.2621,
+              "count": 2,
+              "frequency": 0.001039,
+              "density": 0.066754
+            },
+            {
+              "start": 0.3088,
+              "end": 0.3243,
+              "count": 4,
+              "frequency": 0.002078,
+              "density": 0.133509
+            }
+          ],
+          "totalSamples": 1925
+        },
+        "client": {
+          "binCount": 20,
+          "binWidth": 0.0001,
+          "bins": [
+            {
+              "start": 0,
+              "end": 0.0001,
+              "count": 427,
+              "frequency": 0.221818,
+              "density": 3144.124734
+            },
+            {
+              "start": 0.0001,
+              "end": 0.0002,
+              "count": 651,
+              "frequency": 0.338182,
+              "density": 4793.50815
+            },
+            {
+              "start": 0.0002,
+              "end": 0.0002,
+              "count": 486,
+              "frequency": 0.252468,
+              "density": 3578.568391
+            },
+            {
+              "start": 0.0002,
+              "end": 0.0003,
+              "count": 244,
+              "frequency": 0.126753,
+              "density": 1796.64068
+            },
+            {
+              "start": 0.0003,
+              "end": 0.0004,
+              "count": 72,
+              "frequency": 0.037403,
+              "density": 530.163005
+            },
+            {
+              "start": 0.0004,
+              "end": 0.0005,
+              "count": 21,
+              "frequency": 0.010909,
+              "density": 154.627923
+            },
+            {
+              "start": 0.0005,
+              "end": 0.0005,
+              "count": 11,
+              "frequency": 0.005714,
+              "density": 80.992204
+            },
+            {
+              "start": 0.0005,
+              "end": 0.0006,
+              "count": 5,
+              "frequency": 0.002597,
+              "density": 36.810773
+            },
+            {
+              "start": 0.0006,
+              "end": 0.0007,
+              "count": 2,
+              "frequency": 0.001039,
+              "density": 14.727144
+            },
+            {
+              "start": 0.0007,
+              "end": 0.0007,
+              "count": 2,
+              "frequency": 0.001039,
+              "density": 14.727144
+            },
+            {
+              "start": 0.0007,
+              "end": 0.0008,
+              "count": 2,
+              "frequency": 0.001039,
+              "density": 14.727144
+            },
+            {
+              "start": 0.0009,
+              "end": 0.001,
+              "count": 1,
+              "frequency": 0.000519,
+              "density": 7.356485
+            },
+            {
+              "start": 0.0014,
+              "end": 0.0014,
+              "count": 1,
+              "frequency": 0.000519,
+              "density": 7.356485
+            }
+          ],
+          "totalSamples": 1925
+        }
+      }
+    },
+    "batch_small_throughput": {
+      "batches": 10,
+      "recordsPerBatch": 10,
+      "totalRecords": 100,
+      "totalTime": 2.211916499999999,
+      "clientTime": 0.9865137000000032,
+      "contractTime": 0.2982986000000092,
+      "clientPercentage": "44.6%",
+      "contractPercentage": "13.5%",
+      "throughput": 45.209663203832534,
+      "statistics": {
+        "contract": {
+          "mean": 0.0298,
+          "median": 0.0308,
+          "stdDev": 0.0049,
+          "variance": 0,
+          "min": 0.0179,
+          "max": 0.0354,
+          "p25": 0.0282,
+          "p75": 0.0338,
+          "p90": 0.0354,
+          "p95": 0.0354,
+          "p99": 0.0354
+        },
+        "client": {
+          "mean": 0.0987,
+          "median": 0.0952,
+          "stdDev": 0.0128,
+          "variance": 0.0002,
+          "min": 0.0718,
+          "max": 0.1199,
+          "p25": 0.093,
+          "p75": 0.1109,
+          "p90": 0.1199,
+          "p95": 0.1199,
+          "p99": 0.1199
+        }
+      },
+      "probabilityDensity": {
+        "contract": {
+          "binCount": 15,
+          "binWidth": 0.0012,
+          "bins": [
+            {
+              "start": 0.0179,
+              "end": 0.0191,
+              "count": 1,
+              "frequency": 0.1,
+              "density": 85.874749
+            },
+            {
+              "start": 0.0249,
+              "end": 0.0261,
+              "count": 1,
+              "frequency": 0.1,
+              "density": 85.874749
+            },
+            {
+              "start": 0.0272,
+              "end": 0.0284,
+              "count": 1,
+              "frequency": 0.1,
+              "density": 85.874749
+            },
+            {
+              "start": 0.0296,
+              "end": 0.0307,
+              "count": 2,
+              "frequency": 0.2,
+              "density": 171.749498
+            },
+            {
+              "start": 0.0307,
+              "end": 0.0319,
+              "count": 2,
+              "frequency": 0.2,
+              "density": 171.749498
+            },
+            {
+              "start": 0.0331,
+              "end": 0.0342,
+              "count": 1,
+              "frequency": 0.1,
+              "density": 85.874749
+            },
+            {
+              "start": 0.0342,
+              "end": 0.0354,
+              "count": 2,
+              "frequency": 0.2,
+              "density": 171.749498
+            }
+          ],
+          "totalSamples": 10
+        },
+        "client": {
+          "binCount": 15,
+          "binWidth": 0.0032,
+          "bins": [
+            {
+              "start": 0.0718,
+              "end": 0.0751,
+              "count": 1,
+              "frequency": 0.1,
+              "density": 31.185485
+            },
+            {
+              "start": 0.0911,
+              "end": 0.0943,
+              "count": 2,
+              "frequency": 0.2,
+              "density": 62.37097
+            },
+            {
+              "start": 0.0943,
+              "end": 0.0975,
+              "count": 3,
+              "frequency": 0.3,
+              "density": 93.556455
+            },
+            {
+              "start": 0.0975,
+              "end": 0.1007,
+              "count": 1,
+              "frequency": 0.1,
+              "density": 31.185485
+            },
+            {
+              "start": 0.1103,
+              "end": 0.1135,
+              "count": 2,
+              "frequency": 0.2,
+              "density": 62.37097
+            },
+            {
+              "start": 0.1167,
+              "end": 0.1199,
+              "count": 1,
+              "frequency": 0.1,
+              "density": 31.185485
+            }
+          ],
+          "totalSamples": 10
+        }
+      }
+    },
+    "batch_large_throughput": {
+      "batches": 5,
+      "recordsPerBatch": 100,
+      "totalRecords": 500,
+      "totalTime": 1.4696175000000002,
+      "clientTime": 0.8503438000000024,
+      "contractTime": 0.15285540000000764,
+      "clientPercentage": "57.9%",
+      "contractPercentage": "10.4%",
+      "throughput": 340.224582246741,
+      "statistics": {
+        "contract": {
+          "mean": 0.0306,
+          "median": 0.0305,
+          "stdDev": 0.0035,
+          "variance": 0,
+          "min": 0.0268,
+          "max": 0.0365,
+          "p25": 0.0272,
+          "p75": 0.0319,
+          "p90": 0.0365,
+          "p95": 0.0365,
+          "p99": 0.0365
+        },
+        "client": {
+          "mean": 0.1701,
+          "median": 0.1555,
+          "stdDev": 0.043,
+          "variance": 0.0018,
+          "min": 0.1403,
+          "max": 0.255,
+          "p25": 0.1422,
+          "p75": 0.1574,
+          "p90": 0.255,
+          "p95": 0.255,
+          "p99": 0.255
+        }
+      },
+      "probabilityDensity": {
+        "contract": {
+          "binCount": 15,
+          "binWidth": 0.0006,
+          "bins": [
+            {
+              "start": 0.0268,
+              "end": 0.0274,
+              "count": 2,
+              "frequency": 0.4,
+              "density": 618.652369
+            },
+            {
+              "start": 0.03,
+              "end": 0.0306,
+              "count": 1,
+              "frequency": 0.2,
+              "density": 309.326184
+            },
+            {
+              "start": 0.0319,
+              "end": 0.0326,
+              "count": 1,
+              "frequency": 0.2,
+              "density": 309.326184
+            },
+            {
+              "start": 0.0358,
+              "end": 0.0365,
+              "count": 1,
+              "frequency": 0.2,
+              "density": 309.326184
+            }
+          ],
+          "totalSamples": 5
+        },
+        "client": {
+          "binCount": 15,
+          "binWidth": 0.0076,
+          "bins": [
+            {
+              "start": 0.1403,
+              "end": 0.1479,
+              "count": 2,
+              "frequency": 0.4,
+              "density": 52.31042
+            },
+            {
+              "start": 0.1479,
+              "end": 0.1556,
+              "count": 1,
+              "frequency": 0.2,
+              "density": 26.15521
+            },
+            {
+              "start": 0.1556,
+              "end": 0.1632,
+              "count": 1,
+              "frequency": 0.2,
+              "density": 26.15521
+            },
+            {
+              "start": 0.2473,
+              "end": 0.255,
+              "count": 1,
+              "frequency": 0.2,
+              "density": 26.15521
+            }
+          ],
+          "totalSamples": 5
+        }
+      }
+    },
+    "read_throughput": {
+      "operations": 1000,
+      "totalTime": 30.919756500000002,
+      "clientTime": 30.91643450000028,
+      "clientPercentage": "100.0%",
+      "readsPerSecond": 32.34178121680874,
+      "statistics": {
+        "client": {
+          "mean": 0.0309,
+          "median": 0.031,
+          "stdDev": 0.0048,
+          "variance": 0,
+          "min": 0.0144,
+          "max": 0.0971,
+          "p25": 0.0294,
+          "p75": 0.0325,
+          "p90": 0.0345,
+          "p95": 0.0368,
+          "p99": 0.0448
+        }
+      },
+      "probabilityDensity": {
+        "client": {
+          "binCount": 20,
+          "binWidth": 0.0041,
+          "bins": [
+            {
+              "start": 0.0144,
+              "end": 0.0185,
+              "count": 23,
+              "frequency": 0.023,
+              "density": 5.557912
+            },
+            {
+              "start": 0.0185,
+              "end": 0.0226,
+              "count": 18,
+              "frequency": 0.018,
+              "density": 4.34967
+            },
+            {
+              "start": 0.0226,
+              "end": 0.0268,
+              "count": 47,
+              "frequency": 0.047,
+              "density": 11.357472
+            },
+            {
+              "start": 0.0268,
+              "end": 0.0309,
+              "count": 403,
+              "frequency": 0.403,
+              "density": 97.384278
+            },
+            {
+              "start": 0.0309,
+              "end": 0.035,
+              "count": 428,
+              "frequency": 0.428,
+              "density": 103.425486
+            },
+            {
+              "start": 0.035,
+              "end": 0.0392,
+              "count": 52,
+              "frequency": 0.052,
+              "density": 12.565713
+            },
+            {
+              "start": 0.0392,
+              "end": 0.0433,
+              "count": 13,
+              "frequency": 0.013,
+              "density": 3.141428
+            },
+            {
+              "start": 0.0433,
+              "end": 0.0475,
+              "count": 10,
+              "frequency": 0.01,
+              "density": 2.416483
+            },
+            {
+              "start": 0.0475,
+              "end": 0.0516,
+              "count": 2,
+              "frequency": 0.002,
+              "density": 0.483297
+            },
+            {
+              "start": 0.0516,
+              "end": 0.0557,
+              "count": 2,
+              "frequency": 0.002,
+              "density": 0.483297
+            },
+            {
+              "start": 0.0557,
+              "end": 0.0599,
+              "count": 1,
+              "frequency": 0.001,
+              "density": 0.241648
+            },
+            {
+              "start": 0.093,
+              "end": 0.0971,
+              "count": 1,
+              "frequency": 0.001,
+              "density": 0.241648
+            }
+          ],
+          "totalSamples": 1000
+        }
+      }
+    },
+    "mixed_workload": {
+      "totalOperations": 100,
+      "writes": 29,
+      "reads": 70,
+      "writeRatio": 0.3,
+      "totalTime": 6.248892800000001,
+      "clientTime": 5.365277700000006,
+      "contractTime": 0.8828137000000715,
+      "clientPercentage": "85.9%",
+      "contractPercentage": "14.1%",
+      "opsPerSecond": 16.002834934214263,
+      "statistics": {
+        "client": {
+          "mean": 0.0542,
+          "median": 0.0328,
+          "stdDev": 0.0375,
+          "variance": 0.0014,
+          "min": 0.0149,
+          "max": 0.1467,
+          "p25": 0.0304,
+          "p75": 0.0906,
+          "p90": 0.123,
+          "p95": 0.1249,
+          "p99": 0.1467
+        },
+        "contract": {
+          "mean": 0.0304,
+          "median": 0.0311,
+          "stdDev": 0.0037,
+          "variance": 0,
+          "min": 0.017,
+          "max": 0.0348,
+          "p25": 0.0302,
+          "p75": 0.0322,
+          "p90": 0.0337,
+          "p95": 0.0337,
+          "p99": 0.0348
+        }
+      },
+      "probabilityDensity": {
+        "client": {
+          "binCount": 20,
+          "binWidth": 0.0066,
+          "bins": [
+            {
+              "start": 0.0149,
+              "end": 0.0215,
+              "count": 3,
+              "frequency": 0.030303,
+              "density": 4.597522
+            },
+            {
+              "start": 0.0215,
+              "end": 0.028,
+              "count": 9,
+              "frequency": 0.090909,
+              "density": 13.792565
+            },
+            {
+              "start": 0.028,
+              "end": 0.0346,
+              "count": 50,
+              "frequency": 0.505051,
+              "density": 76.625511
+            },
+            {
+              "start": 0.0346,
+              "end": 0.0412,
+              "count": 7,
+              "frequency": 0.070707,
+              "density": 10.72755
+            },
+            {
+              "start": 0.0478,
+              "end": 0.0544,
+              "count": 1,
+              "frequency": 0.010101,
+              "density": 1.532507
+            },
+            {
+              "start": 0.0808,
+              "end": 0.0874,
+              "count": 1,
+              "frequency": 0.010101,
+              "density": 1.532507
+            },
+            {
+              "start": 0.0874,
+              "end": 0.094,
+              "count": 8,
+              "frequency": 0.080808,
+              "density": 12.260057
+            },
+            {
+              "start": 0.094,
+              "end": 0.1005,
+              "count": 3,
+              "frequency": 0.030303,
+              "density": 4.597522
+            },
+            {
+              "start": 0.1005,
+              "end": 0.1071,
+              "count": 2,
+              "frequency": 0.020202,
+              "density": 3.065014
+            },
+            {
+              "start": 0.1071,
+              "end": 0.1137,
+              "count": 1,
+              "frequency": 0.010101,
+              "density": 1.532507
+            },
+            {
+              "start": 0.1203,
+              "end": 0.1269,
+              "count": 10,
+              "frequency": 0.10101,
+              "density": 15.325072
+            },
+            {
+              "start": 0.1269,
+              "end": 0.1335,
+              "count": 2,
+              "frequency": 0.020202,
+              "density": 3.065014
+            },
+            {
+              "start": 0.1401,
+              "end": 0.1467,
+              "count": 2,
+              "frequency": 0.020202,
+              "density": 3.065014
+            }
+          ],
+          "totalSamples": 99
+        },
+        "contract": {
+          "binCount": 15,
+          "binWidth": 0.0012,
+          "bins": [
+            {
+              "start": 0.017,
+              "end": 0.0182,
+              "count": 1,
+              "frequency": 0.034483,
+              "density": 28.956871
+            },
+            {
+              "start": 0.0182,
+              "end": 0.0194,
+              "count": 1,
+              "frequency": 0.034483,
+              "density": 28.956871
+            },
+            {
+              "start": 0.0277,
+              "end": 0.0289,
+              "count": 3,
+              "frequency": 0.103448,
+              "density": 86.869773
+            },
+            {
+              "start": 0.0289,
+              "end": 0.0301,
+              "count": 2,
+              "frequency": 0.068966,
+              "density": 57.913742
+            },
+            {
+              "start": 0.0301,
+              "end": 0.0313,
+              "count": 10,
+              "frequency": 0.344828,
+              "density": 289.567028
+            },
+            {
+              "start": 0.0313,
+              "end": 0.0325,
+              "count": 6,
+              "frequency": 0.206897,
+              "density": 173.740385
+            },
+            {
+              "start": 0.0325,
+              "end": 0.0337,
+              "count": 3,
+              "frequency": 0.103448,
+              "density": 86.869773
+            },
+            {
+              "start": 0.0337,
+              "end": 0.0348,
+              "count": 3,
+              "frequency": 0.103448,
+              "density": 86.869773
+            }
+          ],
+          "totalSamples": 29
+        }
+      }
+    },
+    "max_concurrent": {
+      "attempted": 100,
+      "successful": 100,
+      "failed": 0,
+      "totalTime": 0.7993006999999925,
+      "clientTime": 0.7210858000000008,
+      "contractTime": 0.07816140000001179,
+      "clientPercentage": "90.2%",
+      "contractPercentage": "9.8%",
+      "peakTPS": 125.10936122037793,
+      "successRate": "100.00%",
+      "statistics": {
+        "contract": {
+          "mean": 0.0771,
+          "median": 0.0771,
+          "stdDev": 0.0001,
+          "variance": 0,
+          "min": 0.077,
+          "max": 0.0778,
+          "p25": 0.077,
+          "p75": 0.0771,
+          "p90": 0.0771,
+          "p95": 0.0771,
+          "p99": 0.0778
+        }
+      },
+      "probabilityDensity": {
+        "contract": {
+          "binCount": 20,
+          "binWidth": 0,
+          "bins": [
+            {
+              "start": 0.077,
+              "end": 0.077,
+              "count": 17,
+              "frequency": 0.17,
+              "density": 3998.588733
+            },
+            {
+              "start": 0.077,
+              "end": 0.077,
+              "count": 23,
+              "frequency": 0.23,
+              "density": 5409.855345
+            },
+            {
+              "start": 0.077,
+              "end": 0.0771,
+              "count": 23,
+              "frequency": 0.23,
+              "density": 5409.855345
+            },
+            {
+              "start": 0.0771,
+              "end": 0.0771,
+              "count": 25,
+              "frequency": 0.25,
+              "density": 5880.277549
+            },
+            {
+              "start": 0.0771,
+              "end": 0.0772,
+              "count": 11,
+              "frequency": 0.11,
+              "density": 2587.322122
+            },
+            {
+              "start": 0.0778,
+              "end": 0.0778,
+              "count": 1,
+              "frequency": 0.01,
+              "density": 235.211102
+            }
+          ],
+          "totalSamples": 100
+        }
+      }
+    }
+  },
+  "summary": {
+    "maxTPS": 63.81932107700013,
+    "maxThroughput": 340.224582246741,
+    "averageBlockTime": "~2 seconds (Hardhat default)"
+  }
+}
