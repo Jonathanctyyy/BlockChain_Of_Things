@@ -258,13 +258,14 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
         });
         
         // Create Merkle tree with keccak256
+        // IMPORTANT: sortPairs must be true to match the smart contract's verification logic
         const tree = new MerkleTree(leaves, (data) => {
             // For internal nodes, hash the concatenation
             if (Buffer.isBuffer(data)) {
                 return Buffer.from(web3.utils.keccak256(data).slice(2), 'hex');
             }
             return Buffer.from(web3.utils.keccak256(data).slice(2), 'hex');
-        }, { sortPairs: false });
+        }, { sortPairs: true });
         
         const root = '0x' + tree.getRoot().toString('hex');
 
@@ -314,27 +315,10 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
         const machineDataString = records.map(record => `${record.datetime},${record.volt},${record.vibration},${record.status}`).join('|');
         const dataHash = web3.utils.soliditySha3(machineDataString); // Keccak256 hash
 
-        // Use Buffer for hex-to-bytes conversion
-        const hashBytes = Buffer.from(dataHash.slice(2), 'hex');
-        const privBytes = Buffer.from(machinePrivateKey.slice(2), 'hex');
-
-        // Sign with recovery - returns 65 bytes: recovery (1 byte) || r (32 bytes) || s (32 bytes)
-        const sig65 = secp.sign(hashBytes, privBytes, { format: 'recovered', prehash: false });
-
-        // Extract recovery bit (first byte) and compact signature (remaining 64 bytes: r || s)
-        const recovery = sig65[0];
-        const signature = sig65.slice(1);
-
-        // Compute Ethereum-style v
-        const v = recovery + 27;
-
-        // Build the full signature Uint8Array (65 bytes: r || s || v)
-        const fullSig = new Uint8Array(65);
-        fullSig.set(signature);
-        fullSig[64] = v;
-
-        // Use Buffer for bytes-to-hex conversion
-        const machineSignature = '0x' + Buffer.from(fullSig).toString('hex');
+        // Use web3's sign method which automatically adds EIP-191 prefix
+        // This ensures compatibility with the smart contract's recoverSigner function
+        const signResult = web3.eth.accounts.sign(dataHash, machinePrivateKey);
+        const machineSignature = signResult.signature;
 
         // Upload this machine's data to IPFS
         let cid;

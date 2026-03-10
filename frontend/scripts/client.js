@@ -139,23 +139,46 @@ async function validateInsuranceClaim() {
         console.log('Proof hashes:', proofHashes);
         console.log('Proof positions:', proofPositions);
 
-        // Check what's stored on the blockchain for this machine
+        // Find the correct anchor index by matching the Merkle root
+        let anchorIndex = -1;
+        let storedAnchor = null;
+        
+        console.log('🔍 Searching for matching Merkle root on blockchain...');
+        console.log('   Expected Merkle Root from JSON:', machineProofs.merkleRoot);
+        
         try {
-            const storedAnchor = await contract.methods.machineLedger(machineID, 0).call();
-            console.log('📦 Stored on blockchain at anchor index 0:');
+            // Try anchor indices 0-10 (most recent uploads)
+            for (let i = 0; i < 10; i++) {
+                try {
+                    const anchor = await contract.methods.machineLedger(machineID, i).call();
+                    console.log(`   Checking anchor index ${i}: ${anchor.merkleRoot}`);
+                    
+                    if (anchor.merkleRoot === machineProofs.merkleRoot) {
+                        anchorIndex = i;
+                        storedAnchor = anchor;
+                        console.log(`✅ Found matching Merkle root at anchor index ${i}!`);
+                        break;
+                    }
+                } catch (e) {
+                    // No more anchors, stop searching
+                    console.log(`   No anchor at index ${i}, stopping search.`);
+                    break;
+                }
+            }
+            
+            if (anchorIndex === -1) {
+                console.error('❌ MISMATCH: Could not find matching Merkle root on blockchain!');
+                console.error('   The data in anomaly_proofs.json does not match any blockchain record.');
+                alert('Error: Contract and data mismatch!\n\nThe smart contract data does not match anomaly_proofs.json.\n\nPlease run: node scripts/process.js');
+                return;
+            }
+            
+            console.log('📦 Using blockchain anchor:');
+            console.log('  Anchor Index:', anchorIndex);
             console.log('  Timestamp:', storedAnchor.timestamp);
             console.log('  Merkle Root:', storedAnchor.merkleRoot);
             console.log('  Has Anomaly:', storedAnchor.hasAnomaly);
-            console.log('🔍 Expected Merkle Root from JSON:', machineProofs.merkleRoot);
             
-            if (storedAnchor.merkleRoot !== machineProofs.merkleRoot) {
-                console.error('❌ MISMATCH: Blockchain merkle root does not match JSON file!');
-                console.error('   This means the contract was redeployed but data was not re-processed.');
-                alert('Error: Contract and data mismatch!\n\nThe smart contract was redeployed but the data was not re-processed.\n\nPlease run: node scripts/process.js');
-                return;
-            } else {
-                console.log('✅ Merkle roots match!');
-            }
         } catch (error) {
             console.error('❌ Error reading stored data:', error);
             alert('Error: Cannot read data from blockchain. Machine might not be registered.\n\nPlease run: node scripts/process.js');
@@ -171,7 +194,7 @@ async function validateInsuranceClaim() {
 
         const tx = await contract.methods.validateInsuranceClaim(
             machineID,
-            0,
+            anchorIndex,
             anomaly.leaf,
             proofHashes,
             proofPositions

@@ -120,16 +120,9 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
         ).join('|');
         const dataHash = web3.utils.soliditySha3(machineDataString);
         
-        const hashBytes = Buffer.from(dataHash.slice(2), 'hex');
-        const privBytes = Buffer.from(machinePrivateKey.slice(2), 'hex');
-        const sig65 = secp.sign(hashBytes, privBytes, { format: 'recovered', prehash: false });
-        const recovery = sig65[0];
-        const signature = sig65.slice(1);
-        const v = recovery + 27;
-        const fullSig = new Uint8Array(65);
-        fullSig.set(signature);
-        fullSig[64] = v;
-        const machineSignature = '0x' + Buffer.from(fullSig).toString('hex');
+        // Use web3's sign method which automatically adds EIP-191 prefix
+        const signResult = web3.eth.accounts.sign(dataHash, machinePrivateKey);
+        const machineSignature = signResult.signature;
         
         // --- TEST OFF-CHAIN APPROACH ---
         console.log(`\n📊 OFF-CHAIN APPROACH (Signature-based):`);

@@ -8,6 +8,7 @@
     "test:gas": "mocha test/gas-efficiency.test.js --timeout 60000",
     "test:latency": "mocha test/latency.test.js --timeout 60000",
     "test:throughput": "mocha test/throughput.test.js --timeout 120000",
+    "test:insurance-benchmark": "node test/insurance-claim-benchmark.js",
     "test:performance": "npm run test:gas && npm run test:latency && npm run test:throughput",
     "visualize:research": "python scripts/generate-research-graphs.py",
     "test:performance:full": "npm run test:performance && npm run visualize",
@@ -44,6 +45,7 @@
   "dependencies": {
     "@noble/hashes": "^2.0.1",
     "@noble/secp256k1": "^3.0.0",
+    "@openzeppelin/merkle-tree": "^1.0.8",
     "@pinata/sdk": "^2.1.0",
     "axios": "^1.13.2",
     "chart.js": "^4.5.1",

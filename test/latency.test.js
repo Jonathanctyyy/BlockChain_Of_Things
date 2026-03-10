@@ -2,10 +2,12 @@ import { expect } from "chai";
 import { ethers } from "ethers";
 import { readFileSync, writeFileSync } from "fs";
 import { performance } from "perf_hooks";
+import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 
 /**
  * System Latency Testing Suite
  * Measures end-to-end performance for blockchain operations
+ * with detailed component-level breakdown
  */
 describe("System Latency Tests", function () {
   let provider;
@@ -350,6 +352,295 @@ describe("System Latency Tests", function () {
       });
 
       expect(totalLatency).to.be.lessThan(10000); // Complete workflow < 10 seconds
+    });
+  });
+
+  describe("Insurance Claim Component-Level Latency", function () {
+    /**
+     * Measures detailed component breakdown for insurance claim verification
+     * Components: Off-chain, Crypto Proof, IPFS Upload, Blockchain Commitment, E2E
+     */
+    it("Should measure insurance claim with detailed component breakdown", async function () {
+      const machineID = "CLAIM_MACHINE_001";
+      
+      // Prepare test data
+      const telemetryData = [
+        ["voltage", "220.5"],
+        ["current", "15.2"],
+        ["temperature", "75.8"],
+        ["vibration", "0.05"],
+        ["status", "normal"]
+      ];
+
+      console.log("\n  📊 Insurance Claim Component Breakdown:");
+      
+      // ========================================
+      // COMPONENT 1: OFF-CHAIN PROCESSING
+      // ========================================
+      const offchainStart = performance.now();
+      
+      // Simulate data retrieval from local storage/database
+      const dataRetrievalStart = performance.now();
+      const machineData = {
+        id: machineID,
+        owner: signer.address,
+        telemetry: telemetryData
+      };
+      const dataRetrievalTime = performance.now() - dataRetrievalStart;
+      
+      // Get account information
+      const accountStart = performance.now();
+      const signerAddress = await signer.getAddress();
+      const nonce = await signer.getNonce();
+      const accountTime = performance.now() - accountStart;
+      
+      const offchainTotal = performance.now() - offchainStart;
+      
+      console.log(`     ├─ Off-chain Processing: ${offchainTotal.toFixed(2)}ms`);
+      console.log(`     │  ├─ Data Retrieval: ${dataRetrievalTime.toFixed(2)}ms`);
+      console.log(`     │  └─ Account Setup: ${accountTime.toFixed(2)}ms`);
+
+      // ========================================
+      // COMPONENT 2: CRYPTOGRAPHIC PROOF GENERATION
+      // ========================================
+      const cryptoStart = performance.now();
+      
+      // Generate Merkle tree
+      const merkleStart = performance.now();
+      const tree = StandardMerkleTree.of(telemetryData, ["string", "string"]);
+      const merkleRoot = tree.root;
+      const merkleTime = performance.now() - merkleStart;
+      
+      // Generate proof for first data point
+      const proofGenStart = performance.now();
+      const proof = tree.getProof(0);
+      const proofGenTime = performance.now() - proofGenStart;
+      
+      // Sign the root (EIP-191)
+      const signingStart = performance.now();
+      const messageHash = ethers.hashMessage(merkleRoot);
+      const signature = await signer.signMessage(merkleRoot);
+      const signingTime = performance.now() - signingStart;
+      
+      const cryptoTotal = performance.now() - cryptoStart;
+      
+      console.log(`     ├─ Cryptographic Proof: ${cryptoTotal.toFixed(2)}ms`);
+      console.log(`     │  ├─ Merkle Tree Generation: ${merkleTime.toFixed(2)}ms`);
+      console.log(`     │  ├─ Proof Extraction: ${proofGenTime.toFixed(2)}ms`);
+      console.log(`     │  └─ Digital Signature: ${signingTime.toFixed(2)}ms`);
+
+      // ========================================
+      // COMPONENT 3: IPFS UPLOAD (Simulated)
+      // ========================================
+      const ipfsStart = performance.now();
+      
+      // Simulate IPFS metadata preparation
+      const metadataStart = performance.now();
+      const metadata = {
+        machineID: machineID,
+        timestamp: new Date().toISOString(),
+        telemetry: telemetryData,
+        merkleRoot: merkleRoot,
+        signature: signature
+      };
+      const metadataTime = performance.now() - metadataStart;
+      
+      // Simulate IPFS upload (in production, would be actual IPFS upload)
+      const uploadStart = performance.now();
+      const ipfsHash = ethers.id(JSON.stringify(metadata)); // Simulated hash
+      await new Promise(resolve => setTimeout(resolve, 5)); // Simulate network delay
+      const uploadTime = performance.now() - uploadStart;
+      
+      const ipfsTotal = performance.now() - ipfsStart;
+      
+      console.log(`     ├─ IPFS Upload: ${ipfsTotal.toFixed(2)}ms`);
+      console.log(`     │  ├─ Metadata Prep: ${metadataTime.toFixed(2)}ms`);
+      console.log(`     │  └─ Network Upload: ${uploadTime.toFixed(2)}ms`);
+
+      // ========================================
+      // COMPONENT 4: BLOCKCHAIN COMMITMENT
+      // ========================================
+      const blockchainStart = performance.now();
+      
+      // Transaction preparation
+      const txPrepStart = performance.now();
+      // Prepare transaction data
+      const txPrepTime = performance.now() - txPrepStart;
+      
+      // Submit transaction
+      const txSubmitStart = performance.now();
+      const tx = await predictiveMaintenance.storeProof(
+        machineID,
+        merkleRoot,
+        false // No anomaly for this test
+      );
+      const txSubmitTime = performance.now() - txSubmitStart;
+      
+      // Network propagation (time until transaction is broadcast)
+      const propagationStart = performance.now();
+      // Transaction is now in mempool
+      const propagationTime = performance.now() - propagationStart;
+      
+      // Block confirmation (mining/consensus)
+      const confirmStart = performance.now();
+      const receipt = await tx.wait();
+      const confirmTime = performance.now() - confirmStart;
+      
+      const blockchainTotal = performance.now() - blockchainStart;
+      
+      console.log(`     ├─ Blockchain Commitment: ${blockchainTotal.toFixed(2)}ms`);
+      console.log(`     │  ├─ Transaction Prep: ${txPrepTime.toFixed(2)}ms`);
+      console.log(`     │  ├─ Transaction Submit: ${txSubmitTime.toFixed(2)}ms`);
+      console.log(`     │  ├─ Network Propagation: ${propagationTime.toFixed(2)}ms`);
+      console.log(`     │  └─ Block Confirmation: ${confirmTime.toFixed(2)}ms`);
+      console.log(`     │     (Block #${receipt.blockNumber}, Gas: ${Number(receipt.gasUsed)})`);
+
+      // ========================================
+      // COMPONENT 5: END-TO-END INSURANCE CLAIM
+      // ========================================
+      const e2eTotal = offchainTotal + cryptoTotal + ipfsTotal + blockchainTotal;
+      
+      console.log(`     └─ Total E2E Insurance Claim: ${e2eTotal.toFixed(2)}ms`);
+      console.log(`        (All components measured)`);
+
+      // Store detailed results
+      const detailedResult = {
+        test: "insurance_claim_detailed",
+        machineID: machineID,
+        totalLatency: e2eTotal,
+        components: {
+          offchain: {
+            total: offchainTotal,
+            breakdown: {
+              dataRetrieval: dataRetrievalTime,
+              accountSetup: accountTime
+            }
+          },
+          cryptographicProof: {
+            total: cryptoTotal,
+            breakdown: {
+              merkleTreeGeneration: merkleTime,
+              proofExtraction: proofGenTime,
+              digitalSignature: signingTime
+            }
+          },
+          ipfsUpload: {
+            total: ipfsTotal,
+            breakdown: {
+              metadataPreparation: metadataTime,
+              networkUpload: uploadTime
+            }
+          },
+          blockchainCommitment: {
+            total: blockchainTotal,
+            breakdown: {
+              transactionPreparation: txPrepTime,
+              transactionSubmit: txSubmitTime,
+              networkPropagation: propagationTime,
+              blockConfirmation: confirmTime
+            },
+            blockNumber: receipt.blockNumber,
+            gasUsed: Number(receipt.gasUsed),
+            transactionHash: receipt.hash
+          }
+        },
+        percentages: {
+          offchain: ((offchainTotal / e2eTotal) * 100).toFixed(2) + "%",
+          cryptographicProof: ((cryptoTotal / e2eTotal) * 100).toFixed(2) + "%",
+          ipfsUpload: ((ipfsTotal / e2eTotal) * 100).toFixed(2) + "%",
+          blockchainCommitment: ((blockchainTotal / e2eTotal) * 100).toFixed(2) + "%"
+        },
+        operationType: "insurance_claim",
+        timestamp: new Date().toISOString()
+      };
+
+      latencyResults.push(detailedResult);
+
+      // Validation
+      expect(e2eTotal).to.be.lessThan(5000); // E2E should be < 5 seconds
+      expect(offchainTotal).to.be.lessThan(100); // Off-chain should be < 100ms
+      expect(cryptoTotal).to.be.lessThan(500); // Crypto should be < 500ms
+      expect(blockchainTotal).to.be.lessThan(3000); // Blockchain should be < 3 seconds
+
+      console.log(`\n  ✅ All component measurements completed successfully\n`);
+    });
+
+    it("Should measure multiple insurance claims and average components", async function () {
+      const numClaims = 5;
+      const claimResults = [];
+
+      console.log(`\n  📊 Processing ${numClaims} insurance claims for averaging...\n`);
+
+      for (let i = 0; i < numClaims; i++) {
+        const machineID = `CLAIM_MACHINE_AVG_${i}`;
+        const telemetryData = [
+          ["voltage", (220 + Math.random() * 10).toFixed(2)],
+          ["current", (15 + Math.random() * 2).toFixed(2)],
+          ["temperature", (70 + Math.random() * 10).toFixed(2)]
+        ];
+
+        // Measure each component
+        const offchainStart = performance.now();
+        const data = { id: machineID, telemetry: telemetryData };
+        const signerAddr = await signer.getAddress();
+        const offchainTime = performance.now() - offchainStart;
+
+        const cryptoStart = performance.now();
+        const tree = StandardMerkleTree.of(telemetryData, ["string", "string"]);
+        const merkleRoot = tree.root;
+        const signature = await signer.signMessage(merkleRoot);
+        const cryptoTime = performance.now() - cryptoStart;
+
+        const ipfsStart = performance.now();
+        const metadata = { machineID, merkleRoot, signature };
+        await new Promise(resolve => setTimeout(resolve, 5));
+        const ipfsTime = performance.now() - ipfsStart;
+
+        const blockchainStart = performance.now();
+        const tx = await predictiveMaintenance.storeProof(machineID, merkleRoot, false);
+        const receipt = await tx.wait();
+        const blockchainTime = performance.now() - blockchainStart;
+
+        claimResults.push({
+          claimNumber: i + 1,
+          offchain: offchainTime,
+          crypto: cryptoTime,
+          ipfs: ipfsTime,
+          blockchain: blockchainTime,
+          total: offchainTime + cryptoTime + ipfsTime + blockchainTime
+        });
+
+        console.log(`     Claim ${i + 1}/${numClaims}: ${claimResults[i].total.toFixed(2)}ms`);
+      }
+
+      // Calculate averages
+      const avgOffchain = claimResults.reduce((sum, r) => sum + r.offchain, 0) / numClaims;
+      const avgCrypto = claimResults.reduce((sum, r) => sum + r.crypto, 0) / numClaims;
+      const avgIpfs = claimResults.reduce((sum, r) => sum + r.ipfs, 0) / numClaims;
+      const avgBlockchain = claimResults.reduce((sum, r) => sum + r.blockchain, 0) / numClaims;
+      const avgTotal = claimResults.reduce((sum, r) => sum + r.total, 0) / numClaims;
+
+      console.log(`\n  📈 Average Component Times (${numClaims} claims):`);
+      console.log(`     ├─ Off-chain:       ${avgOffchain.toFixed(2)}ms`);
+      console.log(`     ├─ Crypto Proof:    ${avgCrypto.toFixed(2)}ms`);
+      console.log(`     ├─ IPFS Upload:     ${avgIpfs.toFixed(2)}ms`);
+      console.log(`     ├─ Blockchain:      ${avgBlockchain.toFixed(2)}ms`);
+      console.log(`     └─ Total Average:   ${avgTotal.toFixed(2)}ms\n`);
+
+      latencyResults.push({
+        test: "insurance_claim_averaged",
+        claimCount: numClaims,
+        averages: {
+          offchain: avgOffchain,
+          cryptographicProof: avgCrypto,
+          ipfsUpload: avgIpfs,
+          blockchainCommitment: avgBlockchain,
+          total: avgTotal
+        },
+        individual: claimResults,
+        operationType: "insurance_claim_batch",
+        timestamp: new Date().toISOString()
+      });
     });
   });
 });

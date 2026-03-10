@@ -1267,10 +1267,45 @@ async function validateInsuranceClaim() {
         console.log('Verifying proof with account:', connectedAccount);
         console.log('Anomaly detection was already done off-chain in process.js');
 
+        // Find the correct anchor index by matching the Merkle root
+        let anchorIndex = -1;
+        console.log('🔍 Searching for matching Merkle root on blockchain...');
+        console.log('   Expected Merkle Root from JSON:', machineProofs.merkleRoot);
+        
+        try {
+            // Try anchor indices 0-10 (most recent uploads)
+            for (let i = 0; i < 10; i++) {
+                try {
+                    const anchor = await contract.methods.machineLedger(machineID, i).call();
+                    console.log(`   Checking anchor index ${i}: ${anchor.merkleRoot}`);
+                    
+                    if (anchor.merkleRoot === machineProofs.merkleRoot) {
+                        anchorIndex = i;
+                        console.log(`✅ Found matching Merkle root at anchor index ${i}!`);
+                        break;
+                    }
+                } catch (e) {
+                    // No more anchors, stop searching
+                    console.log(`   No anchor at index ${i}, stopping search.`);
+                    break;
+                }
+            }
+            
+            if (anchorIndex === -1) {
+                console.error('❌ Could not find matching Merkle root on blockchain!');
+                alert('Error: Could not find matching data on blockchain.\n\nPlease run: node scripts/process.js');
+                return;
+            }
+        } catch (error) {
+            console.error('Error searching for anchor:', error);
+            alert(`Error: ${error.message}`);
+            return;
+        }
+
         // Call the simplified validation function (only Merkle proof + hasAnomaly flag check)
         const tx = await contract.methods.validateInsuranceClaim(
             machineID,
-            0, // anchor index
+            anchorIndex, // Use the found anchor index
             anomaly.leaf,
             proofHashes,
             proofPositions
