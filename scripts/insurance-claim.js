@@ -125,6 +125,35 @@ async function validateClaim(machineID, anomalyIndex = 0) {
         const accounts = await web3.eth.getAccounts();
         const fromAccount = accounts[0];
 
+        // Find the correct anchor index by matching the Merkle root
+        let anchorIndex = -1;
+        console.log('🔍 Searching for matching Merkle root on blockchain...');
+        console.log(`   Expected Merkle Root: ${machineProofs.merkleRoot}\n`);
+        
+        for (let i = 0; i < 10; i++) {
+            try {
+                const anchor = await contract.methods.machineLedger(machineID.toString(), i).call();
+                console.log(`   Checking anchor index ${i}: ${anchor.merkleRoot}`);
+                
+                if (anchor.merkleRoot === machineProofs.merkleRoot) {
+                    anchorIndex = i;
+                    console.log(`   ✅ Found matching Merkle root at anchor index ${i}!\n`);
+                    break;
+                }
+            } catch (e) {
+                // No more anchors, stop searching
+                console.log(`   No anchor at index ${i}, stopping search.\n`);
+                break;
+            }
+        }
+        
+        if (anchorIndex === -1) {
+            console.error('❌ Could not find matching Merkle root on blockchain!');
+            console.error('   The data in anomaly_proofs.json does not match any blockchain record.');
+            console.error('   Please run: node scripts/process.js\n');
+            return;
+        }
+
         // Call the double confirmation function
         console.log('═══════════════════════════════════════');
         console.log('   PHASE 2: POLICY CHECK');
@@ -150,7 +179,7 @@ async function validateClaim(machineID, anomalyIndex = 0) {
 
         const tx = await contract.methods.validateInsuranceClaim(
             machineID.toString(),
-            0, // anchor index
+            anchorIndex, // Use the found anchor index
             anomaly.leaf,
             proofHashes,
             proofPositions,

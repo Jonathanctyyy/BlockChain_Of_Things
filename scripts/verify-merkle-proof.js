@@ -88,8 +88,34 @@ async function verifyAnomalyProof(machineID, anomalyIndex = 0) {
             console.log(`  [${i}] ${p.position.toUpperCase()}: ${p.data}`);
         });
 
+        // Find the correct anchor index by matching the Merkle root
+        console.log('\n🔍 Finding correct anchor index on blockchain...\n');
+        let anchorIndex = -1;
+        
+        for (let i = 0; i < 10; i++) {
+            try {
+                const anchor = await contract.methods.machineLedger(machineID.toString(), i).call();
+                console.log(`   Checking anchor ${i}: ${anchor.merkleRoot}`);
+                
+                if (anchor.merkleRoot === machineProofs.merkleRoot) {
+                    anchorIndex = i;
+                    console.log(`   ✅ Match found at anchor index ${i}!\n`);
+                    break;
+                }
+            } catch (e) {
+                console.log(`   No more anchors found.\n`);
+                break;
+            }
+        }
+        
+        if (anchorIndex === -1) {
+            console.error('❌ Could not find matching Merkle root on blockchain!');
+            console.error('   Please run: node scripts/process.js\n');
+            return;
+        }
+
         // Call the smart contract to verify the proof
-        console.log('\n🔍 Verifying proof on-chain...\n');
+        console.log('🔍 Verifying proof on-chain...\n');
         
         const accounts = await web3.eth.getAccounts();
         const fromAccount = accounts[0];
@@ -97,7 +123,7 @@ async function verifyAnomalyProof(machineID, anomalyIndex = 0) {
         // Verify using view function (no gas cost)
         const isValidView = await contract.methods.verifyMerkleProof(
             machineID.toString(),
-            0, // Anchor index (first batch)
+            anchorIndex, // Use the found anchor index
             anomaly.leaf,
             proofHashes,
             proofPositions
@@ -117,7 +143,7 @@ async function verifyAnomalyProof(machineID, anomalyIndex = 0) {
         
         const tx = await contract.methods.verifyAndLog(
             machineID.toString(),
-            0,
+            anchorIndex,
             anomaly.leaf,
             proofHashes,
             proofPositions

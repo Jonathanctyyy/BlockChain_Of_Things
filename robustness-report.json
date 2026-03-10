@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-03-09T19:08:24.194Z",
+  "scenarios": [
+    {
+      "scenario": "Auto-Decline: Tampered Data (Reverted)",
+      "type": "auto-decline",
+      "machineID": "MACHINE_TAMPERED_001",
+      "reverted": true,
+      "reason": "Transaction reverted due to invalid proof",
+      "passed": true,
+      "timestamp": "2026-03-09T19:08:24.799Z"
+    },
+    {
+      "scenario": "Auto-Decline: Malformed Proof",
+      "type": "auto-decline",
+      "machineID": "MACHINE_MALFORMED_003",
+      "reverted": true,
+      "reason": "Proof and positions length mismatch",
+      "passed": true,
+      "timestamp": "2026-03-09T19:08:25.220Z"
+    },
+    {
+      "scenario": "Edge Case: Empty Ledger",
+      "type": "edge-case",
+      "machineID": "MACHINE_EMPTY_001",
+      "handled": true,
+      "passed": true,
+      "timestamp": "2026-03-09T19:08:25.429Z"
+    },
+    {
+      "scenario": "Edge Case: Maximum Concurrent Load",
+      "type": "edge-case",
+      "attempted": 100,
+      "successful": 100,
+      "failed": 0,
+      "successRate": "100.00%",
+      "duration": 1.787,
+      "throughput": "55.96 tx/s",
+      "passed": true,
+      "timestamp": "2026-03-09T19:08:27.221Z"
+    },
+    {
+      "scenario": "Edge Case: Duplicate Registration",
+      "type": "edge-case",
+      "machineID": "MACHINE_DUPLICATE_001",
+      "handled": true,
+      "behavior": "Address overwritten",
+      "passed": true,
+      "timestamp": "2026-03-09T19:08:27.525Z"
+    }
+  ],
+  "summary": {
+    "totalTests": 5,
+    "passed": 5,
+    "failed": 0,
+    "autoDeclineCount": 2,
+    "edgeCaseCount": 3
+  }
+}
