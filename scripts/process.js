@@ -22,27 +22,22 @@ let anomalyDetectedInBatch = false;
 const allProcessedData = [];
 
 // ====================================
-// ADVANCED ANOMALY DETECTION SYSTEM
+// anomaly detection system
 // ====================================
-// This system prevents false positives by:
 // 1. TEMPORAL PERSISTENCE: Requires anomalies to persist across multiple consecutive readings
 // 2. MULTI-SENSOR CORRELATION: Triggers when multiple sensors show anomalies simultaneously
 // 3. TIME-WINDOW VALIDATION: Analyzes patterns within a configurable time window
 //
-// An anomaly is only flagged as CRITICAL if:
-// - Multiple sensors (≥2) show abnormal readings at the same time, OR
+//  CRITICAL if:
+// - Multiple sensors (≥2) show abnormal readings at the same time OR
 // - The same sensor shows anomalies for 3+ consecutive readings
-//
-// This reduces noise and focuses on genuine equipment degradation patterns.
-// 
-// CONFIGURATION: Adjust the values below to tune sensitivity
 // ====================================
 
 // Configuration for anomaly detection
 const ANOMALY_CONFIG = {
-    // Number of consecutive anomalies required to trigger alert (higher = fewer alerts)
+    // Number of consecutive anomalies required to trigger alert
     CONSECUTIVE_THRESHOLD: 3,
-    // Number of concurrent sensor anomalies required (higher = fewer alerts)
+    // Number of concurrent sensor anomalies required 
     MULTI_SENSOR_THRESHOLD: 2,
     // Time window in hours to check for persistent anomalies
     TIME_WINDOW_HOURS: 1,
@@ -53,7 +48,7 @@ const ANOMALY_CONFIG = {
 // Store recent readings per machine for temporal analysis
 const machineHistory = {};
 
-// --- ENHANCED ANOMALY DETECTION LOGIC ---
+// Anomaly detection function
 // Check if a single reading exceeds threshold
 function checkThresholdViolation(data) {
     const violations = [];
@@ -78,12 +73,12 @@ function checkThresholdViolation(data) {
     return violations;
 }
 
-// Advanced anomaly detection with temporal and multi-metric validation
+// anomaly detection function
 function checkAnomaly(data) {
     const machineID = data.machineID;
     const currentTime = new Date(data.datetime);
     
-    // Initialize history for this machine if not exists
+    // Initialize history for the machine if it doesn't exist
     if (!machineHistory[machineID]) {
         machineHistory[machineID] = [];
     }
@@ -99,7 +94,7 @@ function checkAnomaly(data) {
     });
     
     // Keep only recent history within time window
-    const timeWindowMs = ANOMALY_CONFIG.TIME_WINDOW_HOURS * 60 * 60 * 1000;
+    const timeWindowMs = ANOMALY_CONFIG.TIME_WINDOW_HOURS * 60 * 60 * 1000; // convert hours to millseconds
     machineHistory[machineID] = machineHistory[machineID].filter(record => {
         return (currentTime - record.datetime) <= timeWindowMs;
     });
@@ -109,7 +104,7 @@ function checkAnomaly(data) {
         return false;
     }
     
-    // RULE 1: Multi-Sensor Validation - Multiple sensors showing anomalies simultaneously
+    // 1. Multi-Sensor Validation 
     if (currentViolations.length >= ANOMALY_CONFIG.MULTI_SENSOR_THRESHOLD) {
         console.log(`[ALERT] Multi-Sensor Anomaly detected for Machine ${machineID} at ${data.datetime}`);
         console.log(`  ${currentViolations.length} sensors showing abnormal readings:`);
@@ -119,8 +114,8 @@ function checkAnomaly(data) {
         return true;
     }
     
-    // RULE 2: Temporal Persistence - Same sensor showing anomalies consecutively
-    const recentReadings = machineHistory[machineID].slice(-ANOMALY_CONFIG.CONSECUTIVE_THRESHOLD);
+    // 2. Temporal Persistence 
+    const recentReadings = machineHistory[machineID].slice(-ANOMALY_CONFIG.CONSECUTIVE_THRESHOLD); // get the most recent readings
     
     if (recentReadings.length >= ANOMALY_CONFIG.CONSECUTIVE_THRESHOLD) {
         // Check if any sensor type has violations in all recent readings
@@ -168,7 +163,7 @@ const anomalyStats = {
 };
 
 // ==================================== Writing Processed Data and Blockchain Interaction ====================================
-// 1. READ & ANALYZE
+// read the CSV file and process each row (data ingestion and anomaly detection)
 fs.createReadStream('./iot-data/PdM_telemetry.csv')
   .pipe(csv())
   .on('data', (data) => {
@@ -180,7 +175,7 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
         anomalyStats.thresholdViolations++;
     }
     
-    // Check for anomalies using advanced temporal and multi-metric validation
+    // Check for anomalies 
     const isAnomaly = checkAnomaly(data);
     
     // Tag the data status
@@ -197,12 +192,11 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
     // Create the string for hashing and signing
     const rowString = `${data.datetime},${data.machineID},${data.volt},${data.vibration},${data.status}`;
     
-    // Replace rows.push(data) with the following:
     if (!machineRecords[data.machineID]) {
         machineRecords[data.machineID] = [];
     }
     machineRecords[data.machineID].push(data);
-    // Inside the 'data' event handler, add each processed record to the array
+    // Add the processed data to the allProcessedData array
     allProcessedData.push(data);
   })
   .on('end', async () => {
@@ -237,6 +231,8 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
         console.error('Warning: Could not clean up old Pinata data, continuing anyway...');
     }
 
+
+    // ====================================  Merkle Tree Creation ====================================
     // Load machine private key from .env (must be hex string like '0x...')
     const machinePrivateKey = process.env.MACHINE_PRIVATE_KEY;
     if (!machinePrivateKey) {
@@ -269,11 +265,8 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
         
         const root = '0x' + tree.getRoot().toString('hex');
 
-        // ====================================
         // MERKLE PROOF GENERATION FOR ANOMALIES
-        // ====================================
         // Generate compact Merkle proofs for anomalous readings
-        // This allows efficient O(log n) verification on-chain
         const anomalyProofs = [];
         
         records.forEach((record, index) => {
@@ -311,12 +304,14 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
             console.log(`   Hash function: keccak256 (Ethereum compatible)`);
         }
 
+
+        // ==================================== Machine Signature Generation ====================================
         // Generate a single signature for the machine
         const machineDataString = records.map(record => `${record.datetime},${record.volt},${record.vibration},${record.status}`).join('|');
+        // Example: "2024-01-15,120,45,NORMAL|2024-01-15,119,46,NORMAL|2024-01-16,121,48,CRITICAL"
         const dataHash = web3.utils.soliditySha3(machineDataString); // Keccak256 hash
 
         // Use web3's sign method which automatically adds EIP-191 prefix
-        // This ensures compatibility with the smart contract's recoverSigner function
         const signResult = web3.eth.accounts.sign(dataHash, machinePrivateKey);
         const machineSignature = signResult.signature;
 
@@ -347,6 +342,7 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
             // Read contract address from deployment file
             let contractAddress;
             try {
+                // connect with the deployed contract address from deploy-web3.js
                 const deploymentInfo = JSON.parse(fs.readFileSync('./contract-address.json', 'utf8'));
                 contractAddress = deploymentInfo.contractAddress;
                 console.log(`Using contract at: ${contractAddress} (deployed at ${deploymentInfo.deployedAt})`);
@@ -358,7 +354,7 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
             
             const contract = new web3.eth.Contract(contractABI, contractAddress);
             const accounts = await web3.eth.getAccounts();
-            const fromAccount = accounts[accounts.length - 1];
+            const fromAccount = accounts[accounts.length - 1]; // use the last account (the experimental account) for transactions
 
             // Explicitly set a higher gas limit for the transaction
             const gasLimit = 3000000; // Set a high gas limit for debugging
@@ -397,8 +393,7 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
                 hasAnomaly: blockchainAnchor.hasAnomaly
             });
 
-            // === DECENTRALIZED VERIFICATION: Verify the machine's signature on the blockchain ===
-            // This verification happens on-chain through the smart contract, making it trustless
+            // Verify the machine's signature on the blockchain 
             // Set ENABLE_SIGNATURE_VERIFICATION=true in .env to enable this feature
             const enableVerification = process.env.ENABLE_SIGNATURE_VERIFICATION === 'true';
             let signatureVerified = false;
@@ -446,11 +441,11 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
                 from: fromAccount,
                 to: contractAddress,
                 timestamp: blockchainAnchor.timestamp,
-                merkleRoot: blockchainAnchor.merkleRoot, // Include the Merkle Root hash
-                ipfsCID: cid, // Include the CID in the transaction details
-                machineSignature: machineSignature, // Add the machine signature here
+                merkleRoot: blockchainAnchor.merkleRoot, // Merkle Root hash
+                ipfsCID: cid, // CID 
+                machineSignature: machineSignature, // machine signature 
                 signatureVerified: signatureVerified, // true/false/null (true=verified, false=failed, null=not attempted)
-                verifiedAddress: machineAddress, // The address that was verified
+                verifiedAddress: machineAddress, // The address 
                 anomalyCount: anomalyProofs.length, // Number of anomalous readings
                 hasAnomalyProofs: anomalyProofs.length > 0 // Flag indicating proofs are available
             };
@@ -494,7 +489,6 @@ fs.createReadStream('./iot-data/PdM_telemetry.csv')
                 }
             }
 
-            // Add the new transaction details
             transactionLog.push(transactionDetails);
 
             // Custom replacer to handle BigInt serialization

@@ -6,7 +6,7 @@ contract PredictiveMaintenance {
     struct Anchor {
         uint256 timestamp;
         bytes32 merkleRoot;
-        bool hasAnomaly; // New Field: Was there a problem in this batch?
+        bool hasAnomaly; 
     }
 
     mapping(string => Anchor[]) public machineLedger;
@@ -17,8 +17,7 @@ contract PredictiveMaintenance {
     // EVENTS
     event DataAnchored(string indexed machineID, uint256 timestamp);
     
-    // CRITICAL EVENT: This is what makes it "Predictive Maintenance"
-    // Maintenance bots can listen for this event to auto-schedule repairs.
+    // Maintenance function
     event AnomalyDetected(string indexed machineID, uint256 timestamp, string message);
 
     function storeProof(string memory machineID, bytes32 merkleRoot, bool hasAnomaly) public {
@@ -59,8 +58,7 @@ contract PredictiveMaintenance {
 
     // Internal function to recover the signer's address
     // Follows EIP-191: Ethereum Signed Message standard
-    // NOTE: Assembly usage is intentional and necessary for signature parsing
-    // This is the standard method for ECDSA signature recovery
+    // standard method for ECDSA signature recovery
     function recoverSigner(bytes32 dataHash, bytes memory signature) internal pure returns (address) {
         require(signature.length == 65, "Invalid signature length");
 
@@ -85,13 +83,7 @@ contract PredictiveMaintenance {
         return ecrecover(ethSignedHash, v, r, s);
     }
 
-    // ====================================
     // MERKLE PROOF VERIFICATION
-    // ====================================
-    // Verify that a specific sensor reading is part of the dataset
-    // represented by the stored Merkle root. This provides O(log n)
-    // verification without needing to store all data on-chain.
-    //
     // Parameters:
     // - _machineID: Machine identifier
     // - _anchorIndex: Index of the anchor (record batch) to verify against
