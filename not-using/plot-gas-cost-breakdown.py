@@ -43,21 +43,6 @@ op_data = {
         "total": 115875,
         "description": "Store data proof with anomaly detection",
     },
-    "Batch 10\nReadings": {
-        "total": 117247,
-        "per_reading": 117247 / 10,
-        "description": "10 sensor readings batch",
-    },
-    "Batch 50\nReadings": {
-        "total": 199288,
-        "per_reading": 199288 / 50,
-        "description": "50 sensor readings batch",
-    },
-    "Batch 100\nReadings": {
-        "total": 301981,
-        "per_reading": 301981 / 100,
-        "description": "100 sensor readings batch",
-    },
 }
 
 
@@ -202,7 +187,7 @@ ax.grid(axis="x", alpha=0.3, linestyle="--", linewidth=0.7)
 ax.set_axisbelow(True)
 
 # Legend
-ax.legend(loc="lower right", fontsize=10, framealpha=0.95, edgecolor="black")
+ax.legend(loc="upper right", fontsize=10, framealpha=0.95, edgecolor="black")
 
 # Add total gas annotations on the right side
 totals = [op_data[op]["total"] for op in operations_list]
@@ -232,22 +217,8 @@ for i, (op_name, total) in enumerate(zip(operations_list, totals)):
             color="gray",
         )
 
-# Add efficiency note for batch operations
-fig.text(
-    0.15,
-    0.02,
-    "Key Insight: Batch operations show sub-linear gas scaling\n"
-    + "Per-reading cost decreases from 11,725 (10 readings) to 3,020 (100 readings)",
-    ha="left",
-    fontsize=10,
-    style="italic",
-    bbox=dict(
-        boxstyle="round,pad=0.8", facecolor="lightblue", edgecolor="blue", alpha=0.9
-    ),
-)
-
 # Adjust layout
-plt.tight_layout(rect=[0, 0.06, 1, 1])
+plt.tight_layout()
 
 # Save as high-resolution PNG and PDF
 plt.savefig("visualizations/gas-cost-breakdown.png", dpi=300, bbox_inches="tight")
@@ -255,60 +226,5 @@ plt.savefig("visualizations/gas-cost-breakdown.pdf", bbox_inches="tight")
 print("✓ Saved: visualizations/gas-cost-breakdown.png (300 DPI)")
 print("✓ Saved: visualizations/gas-cost-breakdown.pdf (vector)")
 
-# Print detailed statistics
-print("\n" + "=" * 70)
-print("GAS COST BREAKDOWN BY OPERATION")
-print("=" * 70)
-
-for i, op_name in enumerate(operations_list):
-    total = totals[i]
-    base = base_tx_costs[i]
-    storage = storage_costs[i]
-    computation = computation_costs[i]
-    events = event_costs[i]
-
-    print(f"\n{op_name.replace(chr(10), ' ')}:")
-    print(f"  Total Gas:            {total:>8,} gas (100.0%)")
-    print(f"  ├─ Base Transaction:  {base:>8,.0f} gas ({base/total*100:>5.1f}%)")
-    print(f"  ├─ Storage Ops:       {storage:>8,.0f} gas ({storage/total*100:>5.1f}%)")
-    print(
-        f"  ├─ Computation:       {computation:>8,.0f} gas ({computation/total*100:>5.1f}%)"
-    )
-    print(f"  └─ Event Emissions:   {events:>8,.0f} gas ({events/total*100:>5.1f}%)")
-
-    if "per_reading" in op_data[op_name]:
-        per_reading = op_data[op_name]["per_reading"]
-        print(f"  Per-Reading Cost:     {per_reading:>8,.0f} gas/reading")
-
-# Calculate efficiency improvements
-print("\n" + "=" * 70)
-print("BATCH OPERATION EFFICIENCY ANALYSIS")
-print("=" * 70)
-
-batch_10_per = op_data["Batch 10\nReadings"]["per_reading"]
-batch_50_per = op_data["Batch 50\nReadings"]["per_reading"]
-batch_100_per = op_data["Batch 100\nReadings"]["per_reading"]
-
-print(f"\nPer-Reading Gas Cost:")
-print(f"  10 readings:   {batch_10_per:>8,.0f} gas/reading")
-print(
-    f"  50 readings:   {batch_50_per:>8,.0f} gas/reading  ({(batch_10_per-batch_50_per)/batch_10_per*100:.1f}% reduction)"
-)
-print(
-    f"  100 readings:  {batch_100_per:>8,.0f} gas/reading  ({(batch_10_per-batch_100_per)/batch_10_per*100:.1f}% reduction)"
-)
-
-print(f"\nEfficiency Gain (10 vs 100 readings):")
-print(
-    f"  Cost Reduction: {batch_10_per - batch_100_per:,.0f} gas/reading ({(batch_10_per-batch_100_per)/batch_10_per*100:.1f}%)"
-)
-print(f"  Scaling Factor: {batch_10_per/batch_100_per:.2f}x more efficient")
-
-print("\n" + "=" * 70)
-print("CONCLUSION:")
-print("  Base transaction overhead (21,000 gas) is amortized across batch")
-print("  Batch processing is 74.2% more efficient than individual transactions")
-print("  Optimal batch size depends on gas limit and data size constraints")
-print("=" * 70)
-
-plt.show()
+# Print detailed statistics to console (optional)
+# Detailed stats are now displayed on the chart

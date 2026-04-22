@@ -145,13 +145,10 @@ contract PredictiveMaintenance {
         return verified;
     }
 
-    // ====================================
     // INSURANCE CLAIM VALIDATION 
-    // ====================================
     // Anomaly detection happens OFF-CHAIN in process.js
     // Smart contract only verifies data integrity via Merkle proof
     // and confirms that anomalies were detected off-chain
-    // ====================================
 
     // Events for insurance claims
     event ClaimValidated(
@@ -162,7 +159,7 @@ contract PredictiveMaintenance {
         bool hasAnomaly
     );
 
-    // Simplified claim validation: Only verify proof + check hasAnomaly flag
+    // Only verify proof + check hasAnomaly flag
     // All anomaly detection logic happens off-chain (in process.js)
     function validateInsuranceClaim(
         string memory machineID,

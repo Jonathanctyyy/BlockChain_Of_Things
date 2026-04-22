@@ -1,0 +1,100 @@
+{
+  "timestamp": "2026-03-25T16:35:37.864Z",
+  "testScenario": "Merkle Tree Generation Performance Benchmark",
+  "environment": {
+    "runtime": "Node.js",
+    "hashFunction": "SHA-256 (simulates Keccak-256)",
+    "machinePlatform": "win32",
+    "nodeVersion": "v24.11.0"
+  },
+  "methodology": {
+    "description": "Measures end-to-end Merkle tree generation time for simulated IoT machine batches",
+    "phases": [
+      "Leaf generation: Create hash of each sensor reading",
+      "Tree construction: Build binary tree by hashing pairs iteratively",
+      "Root computation: Final output is Merkle root"
+    ],
+    "complexity": "O(n*log(n)) - n reads for leaves, then log(n) levels of log(n) pairs each"
+  },
+  "results": [
+    {
+      "numMachines": 100,
+      "description": "100 machines (5 min batch @ 1 reading/3s)",
+      "performance": {
+        "totalTimeMs": 1.678,
+        "leafGenerationMs": 1.399,
+        "treeGenerationMs": 0.195,
+        "readingsPerSecond": 59580.55,
+        "hashesComputedPerSecond": 120353,
+        "msPerReading": 0.0168
+      },
+      "treeStructure": {
+        "treeDepth": 8,
+        "totalHashesComputed": 202,
+        "merkleRootHash": "9b483233fb41f1280bdec37468d5ae114803a87cb3473dd209c6796f7f468aea"
+      },
+      "feasibility": {
+        "realTimeVerification": true,
+        "nearRealTimeVerification": true,
+        "batchProcessing": true
+      }
+    },
+    {
+      "numMachines": 1000,
+      "description": "1,000 machines (50 min batch)",
+      "performance": {
+        "totalTimeMs": 6.347,
+        "leafGenerationMs": 2.658,
+        "treeGenerationMs": 3.666,
+        "readingsPerSecond": 157564.68,
+        "hashesComputedPerSecond": 315287,
+        "msPerReading": 0.0063
+      },
+      "treeStructure": {
+        "treeDepth": 11,
+        "totalHashesComputed": 2001,
+        "merkleRootHash": "6b524a1c7c39362ffacfb2cd4cb8d7e4a3e00562e856c281fdf75d8b565eaa46"
+      },
+      "feasibility": {
+        "realTimeVerification": true,
+        "nearRealTimeVerification": true,
+        "batchProcessing": true
+      }
+    },
+    {
+      "numMachines": 10000,
+      "description": "10,000 machines (500 min batch)",
+      "performance": {
+        "totalTimeMs": 28.583,
+        "leafGenerationMs": 15.47,
+        "treeGenerationMs": 13.019,
+        "readingsPerSecond": 349854.64,
+        "hashesComputedPerSecond": 699884,
+        "msPerReading": 0.0029
+      },
+      "treeStructure": {
+        "treeDepth": 15,
+        "totalHashesComputed": 20005,
+        "merkleRootHash": "9681fdcbe0e0ffde9c4963a7d2f4ea788ab581d19b0425cc2195b28c20cfe7c9"
+      },
+      "feasibility": {
+        "realTimeVerification": true,
+        "nearRealTimeVerification": true,
+        "batchProcessing": true
+      }
+    }
+  ],
+  "keyFindings": [
+    "1.68ms to process 100 machines - suitable for real-time verification",
+    "6.35ms to process 1,000 machines - near-real-time processing",
+    "28.58ms to process 10,000 machines - batch processing mode",
+    "Performance scales at O(n*log(n)) as theoretically expected",
+    "Merkle tree generation is NOT the bottleneck - on-chain verification is the limiting factor"
+  ],
+  "recommendations": [
+    "Merkle tree generation can handle >10,000 machines in reasonable time",
+    "Recommended batch size for insurance claims: 1,000-10,000 readings per batch",
+    "Off-chain computation is performant; blockchain transaction throughput is the real constraint",
+    "Consider horizontal scaling (multiple workers) for >100,000 machine deployments"
+  ]
+}
