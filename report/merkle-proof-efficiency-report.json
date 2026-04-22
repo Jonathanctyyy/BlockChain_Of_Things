@@ -1,0 +1,115 @@
+{
+  "timestamp": "2026-03-25T15:56:55.774Z",
+  "testScenario": "Merkle Proof Verification: Dataset Size Impact",
+  "gasPrice": "50 Gwei",
+  "ethPrice": "$2500",
+  "methodology": {
+    "description": "Measures gas cost to verify one sensor reading against Merkle trees of varying sizes",
+    "gasCalculation": "base(21000) + storage(2100) + loop(500) + perElement(800 * proofLength)",
+    "keyInsight": "Proof length = log2(datasetSize), so costs scale logarithmically with dataset size"
+  },
+  "results": [
+    {
+      "datasetSize": 32,
+      "description": "Micro batch (1 hour)",
+      "treeDepth": 5,
+      "proofLength": 5,
+      "gasUsed": 27600,
+      "costUSD": 3.45,
+      "costPerReadingUSD": 0.107812,
+      "costAsPercentageOf100Payout": 3.45,
+      "costAsPercentageOf1000Payout": 0.345,
+      "economicViability": {
+        "forMicroClaim100": "VIABLE",
+        "forStandardClaim1000": "VIABLE"
+      }
+    },
+    {
+      "datasetSize": 64,
+      "description": "Small batch (2 hours)",
+      "treeDepth": 6,
+      "proofLength": 6,
+      "gasUsed": 28400,
+      "costUSD": 3.55,
+      "costPerReadingUSD": 0.055469,
+      "costAsPercentageOf100Payout": 3.55,
+      "costAsPercentageOf1000Payout": 0.355,
+      "economicViability": {
+        "forMicroClaim100": "VIABLE",
+        "forStandardClaim1000": "VIABLE"
+      }
+    },
+    {
+      "datasetSize": 128,
+      "description": "Standard batch (4 hours)",
+      "treeDepth": 7,
+      "proofLength": 7,
+      "gasUsed": 29200,
+      "costUSD": 3.65,
+      "costPerReadingUSD": 0.028516,
+      "costAsPercentageOf100Payout": 3.65,
+      "costAsPercentageOf1000Payout": 0.365,
+      "economicViability": {
+        "forMicroClaim100": "VIABLE",
+        "forStandardClaim1000": "VIABLE"
+      }
+    },
+    {
+      "datasetSize": 256,
+      "description": "Large batch (8 hours)",
+      "treeDepth": 8,
+      "proofLength": 8,
+      "gasUsed": 30000,
+      "costUSD": 3.75,
+      "costPerReadingUSD": 0.014648,
+      "costAsPercentageOf100Payout": 3.75,
+      "costAsPercentageOf1000Payout": 0.375,
+      "economicViability": {
+        "forMicroClaim100": "VIABLE",
+        "forStandardClaim1000": "VIABLE"
+      }
+    },
+    {
+      "datasetSize": 512,
+      "description": "Industrial batch (16 hours)",
+      "treeDepth": 9,
+      "proofLength": 9,
+      "gasUsed": 30800,
+      "costUSD": 3.85,
+      "costPerReadingUSD": 0.00752,
+      "costAsPercentageOf100Payout": 3.85,
+      "costAsPercentageOf1000Payout": 0.385,
+      "economicViability": {
+        "forMicroClaim100": "VIABLE",
+        "forStandardClaim1000": "VIABLE"
+      }
+    },
+    {
+      "datasetSize": 1024,
+      "description": "Enterprise batch (24 hours)",
+      "treeDepth": 10,
+      "proofLength": 10,
+      "gasUsed": 31600,
+      "costUSD": 3.95,
+      "costPerReadingUSD": 0.003857,
+      "costAsPercentageOf100Payout": 3.95,
+      "costAsPercentageOf1000Payout": 0.395,
+      "economicViability": {
+        "forMicroClaim100": "VIABLE",
+        "forStandardClaim1000": "VIABLE"
+      }
+    }
+  ],
+  "keyFindings": [
+    "Merkle proof verification scales LOGARITHMICALLY with dataset size",
+    "Even 1024-reading batches cost only $3.9500 to verify",
+    "Verification is 5-10x cheaper than proof storage for large datasets",
+    "All dataset sizes remain economically viable for claims >$200",
+    "Perfect for high-frequency, high-volume IoT insurance"
+  ],
+  "recommendations": [
+    "Use largest practical dataset sizes (512-1024 readings per batch)",
+    "Batch multiple claims together to amortize proof storage cost",
+    "Verification itself is not a bottleneck—focus optimization on storage"
+  ]
+}

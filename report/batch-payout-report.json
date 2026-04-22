@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-03-25T15:51:52.245Z",
+  "testScenario": "Batch Payout vs Individual Payout",
+  "machines": 10,
+  "gasPrice": "50 Gwei",
+  "ethPrice": "$2500",
+  "results": {
+    "individual": {
+      "totalGas": 420000,
+      "totalCost": 52.5,
+      "gasPerClaim": 42000,
+      "costPerClaim": 5.25
+    },
+    "batch": {
+      "totalGas": 176500,
+      "totalCost": 22.0625,
+      "gasPerClaim": 17650,
+      "costPerClaim": 2.20625
+    },
+    "savings": {
+      "gasAmount": 243500,
+      "gasPercentage": 57.98,
+      "costAmount": 30.44,
+      "costPercentage": 57.98,
+      "efficiencyRatio": 2.38
+    }
+  },
+  "recommendation": "For micro-claims (< $500), batch processing is CRITICAL for economic viability. For claims >= $10,000, both approaches are viable but batch still provides 40-50% savings."
+}
