@@ -27,3 +27,6 @@ visualizations/
 anomalies.json
 
 /database_analyzed.json
+
+# Development leftovers — excluded from submission
+/not-using/

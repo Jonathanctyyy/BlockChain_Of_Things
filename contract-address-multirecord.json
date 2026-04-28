@@ -1,7 +1,7 @@
 {
-  "contractAddress": "0x510938116E300347772A29898A77ea48eda0fbaD",
+  "contractAddress": "0x3aaCF333F3176D2C4df1445353d6FECaF6F057e2",
   "contractName": "PredictiveMaintenanceMultiRecord",
-  "deployedAt": "2026-04-22T15:13:08.016Z",
+  "deployedAt": "2026-04-28T13:14:17.680Z",
   "deployer": "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199",
   "deploymentGas": "930915"
 }

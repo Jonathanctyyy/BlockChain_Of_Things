@@ -13,12 +13,12 @@ import numpy as np
 # Academic styling
 plt.rcParams["font.family"] = "sans-serif"
 plt.rcParams["font.sans-serif"] = ["Arial", "Helvetica", "DejaVu Sans"]
-plt.rcParams["font.size"] = 10
-plt.rcParams["axes.labelsize"] = 11
-plt.rcParams["axes.titlesize"] = 12
-plt.rcParams["xtick.labelsize"] = 9
-plt.rcParams["ytick.labelsize"] = 9
-plt.rcParams["legend.fontsize"] = 9
+plt.rcParams["font.size"] = 16
+plt.rcParams["axes.labelsize"] = 13
+plt.rcParams["axes.titlesize"] = 13
+plt.rcParams["xtick.labelsize"] = 11
+plt.rcParams["ytick.labelsize"] = 11
+plt.rcParams["legend.fontsize"] = 11
 
 # Color palette
 COLORS = {
@@ -78,7 +78,7 @@ def plot_pie_chart(data):
         colors=colors,
         autopct="%1.1f%%",
         startangle=90,
-        textprops={"fontsize": 10, "weight": "bold", "color": "white"},
+        textprops={"fontsize": 13, "weight": "bold", "color": "white"},
         pctdistance=0.75,
         explode=(0.05, 0.05, 0.05, 0.05),  # Slightly separate all slices
     )
@@ -90,12 +90,12 @@ def plot_pie_chart(data):
         loc="center left",
         bbox_to_anchor=(1, 0.5),
         frameon=False,
-        fontsize=9,
+        fontsize=16,
     )
 
     ax.set_title(
         f"Insurance Claim E2E Latency Distribution\nTotal: {total:.2f}ms",
-        fontsize=12,
+        fontsize=20,
         weight="bold",
         pad=20,
     )
@@ -329,7 +329,7 @@ def plot_nested_bar_chart(data):
             y_pos,
             f"{stage['total']:.2f}ms ({percentage:.1f}%)",
             va="center",
-            fontsize=10,
+            fontsize=15,
             weight="bold",
         )
 
@@ -356,7 +356,7 @@ def plot_nested_bar_chart(data):
                     y_pos,
                     f"  {child_name}: {child_value:.2f}ms",
                     va="center",
-                    fontsize=8,
+                    fontsize=13,
                     style="italic",
                     color="gray",
                 )
@@ -368,15 +368,15 @@ def plot_nested_bar_chart(data):
         y_pos -= 0.4  # Extra spacing between stages
 
     # Formatting
-    ax.set_xlabel("Latency (ms)", fontsize=11, weight="bold")
+    ax.set_xlabel("Latency (ms)", fontsize=15, weight="bold")
     ax.set_title(
         f"Insurance Claim Component Breakdown (Total: {total_e2e:.2f}ms)",
-        fontsize=12,
+        fontsize=19,
         weight="bold",
         pad=15,
     )
     ax.set_yticks(y_positions)
-    ax.set_yticklabels(y_labels, fontsize=9)
+    ax.set_yticklabels(y_labels, fontsize=14)
     ax.set_xlim(0, total_e2e * 0.8)
     ax.grid(axis="x", alpha=0.3, linestyle="--")
     ax.set_axisbelow(True)

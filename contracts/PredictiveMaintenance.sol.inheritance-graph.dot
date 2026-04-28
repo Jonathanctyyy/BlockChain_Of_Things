@@ -1,4 +1,0 @@
-digraph "" {
-c376_PredictiveMaintenance[shape="box"label=< <TABLE border="0"><TR><TD align="center"><B>PredictiveMaintenance</B></TD></TR><TR><TD align="left"><I>Public Functions:</I></TD></TR><TR><TD align="left">    storeProof(string,bytes32,bool)</TD></TR><TR><TD align="left">    registerMachine(string,address)</TD></TR><TR><TD align="left">    verifySignature(string,bytes32,bytes)</TD></TR><TR><TD align="left">    verifyMerkleProof(string,uint256,bytes32,bytes32[],uint8[])</TD></TR><TR><TD align="left">    verifyAndLog(string,uint256,bytes32,bytes32[],uint8[])</TD></TR><TR><TD align="left">    validateInsuranceClaim(string,uint256,bytes32,bytes32[],uint8[])</TD></TR><TR><TD align="left"><I>Private Functions:</I></TD></TR><TR><TD align="left">    recoverSigner(bytes32,bytes)</TD></TR><TR><TD align="left"><I>Public Variables:</I></TD></TR><TR><TD align="left">    machineLedger</TD></TR><TR><TD align="left">    machineAddresses</TD></TR></TABLE> >];
-
-}
