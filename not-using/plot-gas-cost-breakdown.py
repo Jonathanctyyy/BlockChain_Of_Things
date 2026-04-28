@@ -11,7 +11,7 @@ import json
 # Set style
 plt.rcParams["font.family"] = "sans-serif"
 plt.rcParams["font.sans-serif"] = ["Arial", "DejaVu Sans", "Helvetica"]
-plt.rcParams["font.size"] = 10
+plt.rcParams["font.size"] = 20
 
 # Load gas report data
 with open("gas-report.json", "r") as f:
@@ -167,19 +167,18 @@ bars4 = ax.barh(
 )
 
 # Labels and title
-ax.set_ylabel("Operation Type", fontsize=12, fontweight="bold")
-ax.set_xlabel("Gas Cost (units)", fontsize=12, fontweight="bold")
+ax.set_ylabel("Operation Type", fontsize=18, fontweight="bold")
+ax.set_xlabel("Gas Cost (units)", fontsize=18, fontweight="bold")
 ax.set_title(
-    "Smart Contract Gas Cost Breakdown by Operation\n"
-    + "Component-Level Analysis of Blockchain Operations",
-    fontsize=14,
+    "Smart Contract Gas Cost Breakdown by Operation",
+    fontsize=22,
     fontweight="bold",
     pad=20,
 )
 
 # Set y-axis
 ax.set_yticks(y_pos)
-ax.set_yticklabels(operations_list, fontsize=10)
+ax.set_yticklabels(operations_list, fontsize=20)
 ax.invert_yaxis()  # Top to bottom
 
 # Add grid for readability
@@ -187,35 +186,7 @@ ax.grid(axis="x", alpha=0.3, linestyle="--", linewidth=0.7)
 ax.set_axisbelow(True)
 
 # Legend
-ax.legend(loc="upper right", fontsize=10, framealpha=0.95, edgecolor="black")
-
-# Add total gas annotations on the right side
-totals = [op_data[op]["total"] for op in operations_list]
-for i, (op_name, total) in enumerate(zip(operations_list, totals)):
-    # Total gas
-    ax.text(
-        total * 1.02,
-        i,
-        f"{total:,} gas",
-        va="center",
-        ha="left",
-        fontsize=9,
-        fontweight="bold",
-    )
-
-    # Add per-reading cost for batch operations
-    if "per_reading" in op_data[op_name]:
-        per_reading = op_data[op_name]["per_reading"]
-        ax.text(
-            total * 1.02,
-            i + 0.3,
-            f"({per_reading:.0f} gas/reading)",
-            va="center",
-            ha="left",
-            fontsize=8,
-            style="italic",
-            color="gray",
-        )
+ax.legend(loc="upper right", fontsize=30, framealpha=0.95, edgecolor="black")
 
 # Adjust layout
 plt.tight_layout()

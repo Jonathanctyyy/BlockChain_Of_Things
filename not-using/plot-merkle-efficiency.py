@@ -158,27 +158,27 @@ for x, y in zip(dataset_sizes, cost_per_reading):
         xytext=(0, 10),
         textcoords="offset points",
         ha="center",
-        fontsize=10,
+        fontsize=15,
         fontweight="bold",
     )
 
 ax.set_xlabel(
-    "Dataset Size (sensor readings, log scale)", fontsize=13, fontweight="bold"
+    "Dataset Size (sensor readings, log scale)", fontsize=18, fontweight="bold"
 )
-ax.set_ylabel("Cost per Reading (USD, log scale)", fontsize=13, fontweight="bold")
+ax.set_ylabel("Cost per Reading (USD, log scale)", fontsize=18, fontweight="bold")
 ax.set_title(
     "Merkle Proof Verification: Logarithmic Efficiency Gains",
-    fontsize=15,
+    fontsize=18,
     fontweight="bold",
 )
 ax.set_xscale("log")
 ax.set_yscale("log")
 ax.grid(True, alpha=0.3, linestyle="--", which="both")
-ax.legend(loc="upper right", fontsize=11, framealpha=0.95)
+ax.legend(loc="upper right", fontsize=18, framealpha=0.95)
 
 # Add annotation
 textbox = (
-    "Verification cost decreases logarithmically:\n"
+    "Verification cost decreases inversely\n"
     "32 readings: $0.108/reading\n"
     "1024 readings: $0.0039/reading\n"
     "28x cheaper for 32x larger dataset"
@@ -188,7 +188,7 @@ ax.text(
     0.95,
     textbox,
     transform=ax.transAxes,
-    fontsize=11,
+    fontsize=15,
     verticalalignment="top",
     bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.8),
 )

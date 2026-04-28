@@ -3,7 +3,7 @@
     "machineID": "1",
     "merkleRoot": "0x241de1be4f46a1d33c46127d6424d8fe271910b0ec864a64dc72e02cddc1d7af",
     "transactionHash": "0x279f1a228be765aad08f106227693c95026d33bf02cc959e79c327782d530ec4",
-    "timestamp": 1776873689,
+    "timestamp": 1777380928,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -600,7 +600,7 @@
     "machineID": "2",
     "merkleRoot": "0x45351f89599da019523158b43cbe1773b5a80e8a69140c5ca529d225389e0361",
     "transactionHash": "0x5e198863c65e5a8205be7ce231fcf78d5cecfe4e234a4df67c3c56fc93446a86",
-    "timestamp": 1776873691,
+    "timestamp": 1777380930,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -1197,7 +1197,7 @@
     "machineID": "3",
     "merkleRoot": "0x95517d913f1b43aa15f6e30ad1b4722e9b50ed8f19dd9057bb10a3e6e02d17f9",
     "transactionHash": "0x73c8e6a64da47ca1a0aac5b9cec09548a199aba233c027698cc31b679c224cf3",
-    "timestamp": 1776873694,
+    "timestamp": 1777380932,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -1806,7 +1806,7 @@
     "machineID": "4",
     "merkleRoot": "0x0e932a869e5aea4242f388e8fc16d87d67368c35960c5b5e3894128c4dadc046",
     "transactionHash": "0x61b1f10afc58f0fef21b2953285971ec30c6a18c98744dfc28fa386da77f1ab0",
-    "timestamp": 1776873696,
+    "timestamp": 1777380934,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -2403,7 +2403,7 @@
     "machineID": "5",
     "merkleRoot": "0xe3bbb200c8ba41a474650f1cc25117340f7c0b221d716c6b4a15b0efb873601a",
     "transactionHash": "0xb9292d785e69807a67600d29620c9a12ab5febd1b1643a265988d9628eacf698",
-    "timestamp": 1776873699,
+    "timestamp": 1777380936,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -2892,7 +2892,7 @@
     "machineID": "6",
     "merkleRoot": "0x77376343f5953fb3acad87506ce04e796cd8cc9330d4a75e73ebd028ef3c0e20",
     "transactionHash": "0x96809a9c8866a7ddab7764a0b014f452b1267b3483b175c66f9a3c688a9d41c7",
-    "timestamp": 1776873701,
+    "timestamp": 1777380939,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -3465,7 +3465,7 @@
     "machineID": "7",
     "merkleRoot": "0xeb05b2b1f8e0a8abeb83ab7550ac79b44c3fcdde9bf3e8808c95481f4f2a3049",
     "transactionHash": "0x8a8f2f454e54d293f8a59ee0b7fe37a52729d30e70fa42102aca7e66f36ba877",
-    "timestamp": 1776873703,
+    "timestamp": 1777380941,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -4050,7 +4050,7 @@
     "machineID": "8",
     "merkleRoot": "0x581b7e6613680f67154c8c1980129a79de27a255de91efe13b64a2aac3ca05b2",
     "transactionHash": "0x4c437ab57d98c9744364afeaec69356987a45907697ddc67f98ad213d6ae5082",
-    "timestamp": 1776873706,
+    "timestamp": 1777380943,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -4623,7 +4623,7 @@
     "machineID": "9",
     "merkleRoot": "0x41f56d8b8dd58a9eff4ca7ebdad70e01bd53dfca10575ea4a0af8eebb811ce79",
     "transactionHash": "0x5b6ddd06863674f27f0eb732b5cb07cecd0f5f7ad0bcb86ed79159cec85756fa",
-    "timestamp": 1776873708,
+    "timestamp": 1777380945,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -5220,7 +5220,7 @@
     "machineID": "10",
     "merkleRoot": "0xa427efa9598746d567a547d0e9cc7e367cfde4a240e815a80b247f2a5f6492f6",
     "transactionHash": "0xf9935521685f5fd249432e095f090b359f5358c1c050770b20d50522a4519ef7",
-    "timestamp": 1776873710,
+    "timestamp": 1777380947,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -5805,7 +5805,7 @@
     "machineID": "11",
     "merkleRoot": "0x261fef7e578a7e93211babfb1a053ecedeed51d03764d7316e2e8629b7089648",
     "transactionHash": "0x5ba79e1ba058d71e53fb61a0cbc108725cb7e858a4ef29a5fd5804fab1cfb0d6",
-    "timestamp": 1776873713,
+    "timestamp": 1777380949,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -6414,7 +6414,7 @@
     "machineID": "12",
     "merkleRoot": "0xb01ff49f86c7a93e8660d48f78203fa9a02f51d6863b95850640b2d5371ecfcc",
     "transactionHash": "0xc047801abc7b1eb51e49f26df15817a7fd6e6052327361a296d114cc01ec5fb4",
-    "timestamp": 1776873716,
+    "timestamp": 1777380952,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -6999,7 +6999,7 @@
     "machineID": "13",
     "merkleRoot": "0xbf4fd608d259a28107b29eaa29e7614a9ae792f52f66d3f1c516d8116f73dc9f",
     "transactionHash": "0x20dc51d030ecc5e46a0daaa8ddc74cb80c77ef8552f7ea2f8f7231743d84a1f9",
-    "timestamp": 1776873719,
+    "timestamp": 1777380954,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -7524,7 +7524,7 @@
     "machineID": "14",
     "merkleRoot": "0xa8a2826b61e51e808b1d540412c02fc6aaf5f32f32a00b96ba339da488f6fcff",
     "transactionHash": "0xa04201d829ad0a74b2be14980c1dedca6cded08a205a3585d369ea79e5a86846",
-    "timestamp": 1776873721,
+    "timestamp": 1777380955,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -8121,7 +8121,7 @@
     "machineID": "15",
     "merkleRoot": "0xf44c984e34e9b014b298163b1517c95881b8f6779671fe9393fd144f9718b9a7",
     "transactionHash": "0x3c7049cc4c73577891c4a0cd00cf9d38aa877a8c08584fc9d40259487c9d6501",
-    "timestamp": 1776873724,
+    "timestamp": 1777380958,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -8598,7 +8598,7 @@
     "machineID": "16",
     "merkleRoot": "0xe9dab7ffcaa9a344306a1e51f17f206117ed32cff471aeefb8045cbe83fc714e",
     "transactionHash": "0x7ce23d6389d61af16969470820430f505a4eb9a834610b389b66d5e3de20a0f7",
-    "timestamp": 1776873728,
+    "timestamp": 1777380959,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -9135,7 +9135,7 @@
     "machineID": "17",
     "merkleRoot": "0xde10d7ab5f8ad50f4eb24d1b3e419d45460ebe3c9d4cf4d656bb1e57c3be1e93",
     "transactionHash": "0x548a8a21bc466cbc9797ba3f3a7b3202253bedb7516f815921abe55c934dcc55",
-    "timestamp": 1776873732,
+    "timestamp": 1777380962,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -9696,7 +9696,7 @@
     "machineID": "18",
     "merkleRoot": "0xd138828904b05eb0d4a959bd85652f65f625febf9011831f929db35d323beabb",
     "transactionHash": "0x9de4e9374385e2a145ea6a6f3d223e3ab79ce4ddc8bdfbe487f74e90823132a7",
-    "timestamp": 1776873734,
+    "timestamp": 1777380964,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -10269,7 +10269,7 @@
     "machineID": "19",
     "merkleRoot": "0x918688d58701033c3fdabb77c78fb8f2fd93626c112b3c77082d147012dd9bb4",
     "transactionHash": "0xe4c5da8551553a5da5099310d30c7fbf98eb195c851fedbb53715c428c0564dc",
-    "timestamp": 1776873736,
+    "timestamp": 1777380966,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -10866,7 +10866,7 @@
     "machineID": "20",
     "merkleRoot": "0xdef58a674af26b51950139e068e5b4c6d216030c309d23553302fd0e78dd6198",
     "transactionHash": "0x9e7c8edf150a2f2fb2f0810d596b3f4671da1f1b3b09e8b5bc6e06de49b1dce5",
-    "timestamp": 1776873739,
+    "timestamp": 1777380969,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -11451,7 +11451,7 @@
     "machineID": "21",
     "merkleRoot": "0x289bff56907ed29041385528a0fbd197c71bbd67f99d836facf447510ef02b12",
     "transactionHash": "0x6fc634767250176651e6d282b9dfa2cfb4265249909e78d725e9e091a0b21495",
-    "timestamp": 1776873742,
+    "timestamp": 1777380971,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -12036,7 +12036,7 @@
     "machineID": "22",
     "merkleRoot": "0x4cf1893aefe9015029b9bbdb3c56a12211cb798b4869e1aef45e0cd1bda89314",
     "transactionHash": "0xa0d5e5157bca30d49d3a3da6f487dfe423b40719c054396ff06b72a586eaf15c",
-    "timestamp": 1776873745,
+    "timestamp": 1777380974,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -12633,7 +12633,7 @@
     "machineID": "23",
     "merkleRoot": "0xaeb4611189fd5b936445f0b0532d9f3e5f1ee4a282cd76aa655d8a94518eb025",
     "transactionHash": "0x27dd9684d530d9f17957f92bc2261c4f97beea3fbffbf6cda5191314aeed453f",
-    "timestamp": 1776873748,
+    "timestamp": 1777380976,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -13122,7 +13122,7 @@
     "machineID": "24",
     "merkleRoot": "0x369e004d11fe71b01897a0c8b0a4497f6e7dddf6aa51b57394fb0a4f385be093",
     "transactionHash": "0x0c9cd8ce9dad0d64aa2c8108f510cd21921cf4bee3bf2b03d831166cd7071ebf",
-    "timestamp": 1776873750,
+    "timestamp": 1777380977,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -13707,7 +13707,7 @@
     "machineID": "25",
     "merkleRoot": "0x4773f183696179c67da6d6ee1f487e35d44acce61fca9789cc7a9b4ff71e1efd",
     "transactionHash": "0x70f45b942ef4b189fb793d5f81c82190f5a2bf6779c45525b28e51c399899228",
-    "timestamp": 1776873753,
+    "timestamp": 1777380979,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -14292,7 +14292,7 @@
     "machineID": "26",
     "merkleRoot": "0x2fd5eff0f9445e39a50104dd4135272bb2f22c48a9bff8b81b20d8efc842925e",
     "transactionHash": "0xd915cb31245977c07af540532a31362e62dfe7e9d6f055c28141db0f71178d34",
-    "timestamp": 1776873755,
+    "timestamp": 1777380981,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -14889,7 +14889,7 @@
     "machineID": "27",
     "merkleRoot": "0xc93da228613ac28aa81f641b89aee88c1ade8399c8206ad24071ea9b44cab934",
     "transactionHash": "0x820ba8591b5d96013c2345c5f3e8b7ed6bc520296d2e339ba5f485b14baba272",
-    "timestamp": 1776873758,
+    "timestamp": 1777380984,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -15462,7 +15462,7 @@
     "machineID": "28",
     "merkleRoot": "0x3e28b082f115f9c15a7fa5887bf6852c55167a8d9a2693e6a16a0b57f3566243",
     "transactionHash": "0xd6af41d7ddce2f274148205945fb28ccf1dfe71ef0c535e57a9b79c4c1680414",
-    "timestamp": 1776873760,
+    "timestamp": 1777380986,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -15987,7 +15987,7 @@
     "machineID": "29",
     "merkleRoot": "0x2fe2dc8b19bbc46b7d7af0a3e70a71d7b638ac56ef67dc0d887b07cc36c9f230",
     "transactionHash": "0xb705df9a7eacb66e7d44c71207f05db97c4d62e49f2255ab67c2288dcefa53ff",
-    "timestamp": 1776873762,
+    "timestamp": 1777380988,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -16572,7 +16572,7 @@
     "machineID": "30",
     "merkleRoot": "0xf8b5b6b1d429647e2da311a1a3fe2f4cd37a4a8eaf3a40439d0244759bcfb8cd",
     "transactionHash": "0x7108acd08ec4994eeed4870e4c942b6077b792335024b1696856a6f2bc9e716f",
-    "timestamp": 1776873764,
+    "timestamp": 1777380990,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -17133,7 +17133,7 @@
     "machineID": "31",
     "merkleRoot": "0x66d987188c74bb6f6bd674fa479f1ecc0a55ff5147abd95b57b04d365b797491",
     "transactionHash": "0x3e5ce2fd73b0d2316ce7c8d6eb22428f300f13ba56483f1e554b55b84f2b9f4b",
-    "timestamp": 1776873766,
+    "timestamp": 1777380992,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -17646,7 +17646,7 @@
     "machineID": "32",
     "merkleRoot": "0x79ec87d436685ccf861520f2bb473e8f71bdf035ecb7bf095d4ccd74e8786d42",
     "transactionHash": "0x0820cee97d239bb2eab8d085abf7a4c25020e2d783f77fd85e45cf260e61f787",
-    "timestamp": 1776873769,
+    "timestamp": 1777380994,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -18231,7 +18231,7 @@
     "machineID": "33",
     "merkleRoot": "0x609cf02c345936c2cca31d04efa8f019d2b95254affdf365a5321d98cd08e56f",
     "transactionHash": "0xc9da9ba55330c1897b87b8700131312242808e2867b86c0bdba809b5ecbd3f01",
-    "timestamp": 1776873771,
+    "timestamp": 1777380996,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -18804,7 +18804,7 @@
     "machineID": "34",
     "merkleRoot": "0x858b34678a553288a3b6352cf6abe5e66adcf05e16e26c4c23eabb957aa067bf",
     "transactionHash": "0x256ca081bc4a4d245ef4c3db20704f49aef71c186cc80ec82da905628b3e1ead",
-    "timestamp": 1776873774,
+    "timestamp": 1777380998,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -19389,7 +19389,7 @@
     "machineID": "35",
     "merkleRoot": "0x67bbf53d7a4cc7022b4204ee0cf89bb2059515c26fecc774f9ed8c213c244709",
     "transactionHash": "0x0714dc27a144859caac5738c1d8c69643208fe2a62a5d0d3b0d76c41d59a8817",
-    "timestamp": 1776873777,
+    "timestamp": 1777381000,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -19962,7 +19962,7 @@
     "machineID": "36",
     "merkleRoot": "0x9d407b5b924c493d848fe2f153bfc9d8277c88bb071dfe919fe8fd6d18daaca7",
     "transactionHash": "0x9a89f75ea8ff8002a722dad28e772cc6c058c745a0af971e75a3502158049059",
-    "timestamp": 1776873780,
+    "timestamp": 1777381002,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -20535,7 +20535,7 @@
     "machineID": "37",
     "merkleRoot": "0xf63db74c74284fc90e0240038f4961ff037f5dceb4af693025a683278dfe7f6d",
     "transactionHash": "0x313fb81893760749abddf584d432b185b9369c21cd2a3da0b15c865a7282ac5d",
-    "timestamp": 1776873783,
+    "timestamp": 1777381003,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -21096,7 +21096,7 @@
     "machineID": "38",
     "merkleRoot": "0xad475b6a84e450ced4ed2a3611a4ecde6febff75f071ad30592214d70f63efbd",
     "transactionHash": "0x2a2f76942df100c3aa09ebd7ed7b885cfadbe4873818c5780cf8b5a052852511",
-    "timestamp": 1776873785,
+    "timestamp": 1777381005,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -21705,7 +21705,7 @@
     "machineID": "39",
     "merkleRoot": "0x9a0c52c1a4a34173be951f12155203db8bf4faf5242019af68834695a6ab2803",
     "transactionHash": "0xf223064c02e1782988418a1d2bd78dde52ecec0e560df5594130337ace4a4b1b",
-    "timestamp": 1776873787,
+    "timestamp": 1777381007,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -22242,7 +22242,7 @@
     "machineID": "40",
     "merkleRoot": "0x0e325a21fb245adbfd31a0254e3b67be3446f64800bfa4bf85c05816264c1ab2",
     "transactionHash": "0xda76eff1e494dd057201e652cba40be5d499c87e70f0b7057aa79d8bbb73bb70",
-    "timestamp": 1776873790,
+    "timestamp": 1777381009,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -22827,7 +22827,7 @@
     "machineID": "41",
     "merkleRoot": "0xf3dec5bc9e96e7d6cd37270999aae1287509c0749e582e26cf6a83c7a49448ac",
     "transactionHash": "0xc82536a2d84b4cfd12d1bdb3fe87f82f8433527d192f12addde290bb74d99d3a",
-    "timestamp": 1776873794,
+    "timestamp": 1777381011,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -23424,7 +23424,7 @@
     "machineID": "42",
     "merkleRoot": "0xc1cd97bb55dffc2a9cfbaa4bb488ec45e4505144e02795b43c87871827921b2c",
     "transactionHash": "0xd79819c04ddba0c3f1dafd3320a223d9115efe86f37480687aee6c4a577e965a",
-    "timestamp": 1776873796,
+    "timestamp": 1777381013,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -24033,7 +24033,7 @@
     "machineID": "43",
     "merkleRoot": "0x16ddbe3d2caf24a00c50ab3ce2a5e2711e64cd2751114ea4edbcb110a8c94426",
     "transactionHash": "0x8b9c77069e63d8c8930cc7f92eb46a69b8c71bee17c2baaf2b65c0a1e9d90eac",
-    "timestamp": 1776873798,
+    "timestamp": 1777381015,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -24630,7 +24630,7 @@
     "machineID": "44",
     "merkleRoot": "0x20a31b46e6e853e93db45b0385ae16ffa8c98ff0441185d4af04e58b4dee3d5a",
     "transactionHash": "0xca2005506155c8418644297f20a0a597f1382313518be4240ea6f1acf7ecc08a",
-    "timestamp": 1776873800,
+    "timestamp": 1777381017,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -25107,7 +25107,7 @@
     "machineID": "45",
     "merkleRoot": "0xa3ce00cd46cc4cb5447247b5b00cb1153d301f779dd0be73295aaecf98c9d773",
     "transactionHash": "0xf612ae25b0ac350eef0a428999cf074ec96462aec3cc02a9dca9966cc403ffcf",
-    "timestamp": 1776873803,
+    "timestamp": 1777381019,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -25716,7 +25716,7 @@
     "machineID": "46",
     "merkleRoot": "0xdab2e3890a4af60cca6c875e3cf7ac8441d2a1f9cb7611dc6b545b7d1b25c686",
     "transactionHash": "0x0d72843f280dd4fc0a2806d0f458be941614a3c4d818501ebf4503395ea73055",
-    "timestamp": 1776873806,
+    "timestamp": 1777381021,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -26265,7 +26265,7 @@
     "machineID": "47",
     "merkleRoot": "0x9ad3f92e38e2e1c6edea6c7ed71a6a746110099d0d15e16f675a06531311eaa2",
     "transactionHash": "0x75ffa8bd0fb95208766493e6d3ea38e34513f63e50ad0263d3e5c072f41d57b2",
-    "timestamp": 1776873808,
+    "timestamp": 1777381023,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -26862,7 +26862,7 @@
     "machineID": "48",
     "merkleRoot": "0x8f892076efb9e55d3dd3065c81d7fe127ef2655ad8ef7acb568797dee50bdf4d",
     "transactionHash": "0x018a39471fd1c0b260e8184b3d2986bc4e513265af2344ab3663b26f55b90021",
-    "timestamp": 1776873811,
+    "timestamp": 1777381025,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -27471,7 +27471,7 @@
     "machineID": "49",
     "merkleRoot": "0x502246c554f6bfb93865e1763de9b8e6861587d262c110e47f683980033e8284",
     "transactionHash": "0x38b62ec0985127dd586b36c10e989f8f279ceba20f3933c7afed52b6feb78904",
-    "timestamp": 1776873814,
+    "timestamp": 1777381027,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -28080,7 +28080,7 @@
     "machineID": "50",
     "merkleRoot": "0x2f8cc4c7f3ad8e3399e3b0c75215db421da72706c755a3d131f61fcf3ae43510",
     "transactionHash": "0x243c77471a6fb377c85c791859b934abad5681317d117b1e3467acddaf428879",
-    "timestamp": 1776873817,
+    "timestamp": 1777381030,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -28569,7 +28569,7 @@
     "machineID": "51",
     "merkleRoot": "0xbe8cc7ab05a643236c8f5c59c2be32a1d0c6994ed5ec004b9f90cdcce0c172a0",
     "transactionHash": "0x00b8dde56844c1f35b6a8a05895790c835cc75b2e43df5390cf5c02650234b05",
-    "timestamp": 1776873821,
+    "timestamp": 1777381032,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -29166,7 +29166,7 @@
     "machineID": "52",
     "merkleRoot": "0x576a256e8e06db98a51e961ed41978bcdc4509ebfe09e5d5c4b03fbc5f839dac",
     "transactionHash": "0xe3feba48b2850db876f8ed997c0db8bc9b89a27379aea61fc9b32458956bd917",
-    "timestamp": 1776873823,
+    "timestamp": 1777381034,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -29739,7 +29739,7 @@
     "machineID": "53",
     "merkleRoot": "0xaaa604f8f4cc19703ac97aaea9233abd7c15186da75bc92951d75d7d8d2477d0",
     "transactionHash": "0x50416dc434482fb6862766b0303f0560e2355a83fd5e894cd528961d05d4f76d",
-    "timestamp": 1776873826,
+    "timestamp": 1777381036,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -30336,7 +30336,7 @@
     "machineID": "54",
     "merkleRoot": "0x5e281a01069abb9ef3c49785525a935a58341ae7ab3240096d8c7e18389eb003",
     "transactionHash": "0x2253f8814a661a774c455267e81ea0eabd5132d755350ab99dfb58af66705dd5",
-    "timestamp": 1776873828,
+    "timestamp": 1777381039,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -30933,7 +30933,7 @@
     "machineID": "55",
     "merkleRoot": "0xa3c4d44faa57a3f9a8643a8ca7399fd8c52e7fa0c8dcd1711b9af9a2ae264ae1",
     "transactionHash": "0x3526dbcd0a1433934f1250198357a4a2e90d49dc529f6f7c3f15a4de9004080a",
-    "timestamp": 1776873831,
+    "timestamp": 1777381041,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -31458,7 +31458,7 @@
     "machineID": "56",
     "merkleRoot": "0x9e3c6768c183b1f136022e78869c53841c156cc8a6fa71c154ca379d83a6319a",
     "transactionHash": "0x08f990d429b93119592ae80f8275d7e98c700acdef8adc8108a3bfce92bd8c4e",
-    "timestamp": 1776873833,
+    "timestamp": 1777381043,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -32043,7 +32043,7 @@
     "machineID": "57",
     "merkleRoot": "0x4e01ee1b0edabcae2e979578370288e5b1f93d3def4c10ba9d0ad04b9699f86f",
     "transactionHash": "0x9f1bf1a20ac1eb794152f02412dc679408082ef8ec851f0a98d00763cfe100f4",
-    "timestamp": 1776873836,
+    "timestamp": 1777381045,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -32592,7 +32592,7 @@
     "machineID": "58",
     "merkleRoot": "0xdb8138a82d28490d90d2d8d66112b412564e3c5b02341cce672dfad5089812fa",
     "transactionHash": "0xa4658923213f8f7bb32e0fa3b0c764263e3c96a1557dc1c6eab403b47958ab25",
-    "timestamp": 1776873838,
+    "timestamp": 1777381047,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -33153,7 +33153,7 @@
     "machineID": "59",
     "merkleRoot": "0x83e48f5d7aa94647afc40129638a228370fe23cd118e20b9cdd2a0c779bb0aba",
     "transactionHash": "0x623ee18e00d05e7945a7a287044297883e312cc4d2cdd1490260dedbcec37fa9",
-    "timestamp": 1776873841,
+    "timestamp": 1777381050,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -33762,7 +33762,7 @@
     "machineID": "60",
     "merkleRoot": "0x40b0a6c8da9cd1568e809d5951593218c5bdc3ab17840015cdf3e4c1beee8232",
     "transactionHash": "0x57f784859f278a8d34132413436cb52fb7aa351fc7268bdab3a3bfc7d17bf199",
-    "timestamp": 1776873845,
+    "timestamp": 1777381052,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -34347,7 +34347,7 @@
     "machineID": "61",
     "merkleRoot": "0x24853f1ff67b13c64aff13f2594f9d71e3022c008f1f2ee15ac0a5cb6ef70468",
     "transactionHash": "0xdb330b8c3389c78da29c54dd6c61b4a74852c39967985a15e08c98f26286c229",
-    "timestamp": 1776873848,
+    "timestamp": 1777381054,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -34932,7 +34932,7 @@
     "machineID": "62",
     "merkleRoot": "0xb649671c3419563e269428ce727bf1853eee3145fd04e82e53b78954ef86f57b",
     "transactionHash": "0xaaef0746493068dfcfdd86ae3c0815c9cad2ab0367fb75a9def6f26fd99a8ad2",
-    "timestamp": 1776873851,
+    "timestamp": 1777381057,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -35505,7 +35505,7 @@
     "machineID": "63",
     "merkleRoot": "0x6186dee5a4340d6dde7099f878a2c97853a1af99603bd6c5374d28a141cb3df4",
     "transactionHash": "0xbe121f9814b26e4d298a6f699670c6c8d211e43119e64cc34ca69617c68c47e1",
-    "timestamp": 1776873854,
+    "timestamp": 1777381059,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -36042,7 +36042,7 @@
     "machineID": "64",
     "merkleRoot": "0x98917a116d75b4e4b5821a1bbc0cdde4e5fe8630e42b9e4d1f5d3a2fc20b213b",
     "transactionHash": "0x184ac1751218ab80181c2e5082551bcab379febf8702c8bacbd09e5a2d51226a",
-    "timestamp": 1776873857,
+    "timestamp": 1777381061,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -36591,7 +36591,7 @@
     "machineID": "65",
     "merkleRoot": "0x23b1ab6dea2d3b5a54ce8716d8d650601a4af6cc538b86746713b6e9f9637c16",
     "transactionHash": "0x93328c3c1a985af86abeffe4aaeb60741fb6f82804b14c95e262651a317f509b",
-    "timestamp": 1776873861,
+    "timestamp": 1777381063,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -37200,7 +37200,7 @@
     "machineID": "66",
     "merkleRoot": "0x152d90a37f4e8a5c21a52916ca3cd9195ab7e6746f88689f7bbaba43fad210c0",
     "transactionHash": "0x056d9f1c37767a8706a6887249f7efd53be8ce3f309af6a8e851cf75a781d376",
-    "timestamp": 1776873863,
+    "timestamp": 1777381065,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -37809,7 +37809,7 @@
     "machineID": "67",
     "merkleRoot": "0x96b8b7babd7e1edadee87f64d7c25ec8e9249f5abe9053dc5c3da90f598f164d",
     "transactionHash": "0x826ac9afe2848c0ea853f194bcecb6f07cb727899ff16ecab8d83655c4a6f85c",
-    "timestamp": 1776873865,
+    "timestamp": 1777381067,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -38406,7 +38406,7 @@
     "machineID": "68",
     "merkleRoot": "0x149f4fe5972a44609cd3f6064e5f33e00f4d06ef5a24b51226a755f64e5b12d5",
     "transactionHash": "0x4e8c5af71acda5e464f451a21c48320144519131cadd387ea024295d65e52c32",
-    "timestamp": 1776873868,
+    "timestamp": 1777381069,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -38979,7 +38979,7 @@
     "machineID": "69",
     "merkleRoot": "0xdb09e7deb07c2e464b15d812b27c62cc46b360b0d4648d1904f7abaac05273e0",
     "transactionHash": "0x94b37d11043a87532a930b52c5cd1c1c859511fa59d473773601ffeee95171f3",
-    "timestamp": 1776873871,
+    "timestamp": 1777381072,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -39564,7 +39564,7 @@
     "machineID": "70",
     "merkleRoot": "0x64b5e1bd951138329c5f788e984d4cb89524539c1323904dedca847c5320c227",
     "transactionHash": "0x253232b57ae70eb83dced9a7bfc7ef487d86d17388a9043e684e694b2465bae7",
-    "timestamp": 1776873873,
+    "timestamp": 1777381074,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -40125,7 +40125,7 @@
     "machineID": "71",
     "merkleRoot": "0x10fcda1f23a7a8d64df8f41c03c19a26bec1a95a7dff8e28eaff64a14f3116c2",
     "transactionHash": "0xcadd370974a91321fceb7624a0237e44ef11766f69ccb79009d864d5594376dd",
-    "timestamp": 1776873877,
+    "timestamp": 1777381076,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -40662,7 +40662,7 @@
     "machineID": "72",
     "merkleRoot": "0x8c985e73b3e9f44975bd0bcd892555a0bbbc08ba5d16c7e77e63f96eb77896d8",
     "transactionHash": "0xd29850366fd8a24430437e73966c625d7824571a121f5e7cad6907d5e4ddbe64",
-    "timestamp": 1776873880,
+    "timestamp": 1777381078,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -41199,7 +41199,7 @@
     "machineID": "73",
     "merkleRoot": "0xb6af1e487d4d585c9d219b6cc1e325ca71c02df72876dc523b64233e29c73f57",
     "transactionHash": "0x7840a1ef2460b51e4820918489440f2ee356c13b7169f1ea499de9b7854eaa36",
-    "timestamp": 1776873883,
+    "timestamp": 1777381080,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -41772,7 +41772,7 @@
     "machineID": "74",
     "merkleRoot": "0xfe19aef35007ac9701a9567ccc4b8fccfdc7e8cc0c1a96732db217803a7bb6db",
     "transactionHash": "0x06e664431345b4865f1a53a7bf89d7123d1635a465ed57bef11bbd1eae2997bc",
-    "timestamp": 1776873886,
+    "timestamp": 1777381082,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -42369,7 +42369,7 @@
     "machineID": "75",
     "merkleRoot": "0x6709240ec1fa0cf13803077e7ae45f5d5374bb93f66fa1cd8e4c2e2a004e6a32",
     "transactionHash": "0x0f10011aa7da191de0da136fc7aced445717bc33fccbe7fa5470b6bcc3304548",
-    "timestamp": 1776873889,
+    "timestamp": 1777381084,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -42966,7 +42966,7 @@
     "machineID": "76",
     "merkleRoot": "0x2d81f5c31f471e27b5ac496c454b821758699a743b1863234b2db4f257fef7e2",
     "transactionHash": "0x8806d5e861060c77df57cbc2052261404da484a9154ee48807476c3d04b6a381",
-    "timestamp": 1776873891,
+    "timestamp": 1777381086,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -43539,7 +43539,7 @@
     "machineID": "77",
     "merkleRoot": "0x537da2a9ee824eeb35d9970b44c69131a6063fcc755b322ebf0a39e2e1383f74",
     "transactionHash": "0xa32d204fb59cc6732f388e22e4e279f586436007bfbe461d40d6ea81a4f7c201",
-    "timestamp": 1776873894,
+    "timestamp": 1777381088,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -44136,7 +44136,7 @@
     "machineID": "78",
     "merkleRoot": "0xf1fd5a8acaf18cf5d824c566b5ca07872e4368c2011193a9af9ac6aa7f421c20",
     "transactionHash": "0xfb4ea783fc06ca2fdfb9958bbe30ad2eb7932f32383c53f28adbb5353d480019",
-    "timestamp": 1776873897,
+    "timestamp": 1777381090,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -44709,7 +44709,7 @@
     "machineID": "79",
     "merkleRoot": "0x6be14226a266ec5e671d2ffd5dce4c4135e3a3c654fb11819f19386d5c00f46d",
     "transactionHash": "0x53ab6aca9daf6094d221fc5f61e098c2a85351b11bef2abe8f05e81fdab3d835",
-    "timestamp": 1776873899,
+    "timestamp": 1777381093,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -45198,7 +45198,7 @@
     "machineID": "80",
     "merkleRoot": "0x3acfcddef26a676bb03f3ac50fb30562a823a174c78774d26bb376bb8b564c5c",
     "transactionHash": "0x181e6bdb3959103bdf643d82d0b3d91ce000de24541e5b861666b0287a360f2c",
-    "timestamp": 1776873902,
+    "timestamp": 1777381095,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -45771,7 +45771,7 @@
     "machineID": "81",
     "merkleRoot": "0x3c98d7325590440f50ca79a0d51ad14edf2ec04f025b803877ad3b5534c357d4",
     "transactionHash": "0x24251f7b066f5a1fa7c539a47769deaabf80b93acbb6bed5733415879e81e873",
-    "timestamp": 1776873905,
+    "timestamp": 1777381097,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -46332,7 +46332,7 @@
     "machineID": "82",
     "merkleRoot": "0x5184065d99e191fb8a967eb818b4c1c232bd1ce03ade604b6b6b8e08824f37a1",
     "transactionHash": "0xeb37ab265c46c6c213c0b196ce2cba74b752b5f0fa070f59db149ba6dfc9e3d3",
-    "timestamp": 1776873909,
+    "timestamp": 1777381099,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -46845,7 +46845,7 @@
     "machineID": "83",
     "merkleRoot": "0x51f413120b32861a18b1b9a261b250146d8a5bddc57a68cc0a4ac298de6abdc8",
     "transactionHash": "0xd9c00369e058a9c81f368af07f8ec4efb16c5e14e3a4087dec620e0190b2394b",
-    "timestamp": 1776873912,
+    "timestamp": 1777381101,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -47454,7 +47454,7 @@
     "machineID": "84",
     "merkleRoot": "0x2edd47b664fd1a64e42cf4350199874b8eb516b86971cfc306edeb4fdc0c0b01",
     "transactionHash": "0x4c2dec879a937f4201af7455bd20e15c599961f0e703eb7882f9a142eee81df7",
-    "timestamp": 1776873915,
+    "timestamp": 1777381103,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -48051,7 +48051,7 @@
     "machineID": "85",
     "merkleRoot": "0x1f98b437467db535832e71b8921541c2d2caf48d9bbcdbc1973df0e0ab116f6e",
     "transactionHash": "0x486add543b3173db14a6669974cbc210b22f8ee5c5e61f60580dfe7750607213",
-    "timestamp": 1776873919,
+    "timestamp": 1777381105,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -48600,7 +48600,7 @@
     "machineID": "86",
     "merkleRoot": "0xcc356e9740febeb0ea481121b1e71d2c526362d395f98a97f060b53041f1b695",
     "transactionHash": "0xe4e71c6b14b727ca4261ff29ea36895cb30dd742e9a2e554f0979af5c73d33fc",
-    "timestamp": 1776873921,
+    "timestamp": 1777381107,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -49185,7 +49185,7 @@
     "machineID": "87",
     "merkleRoot": "0xd5648d3c6d3ebe84776d3d9f0d4e26234ecd1ba5857f611af30598e63144d1cc",
     "transactionHash": "0x6ceb5d2fd6ac47abe74351dd78e328b90695cce71390e9b39a02584a21aa97d4",
-    "timestamp": 1776873923,
+    "timestamp": 1777381110,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -49746,7 +49746,7 @@
     "machineID": "88",
     "merkleRoot": "0x877e70b991249ce06d8d631e67b950da776f9e267e4f2f71c3d359b358e1a377",
     "transactionHash": "0xb7126a83fd9168842d2fe2853796d1b16e50a8460cad16b890d7c1aea2eb070c",
-    "timestamp": 1776873926,
+    "timestamp": 1777381112,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -50235,7 +50235,7 @@
     "machineID": "89",
     "merkleRoot": "0x8e67d65cdcbdbb790cad752527a746d67cb8f2702e8927f63f7f584f42f97f33",
     "transactionHash": "0xb32cfc71f142cd5ed811fdc5ff602e78b1e4f2570953c562d3a11e8b4cc75e83",
-    "timestamp": 1776873929,
+    "timestamp": 1777381114,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -50808,7 +50808,7 @@
     "machineID": "90",
     "merkleRoot": "0xec3c54161a1cded3bb8ce4df7dd3e55600547039f82516f624a6158fd130a267",
     "transactionHash": "0x9a7f9c3f6ad4df097ab803a9fbdcb104aab21f540ba0e1bb97fc3ed9c3801821",
-    "timestamp": 1776873932,
+    "timestamp": 1777381117,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -51393,7 +51393,7 @@
     "machineID": "91",
     "merkleRoot": "0xda9d0b8ff399eca769d6675cffe6218362111eeea9f609b3039397aa8ecada37",
     "transactionHash": "0x554e8ce96a76c2858d24a086d6293e24790c8951d6509a02f73ccfc55d68b7f4",
-    "timestamp": 1776873934,
+    "timestamp": 1777381118,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -51990,7 +51990,7 @@
     "machineID": "92",
     "merkleRoot": "0xde5cdf2d51d72217b0f4c2a2ae82c796a893940b7b2a218679f9fe9285d74401",
     "transactionHash": "0x13deb26feba4883646c86207ecec50a745d8a7630a37a23fec321a0dbebbf2b4",
-    "timestamp": 1776873938,
+    "timestamp": 1777381120,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -52575,7 +52575,7 @@
     "machineID": "93",
     "merkleRoot": "0x72cc1b43710dab3318eea0fbf9a84efa898f49c28cf8d8107dddf81725425fdd",
     "transactionHash": "0x501bb984e697ab9b73cedeb7894969e52454aacbdc5c24e6899ee7d447c958ea",
-    "timestamp": 1776873940,
+    "timestamp": 1777381122,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -53172,7 +53172,7 @@
     "machineID": "94",
     "merkleRoot": "0x688e6e41002e333150c605a75f850d2e629411e8b0a091c0cf29f5ef03c42cac",
     "transactionHash": "0xa772607610dc4fd9839973b89cf367805ffdf982b1268e6960c317aca5652e49",
-    "timestamp": 1776873943,
+    "timestamp": 1777381124,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -53685,7 +53685,7 @@
     "machineID": "95",
     "merkleRoot": "0x1d2bb4f49d3763d22165b6f06199a900bb6f28c2a27e1faa752f719bcbf2d5c8",
     "transactionHash": "0xd3635c780dbe238cfca6a9c4fbe5b977e6eed8c60167032b3db8fb7ffd95440a",
-    "timestamp": 1776873946,
+    "timestamp": 1777381126,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -54246,7 +54246,7 @@
     "machineID": "96",
     "merkleRoot": "0x291926a35a623a97a35eab1158c065a1fc0a8f87e8a022ec19130b6c2c3e003a",
     "transactionHash": "0x9cd5c37feae389339ca27fc97d754aec5859c5348becde373458636ff044b5b3",
-    "timestamp": 1776873948,
+    "timestamp": 1777381128,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -54843,7 +54843,7 @@
     "machineID": "97",
     "merkleRoot": "0xba051c7053154e34c13181805d9def437bfb673ff51b61e5faad94a8b9526a43",
     "transactionHash": "0x10b5bd9c38ebe7c4cfbedb98d8381d1c9e74475be8666efaf3c57eda469dc687",
-    "timestamp": 1776873951,
+    "timestamp": 1777381130,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -55452,7 +55452,7 @@
     "machineID": "98",
     "merkleRoot": "0xba6a0ebe16b9ce43e1e1ed611199fa5199df7a577b6a38ec40d40f457c408b77",
     "transactionHash": "0xc475c48c0f73a31bfd2ccc85c9ebebf4f55c93f1b5a396b541e5f3e134cfe876",
-    "timestamp": 1776873953,
+    "timestamp": 1777381132,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -55989,7 +55989,7 @@
     "machineID": "99",
     "merkleRoot": "0x28bfd8a03b17af137ba2a02f26aec54245c6f0fd56f9fee27a9a5cefeff9c88a",
     "transactionHash": "0xb19def51ec29249f3422e526557b63aa6cc84c54b4dd5f467e54b77e6d0c57e8",
-    "timestamp": 1776873955,
+    "timestamp": 1777381134,
     "totalRecords": 8761,
     "anomalies": [
       {
@@ -56574,7 +56574,7 @@
     "machineID": "100",
     "merkleRoot": "0x86b2e108f0c9b9a1c8e87d7bca85e42c1cd9ec735e38beccc99f1e9089aa756a",
     "transactionHash": "0xccb1db2826d5bf636f26fa8a1a52c90654dc0abb9f26ca6a84f63babf8e39bda",
-    "timestamp": 1776873958,
+    "timestamp": 1777381137,
     "totalRecords": 8761,
     "anomalies": [
       {
