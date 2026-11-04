@@ -167,6 +167,14 @@ async function reviewClaim() {
             return;
         }
 
+        // Phase 0: recompute the leaf from the displayed data fields and compare
+        const rowString = `${anomaly.datetime},${anomaly.machineID},${anomaly.data.volt},${anomaly.data.vibration},${anomaly.data.status}`;
+        const recomputedLeaf = web3.utils.keccak256(rowString);
+        const dataTampered = recomputedLeaf !== anomaly.leaf;
+        console.log('Recomputed leaf:', recomputedLeaf);
+        console.log('Stored leaf:    ', anomaly.leaf);
+        console.log('Data tampered:', dataTampered);
+
         // Call contract without sending transaction (read-only)
         const result = await contract.methods.verifyMerkleProof(
             machineID,
@@ -177,7 +185,7 @@ async function reviewClaim() {
         ).call();
 
         console.log('Review result:', result);
-        displayReviewResult(result, anomaly, machineID, machineProofs);
+        displayReviewResult(result, anomaly, machineID, machineProofs, dataTampered);
 
     } catch (error) {
         console.error('Error reviewing claim:', error);
@@ -186,17 +194,36 @@ async function reviewClaim() {
 }
 
 // Display review result
-function displayReviewResult(verified, anomaly, machineID, machineProofs) {
+function displayReviewResult(verified, anomaly, machineID, machineProofs, dataTampered = false) {
     const resultDiv = document.getElementById('reviewResult');
     resultDiv.style.display = 'block';
 
+    // Phase 0: sensor hash consistency check
+    const phase0Div = document.getElementById('reviewPhase0Result');
+    const phase0Details = document.getElementById('reviewPhase0Details');
+
+    if (dataTampered) {
+        phase0Div.innerHTML = '❌ HASH MISMATCH — DATA TAMPERED';
+        phase0Div.style.color = '#ef4444';
+        phase0Details.innerHTML = 'Sensor values do not match the committed hash. The displayed readings have been altered after the original data was anchored on the blockchain.';
+        verified = false;
+    } else {
+        phase0Div.innerHTML = '✅ HASH MATCH';
+        phase0Div.style.color = '#10b981';
+        phase0Details.innerHTML = 'Sensor values are consistent with the committed leaf hash.';
+    }
+
     const phase1Div = document.getElementById('reviewPhase1Result');
     const phase1Details = document.getElementById('reviewPhase1Details');
-    
+
     if (verified) {
         phase1Div.innerHTML = '✅ VERIFIED';
         phase1Div.style.color = '#10b981';
         phase1Details.innerHTML = 'Merkle proof verified - Data integrity confirmed';
+    } else if (dataTampered) {
+        phase1Div.innerHTML = '⏭ SKIPPED';
+        phase1Div.style.color = '#f59e0b';
+        phase1Details.innerHTML = 'Skipped — sensor hash mismatch detected in Phase 0';
     } else {
         phase1Div.innerHTML = '❌ INVALID';
         phase1Div.style.color = '#ef4444';
