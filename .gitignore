@@ -30,3 +30,6 @@ anomalies.json
 
 # Development leftovers — excluded from submission
 /not-using/
+
+# Local secrets
+.env
